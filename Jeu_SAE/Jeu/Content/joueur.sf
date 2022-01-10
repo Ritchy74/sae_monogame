@@ -1,0 +1,24 @@
+{
+  "textureAtlas": {
+    "texture": "joueur.png",
+    "regionWidth": 48,
+    "regionHeight": 64
+  },
+  "cycles": {
+    "idle": {
+      "frames": [ 7 ]
+    },
+    "walkNorth": {
+      "frames": [ 0, 1, 2 ]
+    },
+    "walkEast": {
+      "frames": [ 3, 4, 5 ]
+    },
+    "walkSouth": {
+      "frames": [ 6, 7, 8 ]
+    },
+    "walkWest": {
+      "frames": [ 9, 10, 11 ]
+    }
+  }
+}

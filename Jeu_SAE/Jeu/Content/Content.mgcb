@@ -1,0 +1,76 @@
+
+#----------------------------- Global Properties ----------------------------#
+
+/outputDir:bin/$(Platform)
+/intermediateDir:obj/$(Platform)
+/platform:DesktopGL
+/config:
+/profile:Reach
+/compress:False
+
+#-------------------------------- References --------------------------------#
+
+/reference:Z:\MonoGame.Extended.Content.Pipeline.dll
+/reference:Z:\MonoGame.Extended.dll
+/reference:Z:\MonoGame.Extended.Graphics.dll
+/reference:Z:\MonoGame.Extended.Tiled.dll
+/reference:Z:\Newtonsoft.Json.dll
+
+#---------------------------------- Content ---------------------------------#
+
+#begin joueur.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:joueur.png
+
+#begin mansion_maps_version1/NES Mansion Tile Set.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:mansion_maps_version1/NES Mansion Tile Set.png
+
+#begin mansion_maps_version1/Piece_1.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_maps_version1/Piece_1.tmx
+
+#begin mansion_maps_version1/Piece_2.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_maps_version1/Piece_2.tmx
+
+#begin mansion_maps_version1/Piece_3.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_maps_version1/Piece_3.tmx
+
+#begin mansion_maps_version1/Tiles_Mansion.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:mansion_maps_version1/Tiles_Mansion.tsx
+
+#begin motw.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:motw.png
+
