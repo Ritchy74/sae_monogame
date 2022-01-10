@@ -10,11 +10,11 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:Z:\MonoGame.Extended.Content.Pipeline.dll
-/reference:Z:\MonoGame.Extended.dll
-/reference:Z:\MonoGame.Extended.Graphics.dll
-/reference:Z:\MonoGame.Extended.Tiled.dll
-/reference:Z:\Newtonsoft.Json.dll
+/reference:V:\MonoGame.Extended.Content.Pipeline.dll
+/reference:V:\MonoGame.Extended.dll
+/reference:V:\MonoGame.Extended.Graphics.dll
+/reference:V:\MonoGame.Extended.Tiled.dll
+/reference:V:\Newtonsoft.Json.dll
 
 #---------------------------------- Content ---------------------------------#
 
