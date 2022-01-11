@@ -19,6 +19,9 @@
     },
     "walkWest": {
       "frames": [ 9, 10, 11 ]
+    },
+    "dead": {
+      "frames": [ 7 ]
     }
   }
 }

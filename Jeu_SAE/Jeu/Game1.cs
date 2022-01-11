@@ -21,6 +21,7 @@ namespace Jeu
         private SpriteBatch _spriteBatch;
         //listes
         private List<Perso> _listePerso = new List<Perso>();                            //perso
+        private List<Bot> _listeBots = new List<Bot>();                            //bots
         private List<TypeControl> _listeTypeControlePerso = new List<TypeControl>();    //façon de controler les perso
         private List<ScreenMap> _listeScreenMap = new List<ScreenMap>();                //screens
         private List<Vector2> _listeVecteursSpawnParMap = new List<Vector2>();          //point de respawn par map
@@ -32,7 +33,7 @@ namespace Jeu
         private Perso _perso2;
         //perso bot test
         private AnimatedSprite _spritePersoBotTest;
-        private Perso _persoBotTest;
+        private Bot _persoBotTest;
         //collision
         TypeCollisionMap _isCollisionSpeciale;
         //screens
@@ -42,6 +43,12 @@ namespace Jeu
         private Ecran _ecranEnCours;            //screen actuel (nom pour comparer)
         //manager
         private readonly ScreenManager _screenManager;
+        //timer
+        private float deltaSeconds;
+        private float _timer;
+        //dead  
+        private List<bool> _listeStartCompteurDead = new List<bool>();    //mettre en liste pour tous persos
+        private List<float> _listeCompteurDead = new List<float>();
 
 
         public SpriteBatch SpriteBatch
@@ -80,7 +87,7 @@ namespace Jeu
 
         protected override void Initialize()
         {
-            //nothing
+            _timer = 100;   //temps de jeu total
             base.Initialize();
         }
 
@@ -90,13 +97,15 @@ namespace Jeu
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteSheet animation1 = Content.Load<SpriteSheet>("motw.sf", new JsonContentLoader());  //importation animation1
             SpriteSheet animation2 = Content.Load<SpriteSheet>("joueur.sf", new JsonContentLoader());  //importation animation1
-            _spritePerso1 = new AnimatedSprite(animation1);        //sprite anime1 pour perso
-            _spritePerso2 = new AnimatedSprite(animation1);        //sprite anime1 pour perso
-            _spritePersoBotTest = new AnimatedSprite(animation2);        //sprite anime2 pour perso bot test
+            _spritePerso1 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
+            _spritePerso2 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
+            _spritePersoBotTest = new AnimatedSprite(animation1);        //sprite anime2 pour perso bot test
 
 
             //creation perso
             CreationPersos();
+            //creation bots
+            CreationBots();
             //creation maps
             CreationMaps();
 
@@ -108,20 +117,67 @@ namespace Jeu
             _listeScreenMap[(int)_ecranEnCours].LoadContent();
         }
 
+        public void Time()
+        {
+            _timer -= deltaSeconds;
+            //Console.WriteLine((int)_timer);
+            if (_timer <= 0)
+                Exit();
+        }
+        public void IsCollisionBot(float deltaSecond)
+        {
+            for (int i = 0; i< _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
+            {
+                //Console.WriteLine(_listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count);
+                for (int j = 0; j< _listeScreenMap[(int)_ecranEnCours].LesPersoADessiner.Count; j++)
+                {
+                    Perso persoActuel = _listeScreenMap[(int)_ecranEnCours].LesPersoADessiner[j];
+                    Bot botActuel = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i];
+                    //Console.WriteLine(botActuel);
+                    if (Bot.IsColliBot_Play(botActuel, persoActuel))   
+                        _listeStartCompteurDead[j] = true;
+                    //compteur dead
+                    if (_listeStartCompteurDead[j])
+                    {
+                        persoActuel.Animation = Perso.TypeAnimation.dead;    //passe en dead
+                        Console.WriteLine($"COLLISION JOUEUR {j} AVEC BOT");
+                        _listeCompteurDead[j] += deltaSeconds;
+                        Console.WriteLine($"TEMPS MORT JOUEUR {j}: {(int)_listeCompteurDead[j]}");
+                        if (_listeCompteurDead[j] >= 5)
+                        {
+                            _listePerso.Remove(persoActuel);
+                            _listeStartCompteurDead.Remove(_listeStartCompteurDead[j]);
+                            _listeCompteurDead.Remove(_listeCompteurDead[j]);
+                        }
+                    }
+
+                }
+            }
+          
+        }
         protected override void Update(GameTime gameTime)
         {
             //quit game
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count==0)
                 Exit();
-
+            //deltatime
+            deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;     
+            //faire écouler le timer dans le jeu 
+            Time();     
+            //collision bot
+            IsCollisionBot(deltaSeconds);
 
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
-            //récupérationdu type de colision
             for (int i = 0; i < _listePerso.Count; i++)
             {
+                //récupérationdu type de colision
                 if (_listePerso[i].Collision != TypeCollisionMap.Rien)
                     _isCollisionSpeciale = _listePerso[i].Collision;
+
+                //update position des perso
+                _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listeTypeControlePerso[i]);
             }
+
 
             //changement vers piece 1
             if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1)
@@ -136,10 +192,8 @@ namespace Jeu
                 ChangementScreen(Ecran.Piece3);
 
 
-            for (int i = 0; i < _listePerso.Count; i++) //boucle sur le nombre de perso
-            {
-                _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listeTypeControlePerso[i]);  //update position des perso
-            }
+
+            _listeBots[0].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, TypeControl.clavier_IJKL);
             base.Update(gameTime);
 
         }
@@ -151,23 +205,37 @@ namespace Jeu
             base.Draw(gameTime);    //dessine objets
             SpriteBatch.End();
         }
+        public void CreationBots()
+        {
+            //creation bot
+            _persoBotTest = new Bot(new Vector2(100, 50), _spritePersoBotTest);
+            //ajout des bots à la liste
+            _listeBots.Add(_persoBotTest);
+
+        }
         public void CreationPersos()    //génération de tout ce qui tourne autour des perso
         {
             //creation persos
             _perso1 = new Perso(new Vector2(50, 175), _spritePerso1);   //creation perso1
-            _perso2 = new Perso(new Vector2(50, 175), _spritePerso2);    //creation perso2
+            _perso2 = new Perso(new Vector2(120, 230), _spritePerso2);    //creation perso2
             //ajout des perso à la liste
             _listePerso.Add(_perso1);   //perso1
             _listePerso.Add(_perso2);   //perso2
             //ajout des types de controles à la liste
-            _listeTypeControlePerso.Add(TypeControl.Clavier_ZQSD);  //haut,bas,gauche,droite
-            _listeTypeControlePerso.Add(TypeControl.Clavier_HBGD);  //Z,Q,S,D
+            _listeTypeControlePerso.Add(TypeControl.Clavier_HBGD);  //haut,bas,gauche,droite
+            _listeTypeControlePerso.Add(TypeControl.Clavier_ZQSD);  //Z,Q,S,D
+            //initialisation des compteurs de mort pour les persos
+            for (int i =0; i<_listePerso.Count;i++)
+            {
+                _listeStartCompteurDead.Add(false);
+                _listeCompteurDead.Add(0);
+            }
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version1/Piece_1", "obstacles", _listePerso, 320,320);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version1/Piece_2", "obstacles", _listePerso,170,240);              //creation map2
-            _screenMapPiece3 = new ScreenMap(this, "mansion_maps_version1/Piece_3", "obstacles", _listePerso,190, 250);              //creation map2
+            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version1/Piece_1", "obstacles", 320, 320);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version1/Piece_2", "obstacles", 170, 240);              //creation map2
+            _screenMapPiece3 = new ScreenMap(this, "mansion_maps_version1/Piece_3", "obstacles", 190, 250);              //creation map2
             //ajout des maps à la liste
             _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
             _listeScreenMap.Add(_screenMapPiece2);      //ajout map2
@@ -176,6 +244,11 @@ namespace Jeu
             _listeVecteursSpawnParMap.Add(new Vector2(50, 175));     //ajout vecteur map1 
             _listeVecteursSpawnParMap.Add(new Vector2(90, 180));     //ajout vecteur map2
             _listeVecteursSpawnParMap.Add(new Vector2(40, 40));     //ajout vecteur map3
+            for (int i = 0; i < _listeScreenMap.Count; i++)
+            {
+            _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
+            }
+            _listeScreenMap[0].UpdateListBotsAAfficher(_listeBots);
         }
         public void ReinitialisationPosition(Ecran ecran)
         {
@@ -189,7 +262,9 @@ namespace Jeu
         {
             Console.WriteLine($"CHARGEMENT  {versCetEcran.ToString()}");
             ReinitialisationPosition(versCetEcran);
+            //_listeScreenMap[(int)_ecranEnCours].UpdateListBotsAAfficher(new List<Bot>());
             _ecranEnCours = versCetEcran;                   //changement enum ecran
+            //_listeScreenMap[(int)_ecranEnCours].UpdateListBotsAAfficher(_listeBots);
             _screenManager.LoadScreen(_listeScreenMap[(int)_ecranEnCours]);            //chargement nouvelle map
         }
     }

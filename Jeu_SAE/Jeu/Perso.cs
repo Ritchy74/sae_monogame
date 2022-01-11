@@ -16,7 +16,7 @@ namespace Jeu
     class Perso
     {
         //déclarations
-        public enum TypeAnimation { walkSouth, walkNorth, walkEast, walkWest, idle };   //directions perso pour animation
+        public enum TypeAnimation { walkSouth, walkNorth, walkEast, walkWest, idle, dead };   //directions perso pour animation
 
         private int _vitessePerso;
         private float walkSpeed;
@@ -25,22 +25,11 @@ namespace Jeu
         private TypeAnimation _animation;
         AnimatedSprite _spritePerso;
 
-        //a mettre en tableaux
-        //tableau tiles spéciaux
-
-
-        private const int TUILE_G_PORTE_ROUGE = 135;
-        private const int TUILE_D_PORTE_ROUGE = 136;
-        private const int TUILE_BIZARRE_G = 1128;
-        private const int TUILE_BIZARRE_D = 1129;
-        private const int TUILE_G_PORTE_VERTE = 141;
-        private const int TUILE_D_PORTE_VERTE = 142;
-
         public Perso(Vector2 _positionPerso, AnimatedSprite _spritePerso)
         {
             this.SpritePerso = _spritePerso;
             PositionPerso = _positionPerso;
-
+            
             //inititalisations
             this._vitessePerso = 200;
         }
@@ -85,68 +74,84 @@ namespace Jeu
             }
         }
 
+        internal TypeAnimation Animation
+        {
+            get
+            {
+                return this._animation;
+            }
+
+            set
+            {
+                this._animation = value;
+            }
+        }
+
         public void Move(ScreenMap screen, GameTime gameTime, TypeControl typeDeControle)
         {
-            // translation de la position du personnage en pixel en ligne et colonne pour la matrice
-            float positionColonnePerso = (PositionPerso.X / screen.Map.TileWidth);
-            float positionLignePerso = (PositionPerso.Y / screen.Map.TileHeight);
-            //réinitialisation
-            Vector2 deplacement = new Vector2(0, 0);    //deplacement sprite
-            this._animation = TypeAnimation.idle;       //position immobile
-            bool toucheBordFenetre = false;             //collision avec bord fenetre
-            float deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;      //deltatime
-            this.walkSpeed = deltaSeconds * _vitessePerso;                         //vitesse de deplacement du sprite
-            //récupère état direction du perso
-            DirectionEntite directionPerso = Controller.ReadClavier((int)typeDeControle);
+            if (Animation != TypeAnimation.dead)
+            { 
 
-            //deplacement gauche
-            if (directionPerso == DirectionEntite.Left)
-            {
-                this._animation = TypeAnimation.walkWest;   //animation
-                deplacement = new Vector2(-1, 0);           //vecteur deplacement
-                //collision
-                toucheBordFenetre = PositionPerso.X - this.SpritePerso.TextureRegion.Width / 2 <= 0;    //gauche de fenetre 
-                Collision = Perso.IsCollision(positionColonnePerso - 1, positionLignePerso, screen);     //batiment
+                // translation de la position du personnage en pixel en ligne et colonne pour la matrice
+                float positionColonnePerso = (PositionPerso.X / screen.Map.TileWidth);
+                float positionLignePerso = (PositionPerso.Y / screen.Map.TileHeight);
+                //réinitialisation
+                Vector2 deplacement = new Vector2(0, 0);    //deplacement sprite
+                this.Animation = TypeAnimation.idle;       //position immobile
+                bool toucheBordFenetre = false;             //collision avec bord fenetre
+                float deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;      //deltatime
+                this.walkSpeed = deltaSeconds * _vitessePerso;                         //vitesse de deplacement du sprite
+                //récupère état direction du perso
+                DirectionEntite directionPerso = Controller.ReadClavier((int)typeDeControle);
+
+                //deplacement gauche
+                if (directionPerso == DirectionEntite.Left)
+                {
+                    this.Animation = TypeAnimation.walkWest;   //animation
+                    deplacement = new Vector2(-1, 0);           //vecteur deplacement
+                    //collision
+                    toucheBordFenetre = PositionPerso.X - this.SpritePerso.TextureRegion.Width / 2 <= 0;    //gauche de fenetre 
+                    Collision = Perso.IsCollision(positionColonnePerso - 1, positionLignePerso, screen);     //batiment
+                }
+                //deplacement droite
+                if (directionPerso == DirectionEntite.Right)
+                {
+                    this.Animation = TypeAnimation.walkEast;   //animation
+                    deplacement = new Vector2(+1, 0);           //vecteur deplacement
+
+                    //collision
+                    toucheBordFenetre = PositionPerso.X + this.SpritePerso.TextureRegion.Width / 2 >= screen.GraphicsDevice.Viewport.Width;    //droite de fenetre 
+                    Collision = Perso.IsCollision(positionColonnePerso + 1, positionLignePerso, screen);     //batiment
+
+                }
+                //deplacement haut
+                if (directionPerso == DirectionEntite.Up)
+                {
+                    this.Animation = TypeAnimation.walkNorth;  //animation
+                    deplacement = new Vector2(0, -1);           //vecteur deplacement
+                    //collision
+                    toucheBordFenetre = PositionPerso.Y - this.SpritePerso.TextureRegion.Height / 2 <= 0;    //haut de fenetre 
+                    Collision = Perso.IsCollision(positionColonnePerso, positionLignePerso - 1, screen);     //batiment
+
+                }
+                //deplacement bas
+                if (directionPerso == DirectionEntite.Down)
+                {
+                    this.Animation = TypeAnimation.walkSouth;  //animation
+                    deplacement = new Vector2(0, +1);           //vecteur deplacement
+
+                    //collision
+                    toucheBordFenetre = PositionPerso.Y + this.SpritePerso.TextureRegion.Height / 2 >= screen.GraphicsDevice.Viewport.Height;    //bas de fenetre 
+                    Collision = Perso.IsCollision(positionColonnePerso, positionLignePerso + 2, screen);     //batiment
+
+                }
+                //si pas de collision alors on avance
+                if (Collision == TypeCollisionMap.Rien && !toucheBordFenetre )
+                    PositionPerso += walkSpeed * deplacement;
             }
-            //deplacement droite
-            if (directionPerso == DirectionEntite.Right)
-            {
-                this._animation = TypeAnimation.walkEast;   //animation
-                deplacement = new Vector2(+1, 0);           //vecteur deplacement
-
-                //collision
-                toucheBordFenetre = PositionPerso.X + this.SpritePerso.TextureRegion.Width / 2 >= screen.GraphicsDevice.Viewport.Width;    //droite de fenetre 
-                Collision = Perso.IsCollision(positionColonnePerso + 1, positionLignePerso, screen);     //batiment
-
-            }
-            //deplacement haut
-            if (directionPerso == DirectionEntite.Up)
-            {
-                this._animation = TypeAnimation.walkNorth;  //animation
-                deplacement = new Vector2(0, -1);           //vecteur deplacement
-                //collision
-                toucheBordFenetre = PositionPerso.Y - this.SpritePerso.TextureRegion.Height / 2 <= 0;    //haut de fenetre 
-                Collision = Perso.IsCollision(positionColonnePerso, positionLignePerso - 1, screen);     //batiment
-
-            }
-            //deplacement bas
-            if (directionPerso == DirectionEntite.Down)
-            {
-                this._animation = TypeAnimation.walkSouth;  //animation
-                deplacement = new Vector2(0, +1);           //vecteur deplacement
-
-                //collision
-                toucheBordFenetre = PositionPerso.Y + this.SpritePerso.TextureRegion.Height / 2 >= screen.GraphicsDevice.Viewport.Height;    //bas de fenetre 
-                Collision = Perso.IsCollision(positionColonnePerso, positionLignePerso + 2, screen);     //batiment
-
-            }
-
-            //si pas de collision alors on avance
-            if (Collision == TypeCollisionMap.Rien && !toucheBordFenetre)
-                PositionPerso += walkSpeed * deplacement;
 
             //jouer animation perso
-            this.SpritePerso.Play(this._animation.ToString());
+            this.SpritePerso.Play(this.Animation.ToString());
             this.SpritePerso.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
         }
         public static TypeCollisionMap IsCollision(float x, float y, ScreenMap map)
@@ -176,5 +181,6 @@ namespace Jeu
             Console.WriteLine("collision : " + collision);
             return collision;
         }
+        
     }
 }

@@ -14,12 +14,12 @@ using System.Collections.Generic;
 namespace Jeu
 {
     public enum DirectionEntite { Static, Left, Right, Up, Down };  //directions possibles -> rajt diagonales?
-    public enum TypeControl { Clavier_ZQSD, Clavier_HBGD };     // !!! doit imérativement faire la mm taille que tableauValueClavier !!!
+    public enum TypeControl { Clavier_ZQSD, Clavier_HBGD, clavier_IJKL };     // !!! doit imérativement faire la mm taille que tableauValueClavier !!!
     class Controller
     {
         public static DirectionEntite ReadClavier(int touche)
         {
-            int[,] tableauValueClavier = { { 90, 83, 81, 68 }, { 38, 40, 37, 39 } };    //  haut/0;bas/1;gauche/2;droite/3
+            int[,] tableauValueClavier = { { 90, 83, 81, 68 }, { 38, 40, 37, 39 }, { 73, 75, 74, 76} };    //  haut/0;bas/1;gauche/2;droite/3
             KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier 
             DirectionEntite res = DirectionEntite.Static;               //reinitialise la position en static
 

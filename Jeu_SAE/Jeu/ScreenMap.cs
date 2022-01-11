@@ -23,7 +23,8 @@ namespace Jeu
         private TiledMapTileLayer _coucheObstacle;
         private string _nomMap;
         private string _nomCoucheObstacle;
-        private List<Perso> lesPersoADessiner;
+        private List<Perso> _lesPersoADessiner;
+        private List<Bot> _lesBotsADessiner;
         //window
         private int _widthFenetre;
         private int _heightFenetre;
@@ -59,14 +60,41 @@ namespace Jeu
             }
         }
 
-        public ScreenMap(Game1 _game, string _nomMap, string _nomCoucheObstacle, List<Perso> _listePersoADessiner, int widthFenetre, int heightFenetre) : base(_game)
+        internal List<Perso> LesPersoADessiner
         {
-            this._nomMap = _nomMap;                             //récupère nom map
-            this._nomCoucheObstacle = _nomCoucheObstacle;       //récupère nom couche obstacle
-            this.game = _game;                                  //récup obj map 
-            this.lesPersoADessiner = _listePersoADessiner;          //récup les persos
+            get
+            {
+                return this._lesPersoADessiner;
+            }
+
+            set
+            {
+                this._lesPersoADessiner = value;
+            }
+        }
+
+        internal List<Bot> LesBotsADessiner
+        {
+            get
+            {
+                return this._lesBotsADessiner;
+            }
+
+            set
+            {
+                this._lesBotsADessiner = value;
+            }
+        }
+
+        public ScreenMap(Game1 game, string nomMap, string nomCoucheObstacle, int widthFenetre, int heightFenetre) : base(game)
+        {
+            this._nomMap = nomMap;                             //récupère nom map
+            this._nomCoucheObstacle = nomCoucheObstacle;       //récupère nom couche obstacle
+            this.game = game;                                  //récup obj map 
             this._widthFenetre = widthFenetre;
             this._heightFenetre = heightFenetre;
+            this.LesPersoADessiner = new List<Perso>();          //récup les persos
+            this.LesBotsADessiner = new List<Bot>();
         }
 
         public override void Initialize()
@@ -90,14 +118,25 @@ namespace Jeu
         {
             //nothing
         }
+        public void UpdateListBotsAAfficher(List<Bot> listeBot)
+        {
+            this.LesBotsADessiner = listeBot;
+        }
+        public void UpdateListJoueursAAfficher(List<Perso> listeJoueur)
+        {
+            this.LesPersoADessiner = listeJoueur;
+        }
         public override void Draw(GameTime gameTime)
         {
             _renduMap.Draw();  //dessine la map
             //faire boucle sur perso pour tous les dessiner
-            for (int i = 0; i < lesPersoADessiner.Count; i++)
+            for (int i = 0; i < LesPersoADessiner.Count; i++)
             {
-                this.game.SpriteBatch.Draw(this.lesPersoADessiner[i].SpritePerso, this.lesPersoADessiner[i].PositionPerso); //dessine les perso
-
+                this.game.SpriteBatch.Draw(this.LesPersoADessiner[i].SpritePerso, this.LesPersoADessiner[i].PositionPerso); //dessine les perso
+            }
+            for (int i = 0; i < LesBotsADessiner.Count; i++)
+            {
+                this.game.SpriteBatch.Draw(this.LesBotsADessiner[i].SpritePerso, this.LesBotsADessiner[i].PositionBot); //dessine les bots
             }
         }
     }
