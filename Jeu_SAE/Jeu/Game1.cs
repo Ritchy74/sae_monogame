@@ -85,9 +85,10 @@ namespace Jeu
         {
             //creation sprites
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            SpriteSheet animation = Content.Load<SpriteSheet>("joueur.sf", new JsonContentLoader());  //importation animation1
-            _spritePerso1 = new AnimatedSprite(animation);        //sprite anime1 pour perso
-            _spritePerso2 = new AnimatedSprite(animation);        //sprite anime1 pour perso
+            SpriteSheet animation1 = Content.Load<SpriteSheet>("motw.sf", new JsonContentLoader());  //importation animation1
+            SpriteSheet animation2 = Content.Load<SpriteSheet>("joueur.sf", new JsonContentLoader());  //importation animation1
+            _spritePerso1 = new AnimatedSprite(animation1);        //sprite anime1 pour perso
+            _spritePerso2 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
 
             //creation perso
             CreationPersos();
