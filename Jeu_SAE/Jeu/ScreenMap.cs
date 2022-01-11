@@ -24,6 +24,9 @@ namespace Jeu
         private string _nomMap;
         private string _nomCoucheObstacle;
         private List<Perso> lesPersoADessiner;
+        //window
+        private int _widthFenetre;
+        private int _heightFenetre;
         //private *liste* persos[]
 
         //taille fenêtre
@@ -56,19 +59,21 @@ namespace Jeu
             }
         }
 
-        public ScreenMap(Game1 _game, string _nomMap, string _nomCoucheObstacle, List<Perso> _listePersoADessiner) : base(_game)
+        public ScreenMap(Game1 _game, string _nomMap, string _nomCoucheObstacle, List<Perso> _listePersoADessiner, int widthFenetre, int heightFenetre) : base(_game)
         {
             this._nomMap = _nomMap;                             //récupère nom map
             this._nomCoucheObstacle = _nomCoucheObstacle;       //récupère nom couche obstacle
             this.game = _game;                                  //récup obj map 
             this.lesPersoADessiner = _listePersoADessiner;          //récup les persos
+            this._widthFenetre = widthFenetre;
+            this._heightFenetre = heightFenetre;
         }
 
         public override void Initialize()
         {
             //changement taille fenetre
-            this.game.Graphics.PreferredBackBufferWidth = WIDTH_FENETRE;
-            this.game.Graphics.PreferredBackBufferHeight = HEIGHT_FENETRE;
+            this.game.Graphics.PreferredBackBufferWidth = this._widthFenetre;
+            this.game.Graphics.PreferredBackBufferHeight = this._heightFenetre;
             this.game.Graphics.ApplyChanges();
         }
 

@@ -160,9 +160,9 @@ namespace Jeu
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version1/Piece_1", "obstacles", _listePerso);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version1/Piece_2", "obstacles", _listePerso);              //creation map2
-            _screenMapPiece3 = new ScreenMap(this, "mansion_maps_version1/Piece_3", "obstacles", _listePerso);              //creation map2
+            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version1/Piece_1", "obstacles", _listePerso, 320,320);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version1/Piece_2", "obstacles", _listePerso,170,240);              //creation map2
+            _screenMapPiece3 = new ScreenMap(this, "mansion_maps_version1/Piece_3", "obstacles", _listePerso,190, 250);              //creation map2
             //ajout des maps à la liste
             _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
             _listeScreenMap.Add(_screenMapPiece2);      //ajout map2
@@ -185,7 +185,8 @@ namespace Jeu
             Console.WriteLine($"CHARGEMENT  {versCetEcran.ToString()}");
             ReinitialisationPosition(versCetEcran);
             _ecranEnCours = versCetEcran;                   //changement enum ecran
-            _screenManager.LoadScreen(_listeScreenMap[(int)_ecranEnCours]);  //chargement nouvelle map
+            _screenManager.LoadScreen(_listeScreenMap[(int)_ecranEnCours]);            //chargement nouvelle map
+            //_listeScreenMap[(int)_ecranEnCours].Initialize();
         }
     }
 }
