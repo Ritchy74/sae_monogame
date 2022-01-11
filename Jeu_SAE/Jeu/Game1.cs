@@ -30,6 +30,9 @@ namespace Jeu
         //perso2
         private AnimatedSprite _spritePerso2;
         private Perso _perso2;
+        //perso bot test
+        private AnimatedSprite _spritePersoBotTest;
+        private Perso _persoBotTest;
         //collision
         TypeCollisionMap _isCollisionSpeciale;
         //screens
@@ -88,7 +91,9 @@ namespace Jeu
             SpriteSheet animation1 = Content.Load<SpriteSheet>("motw.sf", new JsonContentLoader());  //importation animation1
             SpriteSheet animation2 = Content.Load<SpriteSheet>("joueur.sf", new JsonContentLoader());  //importation animation1
             _spritePerso1 = new AnimatedSprite(animation1);        //sprite anime1 pour perso
-            _spritePerso2 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
+            _spritePerso2 = new AnimatedSprite(animation1);        //sprite anime1 pour perso
+            _spritePersoBotTest = new AnimatedSprite(animation2);        //sprite anime2 pour perso bot test
+
 
             //creation perso
             CreationPersos();
@@ -186,7 +191,6 @@ namespace Jeu
             ReinitialisationPosition(versCetEcran);
             _ecranEnCours = versCetEcran;                   //changement enum ecran
             _screenManager.LoadScreen(_listeScreenMap[(int)_ecranEnCours]);            //chargement nouvelle map
-            //_listeScreenMap[(int)_ecranEnCours].Initialize();
         }
     }
 }
