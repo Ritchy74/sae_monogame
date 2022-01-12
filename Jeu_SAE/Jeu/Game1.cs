@@ -10,6 +10,7 @@ using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Media;
 
 
 namespace Jeu
@@ -51,7 +52,8 @@ namespace Jeu
         //dead  
         private List<bool> _listeStartCompteurDead = new List<bool>();    //mettre en liste pour tous persos
         private List<float> _listeCompteurDead = new List<float>();
-
+        //son, ambiance, musique
+        private Song _ambiance;
 
         public SpriteBatch SpriteBatch
         {
@@ -116,6 +118,8 @@ namespace Jeu
             _spritePerso1 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePerso2 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePersoBotTest = new AnimatedSprite(animation1);        //sprite anime2 pour perso bot test
+            _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
+            MediaPlayer.Play(_ambiance);
 
 
             //creation perso
