@@ -16,7 +16,7 @@ namespace Jeu
     {
         //déclarations
         public enum TypeAnimation { walkSouth, walkNorth, walkEast, walkWest, idle };   //directions perso pour animation
-
+        //feuzç
         private int _vitessePerso;
         private float walkSpeed;
         private Vector2 _positionBot;
