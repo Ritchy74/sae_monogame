@@ -15,7 +15,7 @@ namespace Jeu
     class Bot
     {
         //déclarations
-        public enum TypeAnimation { walkSouth, walkNorth, walkEast, walkWest, idle };   //directions perso pour animation
+        public enum TypeAnimation { walkSouth, walkNorth, walkEast, walkWest, idle, monstreAttack, };   //directions perso pour animation
         private float walkSpeed;
         private Vector2 _positionBot;
         private TypeCollisionMap _collision;

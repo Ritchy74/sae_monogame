@@ -6,17 +6,25 @@
   },
   "cycles": {
     "monstreAttack": {
-      "frames": [0,1,2,3,4,5,6]
+      "frames": [ 0, 1, 2, 3, 4, 5, 6 ]
     },
-    "monstreIdle": {
-      "frames": [7,8,9,10,11,12]
+    "idle": {
+      "frames": [ 7, 8, 9, 10, 11, 12 ]
     },
-    "monstreWalkWest": {
-      "frames": [14,15,16,17,18],
+    "walkWest": {
+      "frames": [ 14, 15, 16, 17, 18 ],
       "frameDuration": 0.09
     },
-    "monstreWalkEast": {
-      "frames": [21,22,23,24,25],
+    "walkEast": {
+      "frames": [ 21, 22, 23, 24, 25 ],
+      "frameDuration": 0.09
+    },
+    "walkNorth": {
+      "frames": [ 14, 15, 16, 17, 18 ],
+      "frameDuration": 0.09
+    },
+    "walkSouth": {
+      "frames": [ 14, 15, 16, 17, 18 ],
       "frameDuration": 0.09
     }
   }

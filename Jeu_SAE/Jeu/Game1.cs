@@ -240,6 +240,7 @@ namespace Jeu
 
 
             _listeBots[0].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, TypeControl.clavier_IJKL);
+            _listeBots[1].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, TypeControl.clavier_IJKL);
             base.Update(gameTime);
 
         }
