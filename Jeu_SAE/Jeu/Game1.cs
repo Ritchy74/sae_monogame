@@ -37,6 +37,9 @@ namespace Jeu
         //perso bot test
         private AnimatedSprite _spritePersoBotTest;
         private Bot _persoBotTest;
+        //monstre
+        private AnimatedSprite _spriteMonstre;
+        private Bot _monstre;
         //collision
         TypeCollisionMap _isCollisionSpeciale;
         //screens
@@ -115,9 +118,11 @@ namespace Jeu
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             SpriteSheet animation1 = Content.Load<SpriteSheet>("motw.sf", new JsonContentLoader());  //importation animation1
             SpriteSheet animation2 = Content.Load<SpriteSheet>("joueur.sf", new JsonContentLoader());  //importation animation1
+            SpriteSheet monstre = Content.Load<SpriteSheet>("monstre.sf", new JsonContentLoader());  //importation monstre
             _spritePerso1 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePerso2 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePersoBotTest = new AnimatedSprite(animation1);        //sprite anime2 pour perso bot test
+            _spriteMonstre = new AnimatedSprite(monstre);        //sprite monstre
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             MediaPlayer.Play(_ambiance);
 
@@ -250,8 +255,10 @@ namespace Jeu
         {
             //creation bot
             _persoBotTest = new Bot(new Vector2(100, 50), _spritePersoBotTest);
+            _monstre = new Bot(new Vector2(50, 50), _spriteMonstre);
             //ajout des bots à la liste
             _listeBots.Add(_persoBotTest);
+            _listeBots.Add(_monstre);
 
         }
         public void CreationPersos()    //génération de tout ce qui tourne autour des perso

@@ -110,6 +110,18 @@
 /processor:TiledMapTilesetProcessor
 /build:mansion_maps_version1/Tiles_Mansion.tsx
 
+#begin monstre.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:monstre.png
+
 #begin motw.png
 /importer:TextureImporter
 /processor:TextureProcessor
