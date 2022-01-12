@@ -25,6 +25,8 @@ namespace Jeu
         private List<TypeControl> _listeTypeControlePerso = new List<TypeControl>();    //façon de controler les perso
         private List<ScreenMap> _listeScreenMap = new List<ScreenMap>();                //screens
         private List<Vector2> _listeVecteursSpawnParMap = new List<Vector2>();          //point de respawn par map
+        //nbr perso
+        private int _nbrPerso;
         //perso1
         private AnimatedSprite _spritePerso1;
         private Perso _perso1;
@@ -75,6 +77,20 @@ namespace Jeu
                 this._graphics = value;
             }
         }
+
+        public int NbrPerso
+        {
+            get
+            {
+                return this._nbrPerso;
+            }
+
+            set
+            {
+                this._nbrPerso = value;
+            }
+        }
+
         public Game1()
         {
             //initialisation trucs basiques
@@ -220,10 +236,12 @@ namespace Jeu
             _perso2 = new Perso(new Vector2(120, 230), _spritePerso2);    //creation perso2
             //ajout des perso à la liste
             _listePerso.Add(_perso1);   //perso1
-            _listePerso.Add(_perso2);   //perso2
+            if (NbrPerso==2)
+                _listePerso.Add(_perso2);   //perso2
             //ajout des types de controles à la liste
             _listeTypeControlePerso.Add(TypeControl.Clavier_HBGD);  //haut,bas,gauche,droite
-            _listeTypeControlePerso.Add(TypeControl.Clavier_ZQSD);  //Z,Q,S,D
+            if (NbrPerso == 2)
+                _listeTypeControlePerso.Add(TypeControl.Clavier_ZQSD);  //Z,Q,S,D
             //initialisation des compteurs de mort pour les persos
             for (int i =0; i<_listePerso.Count;i++)
             {
