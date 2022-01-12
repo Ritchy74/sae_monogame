@@ -150,13 +150,18 @@ namespace Jeu
                     Perso persoActuel = _listeScreenMap[(int)_ecranEnCours].LesPersoADessiner[j];
                     Bot botActuel = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i];
                     //Console.WriteLine(botActuel);
-                    if (Bot.IsColliBot_Play(botActuel, persoActuel))   
+                    if (Bot.IsColliBot_Play(botActuel, persoActuel))
+                    {
+                        persoActuel.PtDeVie -= deltaSecond*50;
+                        Console.WriteLine("Point de vie perso "+j+" : "+(int)persoActuel.PtDeVie);
+                    }
+                    if (persoActuel.PtDeVie <= 0)
                         _listeStartCompteurDead[j] = true;
                     //compteur dead
                     if (_listeStartCompteurDead[j])
                     {
                         persoActuel.Animation = Perso.TypeAnimation.dead;    //passe en dead
-                        Console.WriteLine($"COLLISION JOUEUR {j} AVEC BOT");
+                        //Console.WriteLine($"COLLISION JOUEUR {j} AVEC BOT");
                         _listeCompteurDead[j] += deltaSeconds;
                         Console.WriteLine($"TEMPS MORT JOUEUR {j}: {(int)_listeCompteurDead[j]}");
                         if (_listeCompteurDead[j] >= 5)

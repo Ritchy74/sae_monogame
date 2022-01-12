@@ -24,6 +24,7 @@ namespace Jeu
         private TypeCollisionMap _collision;
         private TypeAnimation _animation;
         AnimatedSprite _spritePerso;
+        private float _ptDeVie;
 
         public Perso(Vector2 _positionPerso, AnimatedSprite _spritePerso)
         {
@@ -32,6 +33,7 @@ namespace Jeu
             
             //inititalisations
             this._vitessePerso = 200;
+            PtDeVie = 100;
         }
 
 
@@ -84,6 +86,19 @@ namespace Jeu
             set
             {
                 this._animation = value;
+            }
+        }
+
+        public float PtDeVie
+        {
+            get
+            {
+                return this._ptDeVie;
+            }
+
+            set
+            {
+                this._ptDeVie = value;
             }
         }
 
