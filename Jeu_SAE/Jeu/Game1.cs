@@ -137,6 +137,22 @@ namespace Jeu
         {
             _timer -= deltaSeconds;
             //Console.WriteLine((int)_timer);
+            int newDiff = 0;
+            if (_timer <= 30)
+                newDiff = 4;
+            else if (_timer <= 40)
+                newDiff = 3;
+            else if (_timer <= 50)
+                newDiff = 2;
+            else if (_timer <= 70)
+                newDiff = 1;
+            for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
+            {
+                _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].ChangementDifficulteBot(newDiff);
+                
+            }
+            Console.WriteLine((int)_timer);
+            Console.WriteLine("dew diff = " + newDiff);
             if (_timer <= 0)
                 Exit();
         }
@@ -152,7 +168,7 @@ namespace Jeu
                     //Console.WriteLine(botActuel);
                     if (Bot.IsColliBot_Play(botActuel, persoActuel))
                     {
-                        persoActuel.PtDeVie -= deltaSecond*50;
+                        persoActuel.PtDeVie -= deltaSecond*botActuel.DegatsBot;
                         Console.WriteLine("Point de vie perso "+j+" : "+(int)persoActuel.PtDeVie);
                     }
                     if (persoActuel.PtDeVie <= 0)

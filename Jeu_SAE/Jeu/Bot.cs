@@ -16,21 +16,50 @@ namespace Jeu
     {
         //déclarations
         public enum TypeAnimation { walkSouth, walkNorth, walkEast, walkWest, idle };   //directions perso pour animation
-        private int _vitessePerso;
         private float walkSpeed;
         private Vector2 _positionBot;
         private TypeCollisionMap _collision;
         private TypeAnimation _animation;
         AnimatedSprite _spritePerso;
+        //diff bot
+        private int _degatsBot;
+        private int _vitesseBot;
 
-
+        public void ChangementDifficulteBot(int difficulte)
+        {
+            if (difficulte == 0)
+            {
+                DegatsBot = 0;
+                VitesseBot = 30;
+            }
+            else if (difficulte==1)
+            {
+                DegatsBot = 10;
+                VitesseBot = 50;
+            }
+            else if (difficulte == 2)
+            {
+                DegatsBot = 20;
+                VitesseBot = 50;
+            }
+            else if (difficulte == 3)
+            {
+                DegatsBot = 30;
+                VitesseBot = 70;
+            }
+            else if (difficulte == 4)
+            {
+                DegatsBot = 50;
+                VitesseBot = 110;
+            }
+        }
         public Bot(Vector2 _positionPerso, AnimatedSprite _spritePerso)
         {
             this.SpritePerso = _spritePerso;
             PositionBot = _positionPerso;
 
             //inititalisations
-            this._vitessePerso = 200;
+            this.ChangementDifficulteBot(0);
         }
 
 
@@ -73,6 +102,32 @@ namespace Jeu
             }
         }
 
+        public int DegatsBot
+        {
+            get
+            {
+                return this._degatsBot;
+            }
+
+            set
+            {
+                this._degatsBot = value;
+            }
+        }
+
+        public int VitesseBot
+        {
+            get
+            {
+                return this._vitesseBot;
+            }
+
+            set
+            {
+                this._vitesseBot = value;
+            }
+        }
+
         public static bool IsColliBot_Play(Bot leBot, Perso lePerso)
         {
             bool res = false;
@@ -93,7 +148,7 @@ namespace Jeu
             this._animation = TypeAnimation.idle;       //position immobile
             bool toucheBordFenetre = false;             //collision avec bord fenetre
             float deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;      //deltatime
-            this.walkSpeed = deltaSeconds * _vitessePerso;                         //vitesse de deplacement du sprite
+            this.walkSpeed = deltaSeconds * VitesseBot;                         //vitesse de deplacement du sprite
             //récupère état direction du perso
             DirectionEntite directionPerso = Controller.ReadClavier((int)typeDeControle);
 
