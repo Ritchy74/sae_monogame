@@ -192,11 +192,15 @@ namespace Jeu
                         //Console.WriteLine($"COLLISION JOUEUR {j} AVEC BOT");
                         _listeCompteurDead[j] += deltaSeconds;
                         Console.WriteLine($"TEMPS MORT JOUEUR {j}: {(int)_listeCompteurDead[j]}");
-                        if (_listeCompteurDead[j] >= 5)
+                        if (_listeCompteurDead[j] >= 10)
                         {
                             _listePerso.Remove(persoActuel);
                             _listeStartCompteurDead.Remove(_listeStartCompteurDead[j]);
                             _listeCompteurDead.Remove(_listeCompteurDead[j]);
+                        }
+                        else if (_listeCompteurDead[j] >= 2)
+                        {
+                            persoActuel.Animation = Perso.TypeAnimation.idleDead;
                         }
                     }
 
