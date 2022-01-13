@@ -1,27 +1,39 @@
 {
   "textureAtlas": {
     "texture": "joueur.png",
-    "regionWidth": 48,
+    "regionWidth": 64,
     "regionHeight": 64
   },
   "cycles": {
-    "idle": {
-      "frames": [ 7 ]
-    },
     "walkNorth": {
-      "frames": [ 0, 1, 2 ]
-    },
-    "walkEast": {
-      "frames": [ 3, 4, 5 ]
-    },
-    "walkSouth": {
-      "frames": [ 6, 7, 8 ]
+      "frames": [0,1,2,3,4,5,6,7,8]
     },
     "walkWest": {
-      "frames": [ 9, 10, 11 ]
+      "frames": [9,10,11,12,13,14,15,16,17]
+    },
+    "walkSouth": {
+      "frames": [18,19,20,21,22,23,24,25,26]
+    },
+    "walkEast": {
+      "frames": [27,28,29,30,31,32,33,34,35]
     },
     "dead": {
-      "frames": [ 7 ]
+      "frames": [36,37,38,39,40,41]
+    },
+    "interactNorth": {
+      "frames": [45,46,47,48,49,50,51,52]
+    },
+    "interactWest": {
+      "frames": [54,55,56,57,58,59,60,61]
+    },
+    "interactSouth": {
+      "frames": [63,64,65,66,67,68,69,70]
+    },
+    "interactEast": {
+      "frames": [72,73,74,75,76,77,78,79]
+    },
+    "idle": {
+      "frames": [18]
     }
   }
 }
