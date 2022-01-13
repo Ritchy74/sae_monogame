@@ -11,6 +11,7 @@ using MonoGame.Extended.Screens.Transitions;
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 
 namespace Jeu
@@ -57,6 +58,7 @@ namespace Jeu
         private List<float> _listeCompteurDead = new List<float>();
         //son, ambiance, musique
         private Song _ambiance;
+        private SoundEffect _sonporte;
 
         public SpriteBatch SpriteBatch
         {
@@ -124,6 +126,7 @@ namespace Jeu
             _spritePersoBotTest = new AnimatedSprite(animation1);        //sprite anime2 pour perso bot test
             _spriteMonstre = new AnimatedSprite(monstre);        //sprite monstre
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
+            _sonporte = Content.Load<SoundEffect>("sounds/portewav");
             MediaPlayer.Play(_ambiance);
 
 
@@ -317,6 +320,7 @@ namespace Jeu
             _ecranEnCours = versCetEcran;                   //changement enum ecran
             //_listeScreenMap[(int)_ecranEnCours].UpdateListBotsAAfficher(_listeBots);
             _screenManager.LoadScreen(_listeScreenMap[(int)_ecranEnCours]);            //chargement nouvelle map
+            _sonporte.Play();
         }
     }
 }

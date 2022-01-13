@@ -140,9 +140,9 @@
 /processorParam:Quality=Best
 /build:sounds/horror-ambience-8-background-effect.mp3
 
-#begin sounds/porte.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
+#begin sounds/portewav.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:sounds/porte.mp3
+/build:sounds/portewav.wav
 
