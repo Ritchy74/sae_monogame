@@ -8,16 +8,34 @@ namespace Jeu
 {
     class Astar
     {
-        public static void AlgoAStar()
+
+        public static List<Node> RecupChemin(Node depart, Node dernierNoeud)
+        {
+            Node noeudActuel = dernierNoeud;
+            List<Node> listChemin = new List<Node>();
+            while (true)
+            {
+                listChemin.Add(noeudActuel);
+                if (noeudActuel == depart)
+                {
+                    foreach (Node nodePrint in listChemin)
+                        Console.WriteLine(nodePrint.Position);
+                    return listChemin;
+                }
+                noeudActuel = noeudActuel.Parent;
+
+            }
+        }
+        public static void AlgoAStar(Node depart)
         {
             List<Node> Open = new List<Node>();
             List<Node> Closed = new List<Node>();
             Node target = new Node(new Vector2(2, 2));
-            Node current = new Node(new Vector2(0, 0));
-            Open.Add(current);
+            Open.Add(depart);
             int count = 0;
             while (true)
             {
+                Node current = Open[0];
                 count++;
                 Console.WriteLine("New boucle");
                 int i_lowest = 0;
@@ -36,6 +54,7 @@ namespace Jeu
 
                 if (current == target)
                 {
+                    RecupChemin(depart, current);
                     Console.WriteLine("fini, cost : " + count);
                     return;
                 }
