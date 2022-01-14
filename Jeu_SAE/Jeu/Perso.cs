@@ -16,7 +16,7 @@ namespace Jeu
     class Perso
     {
         //déclarations
-        public enum TypeAnimation { walkSouth, walkNorth, walkEast, walkWest, idle, dead };   //directions perso pour animation
+        public enum TypeAnimation { walkSouth, walkNorth, walkEast, walkWest, idle, dead, idleDead };   //directions perso pour animation
 
         private int _vitessePerso;
         private float walkSpeed;
@@ -104,7 +104,7 @@ namespace Jeu
 
         public void Move(ScreenMap screen, GameTime gameTime, TypeControl typeDeControle)
         {
-            if (Animation != TypeAnimation.dead)
+            if (Animation != TypeAnimation.dead && Animation != TypeAnimation.idleDead)
             { 
 
                 // translation de la position du personnage en pixel en ligne et colonne pour la matrice
