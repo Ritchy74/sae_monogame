@@ -53,12 +53,18 @@ namespace Jeu
         //timer
         private float deltaSeconds;
         private float _timer;
+        private SpriteFont _police;
+        private Vector2 _posTimer;
+        private string heure;
+        private const int TEMPS_TOTAL = 100;
+        private int _tempsParHeure;
         //dead  
         private List<bool> _listeStartCompteurDead = new List<bool>();    //mettre en liste pour tous persos
         private List<float> _listeCompteurDead = new List<float>();
         //son, ambiance, musique
         private Song _ambiance;
         private SoundEffect _sonporte;
+        
 
         public SpriteBatch SpriteBatch
         {
@@ -106,11 +112,15 @@ namespace Jeu
             IsMouseVisible = true;                          //souris visible
             _screenManager = new ScreenManager();           //screen manager
             Components.Add(_screenManager);                 //
+
         }
 
         protected override void Initialize()
         {
-            _timer = 100;   //temps de jeu total
+            _timer = TEMPS_TOTAL;   //temps de jeu total
+            _posTimer = new Vector2(1, 1);
+            heure = "";
+            _tempsParHeure = TEMPS_TOTAL / 6;
             base.Initialize();
         }
 
@@ -127,6 +137,7 @@ namespace Jeu
             _spriteMonstre = new AnimatedSprite(monstre);        //sprite monstre
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
+            _police = Content.Load<SpriteFont>("timer");
             MediaPlayer.Play(_ambiance);
 
 
@@ -147,22 +158,46 @@ namespace Jeu
 
         public void Time()
         {
+
             _timer -= deltaSeconds;
             //Console.WriteLine((int)_timer);
             int newDiff = 0;
-            if (_timer <= 30)
-                newDiff = 4;
-            else if (_timer <= 40)
-                newDiff = 3;
-            else if (_timer <= 50)
-                newDiff = 2;
-            else if (_timer <= 70)
-                newDiff = 1;
-            for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
+            if (_timer <= _tempsParHeure)
             {
-                _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].ChangementDifficulteBot(newDiff);
-                
+                heure = "05:00";
+                newDiff = 4;
             }
+            else if (_timer <= (_tempsParHeure * 2))
+            {
+                heure = "04:00";
+                newDiff = 3;
+            }
+            else if (_timer <= (_tempsParHeure*3))
+            {
+                heure = "03:00";
+                newDiff = 2;
+            }
+            else if (_timer <= (_tempsParHeure*4))
+            {
+                heure = "02:00";
+                newDiff = 1;
+            }
+            else if (_timer <= (_tempsParHeure*5))
+            {
+                heure = "01:00";
+            }
+            else
+            {
+                heure = "00:00";
+            }
+
+
+
+                for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
+                {
+                    _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].ChangementDifficulteBot(newDiff);
+
+                }
             Console.WriteLine((int)_timer);
             Console.WriteLine("dew diff = " + newDiff);
             if (_timer <= 0)
@@ -206,6 +241,7 @@ namespace Jeu
         }
         protected override void Update(GameTime gameTime)
         {
+            
             //quit game
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count==0)
                 Exit();
@@ -252,6 +288,7 @@ namespace Jeu
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             SpriteBatch.Begin();
+            _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
             base.Draw(gameTime);    //dessine objets
             SpriteBatch.End();
         }
