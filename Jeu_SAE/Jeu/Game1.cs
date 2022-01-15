@@ -64,6 +64,8 @@ namespace Jeu
         //son, ambiance, musique
         private Song _ambiance;
         private SoundEffect _sonporte;
+        //
+        private Node chemin;
         
 
         public SpriteBatch SpriteBatch
@@ -121,6 +123,8 @@ namespace Jeu
             _posTimer = new Vector2(1, 1);
             heure = "";
             _tempsParHeure = TEMPS_TOTAL / 6;
+            chemin = new Node(new Vector2(50, 50));
+            chemin.Parent = new Node(new Vector2(50, 50));
             base.Initialize();
         }
 
@@ -281,20 +285,30 @@ namespace Jeu
             //deplacement chaque bot
             for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
             {
-                Node chemin = new Node(new Vector2(0,0));
+                Vector2 vectTemp = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
+                int botX = (int)vectTemp.X;
+                int botY = (int)vectTemp.Y;
+                int cheminX = (int)chemin.Parent.Position.X;
+                int cheminY = (int)chemin.Parent.Position.Y;
                 int min=10000;
-                for (int j = 0; j < _listePerso.Count; j++)
+                //Console.WriteLine(botX + "/" + botY + "          /         " + cheminX + "/" + cheminY);
+                if (botX == cheminX && botY == cheminY)
                 {
-                    //on calcule & compare le cout pour chaque perso et chaque bot
-                    Vector2 vectorPositionBot = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);               
-                    Vector2 vectorPositionPerso = _listePerso[j].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
-                    Node temp = Astar.AlgoAStar(new Node(vectorPositionPerso), new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
-                    if (min > temp.FCost)
+
+                    for (int j = 0; j < _listePerso.Count; j++)
                     {
-                        chemin = temp;
-                        min = chemin.FCost;
-                    }
+                        //on calcule & compare le cout pour chaque perso et chaque bot
+                        Vector2 vectorPositionBot = new Vector2(botX,botY) ;               
+                        Vector2 vectorPositionPerso = _listePerso[j].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
+                        Console.WriteLine("algo");
+                        Node temp = Astar.AlgoAStar(new Node(vectorPositionPerso), new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
+                        if (min > temp.FCost)
+                        {
+                            chemin = temp;
+                            min = chemin.FCost;
+                        }
                     
+                    }
                 }
                 if (!(chemin.Parent is null))
                 {
@@ -318,8 +332,8 @@ namespace Jeu
         public void CreationBots()
         {
             //creation bot
-            _persoBotTest = new Bot(new Vector2(100, 50), _spritePersoBotTest);
-            _monstre = new Bot(new Vector2(80, 150), _spriteMonstre);
+            _persoBotTest = new Bot(new Vector2(400, 400), _spritePersoBotTest);
+            _monstre = new Bot(new Vector2(400, 400), _spriteMonstre);
             //ajout des bots à la liste
             _listeBots.Add(_persoBotTest);
             _listeBots.Add(_monstre);
@@ -353,10 +367,10 @@ namespace Jeu
             _listeScreenMap.Add(_screenMapPiece2);      //ajout map2
             _listeScreenMap.Add(_screenMapPiece3);      //ajout map3
             //ajout des vecteurs par piece
-            _listeVecteursSpawnParMap.Add(new Vector2(400, 400));     //ajout vecteur map0
-            _listeVecteursSpawnParMap.Add(new Vector2(400, 400));     //ajout vecteur map1 
-            _listeVecteursSpawnParMap.Add(new Vector2(400, 400));     //ajout vecteur map2
-            _listeVecteursSpawnParMap.Add(new Vector2(400, 400));     //ajout vecteur map3
+            _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map0
+            _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map1 
+            _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map2
+            _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map3
             for (int i = 0; i < _listeScreenMap.Count; i++)
             {
             _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);

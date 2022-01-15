@@ -152,8 +152,8 @@ namespace Jeu
             Vector2 xy = XY_ToVector(screen);
             int x = (int)xy.X;
             int y = (int)xy.Y;
-            Console.WriteLine(x + " / " + newPosition.X);
-            Console.WriteLine(y + " / " + newPosition.Y);
+            //Console.WriteLine(x + " / " + newPosition.X);
+            //Console.WriteLine(y + " / " + newPosition.Y);
             if (x < newPosition.X)
             {
                 this._animation = TypeAnimation.walkEast;   //animation
@@ -175,7 +175,7 @@ namespace Jeu
                 deplacement = new Vector2(0, -1);           //vecteur deplacement
             }
             //Console.WriteLine(deplacement);
-            PositionBot += deplacement;
+            PositionBot += deplacement/2;
             //jouer animation perso
             this.SpritePerso.Play(this._animation.ToString());
             this.SpritePerso.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
