@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
-
+using MonoGame.Extended.BitmapFonts;
 
 namespace Jeu
 {
@@ -64,6 +64,12 @@ namespace Jeu
         //son, ambiance, musique
         private Song _ambiance;
         private SoundEffect _sonporte;
+        //point de vie
+        private Texture2D _imgCoeur1, _imgCoeur2;
+        private Vector2 _posCoeur1, _posCoeur2;
+        private Vector2 _posPV_J1, _posPV_J2;
+        private double pvPerso1, pvPerso2;
+
         
 
         public SpriteBatch SpriteBatch
@@ -121,6 +127,14 @@ namespace Jeu
             _posTimer = new Vector2(1, 1);
             heure = "";
             _tempsParHeure = TEMPS_TOTAL / 6;
+
+            //Position de la vie des joueurs
+            _posPV_J1 = new Vector2(20, 736);
+            _posPV_J2 = new Vector2(754, 736);
+            _posCoeur1 = new Vector2(0, 784);
+            _posCoeur2 = new Vector2(760, 784);
+            
+
             base.Initialize();
         }
 
@@ -138,6 +152,8 @@ namespace Jeu
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
             _police = Content.Load<SpriteFont>("timer");
+            _imgCoeur1 = Content.Load<Texture2D>("coeur");
+            _imgCoeur2 = Content.Load<Texture2D>("coeur");
             MediaPlayer.Play(_ambiance);
 
 
@@ -203,6 +219,19 @@ namespace Jeu
             if (_timer <= 0)
                 Exit();
         }
+        public void AffichagePV()
+        {
+            if (_listeScreenMap[(int)_ecranEnCours].LesPersoADessiner.Count == 2)
+            {
+                _posCoeur2 = new Vector2(Graphics.PreferredBackBufferWidth - 64, Graphics.PreferredBackBufferHeight - 64);
+                _posPV_J2 = new Vector2(Graphics.PreferredBackBufferHeight - 100, Graphics.PreferredBackBufferHeight - 64);
+            }
+            if (_listeScreenMap[(int)_ecranEnCours].LesPersoADessiner.Count == 1)
+            {
+                _posCoeur2 = new Vector2(-1000, -1000);
+                _posPV_J2 = new Vector2(-1000, -1000);
+            }
+        }
         public void IsCollisionBot(float deltaSecond)
         {
             for (int i = 0; i< _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
@@ -241,11 +270,16 @@ namespace Jeu
 
                 }
             }
-          
         }
         protected override void Update(GameTime gameTime)
         {
-            
+            pvPerso1 = Math.Round(_perso1.PtDeVie, 0);
+            pvPerso2 = Math.Round(_perso2.PtDeVie, 0);
+            if (_perso1.PtDeVie <= 0)
+                pvPerso1 = 0;
+            if (_perso2.PtDeVie <= 0)
+                pvPerso2 = 0;
+
             //quit game
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count==0)
                 Exit();
@@ -255,6 +289,8 @@ namespace Jeu
             Time();     
             //collision bot
             IsCollisionBot(deltaSeconds);
+            //Affichage des PV
+            AffichagePV();
 
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
             for (int i = 0; i < _listePerso.Count; i++)
@@ -266,8 +302,6 @@ namespace Jeu
                 //update position des perso
                 _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listeTypeControlePerso[i]);
             }
-
-
             //changement vers piece 1
             if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1)
                 ChangementScreen(Ecran.Piece1);
@@ -290,9 +324,14 @@ namespace Jeu
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            
             SpriteBatch.Begin();
             _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
+            _spriteBatch.Draw(_imgCoeur1, _posCoeur1, Color.White);
+            _spriteBatch.Draw(_imgCoeur2, _posCoeur2, Color.White);
+            _spriteBatch.DrawString(_police, "" + pvPerso1, _posPV_J1, Color.White);
+            _spriteBatch.DrawString(_police, "" + pvPerso2, _posPV_J2, Color.White);
+
             base.Draw(gameTime);    //dessine objets
             SpriteBatch.End();
         }
