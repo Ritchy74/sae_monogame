@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace Jeu
 {
-    public enum Ecran { Piece1, Piece2, Piece3 };
+    public enum Ecran { Piece0, Piece1, Piece2, Piece3 };
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -43,7 +43,8 @@ namespace Jeu
         //collision
         TypeCollisionMap _isCollisionSpeciale;
         //screens
-        private ScreenMap _screenMapPiece1; //screen principal
+        private ScreenMap _screenMapPiece0; //screen principal
+        private ScreenMap _screenMapPiece1; //screen pièce 1
         private ScreenMap _screenMapPiece2;   //screen pièce2
         private ScreenMap _screenMapPiece3;   //screen pièce2
         private Ecran _ecranEnCours;            //screen actuel (nom pour comparer)
@@ -149,7 +150,7 @@ namespace Jeu
 
             //on initialise tout sur l'ecran principal
             _screenManager.LoadScreen(_listeScreenMap[0], new FadeTransition(GraphicsDevice, Color.Black));
-            _ecranEnCours = Ecran.Piece1;
+            _ecranEnCours = Ecran.Piece0;
             //initialisation screen principal
             _listeScreenMap[(int)_ecranEnCours].Initialize();
             _listeScreenMap[(int)_ecranEnCours].LoadContent();
@@ -263,15 +264,15 @@ namespace Jeu
             }
 
 
-
+            //changement vers piece 0
+            if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece0)
+                ChangementScreen(Ecran.Piece0);
             //changement vers piece 1
-            if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1)
+            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1)
                 ChangementScreen(Ecran.Piece1);
-
             //changement vers piece 2
             else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2)
                 ChangementScreen(Ecran.Piece2);
-
             //changement vers piece 3
             else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece3)
                 ChangementScreen(Ecran.Piece3);
@@ -298,7 +299,7 @@ namespace Jeu
                 if (!(chemin.Parent is null))
                 {
                     _listeBots[i].MoveAStar(chemin.Parent.Position, _listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
-                    Console.WriteLine("bot in : " + chemin.Position+ " / bouge vers : "+chemin.Parent.Position);
+                    //Console.WriteLine("bot in : " + chemin.Position+ " / bouge vers : "+chemin.Parent.Position);
                 }
             }
 
@@ -327,8 +328,8 @@ namespace Jeu
         public void CreationPersos()    //génération de tout ce qui tourne autour des perso
         {
             //creation persos
-            _perso1 = new Perso(new Vector2(50, 175), _spritePerso1, TypeControl.Clavier_HBGD);   //creation perso1
-            _perso2 = new Perso(new Vector2(60, 150), _spritePerso2, TypeControl.Clavier_ZQSD);    //creation perso2
+            _perso1 = new Perso(new Vector2(400, 400), _spritePerso1, TypeControl.Clavier_HBGD);   //creation perso1
+            _perso2 = new Perso(new Vector2(400, 400), _spritePerso2, TypeControl.Clavier_ZQSD);    //creation perso2
             //ajout des perso à la liste
             _listePerso.Add(_perso1);   //perso1
             if (NbrPerso==2)
@@ -342,24 +343,25 @@ namespace Jeu
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version1/Piece_1", "obstacles", 320, 320);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version1/Piece_2", "obstacles", 170, 240);              //creation map2
-            _screenMapPiece3 = new ScreenMap(this, "mansion_maps_version1/Piece_3", "obstacles", 190, 250);              //creation map2
+            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version2/Piece_0", "obstacles", 800, 800);              //creation map0
+            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version2/Piece_1", "obstacles", 800, 800);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version2/Piece_2", "obstacles", 800, 800);              //creation map2
+            _screenMapPiece3 = new ScreenMap(this, "mansion_maps_version2/Piece_3", "obstacles", 800, 800);              //creation map3
             //ajout des maps à la liste
+            _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
             _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
             _listeScreenMap.Add(_screenMapPiece2);      //ajout map2
             _listeScreenMap.Add(_screenMapPiece3);      //ajout map3
             //ajout des vecteurs par piece
-            _listeVecteursSpawnParMap.Add(new Vector2(50, 175));     //ajout vecteur map1 
-            _listeVecteursSpawnParMap.Add(new Vector2(90, 180));     //ajout vecteur map2
-            _listeVecteursSpawnParMap.Add(new Vector2(40, 40));     //ajout vecteur map3
+            _listeVecteursSpawnParMap.Add(new Vector2(400, 400));     //ajout vecteur map0
+            _listeVecteursSpawnParMap.Add(new Vector2(400, 400));     //ajout vecteur map1 
+            _listeVecteursSpawnParMap.Add(new Vector2(400, 400));     //ajout vecteur map2
+            _listeVecteursSpawnParMap.Add(new Vector2(400, 400));     //ajout vecteur map3
             for (int i = 0; i < _listeScreenMap.Count; i++)
             {
             _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
             }
-            _listeScreenMap[0].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0]});
-            _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
-            _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
+            _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0] });
         }
         public void ReinitialisationPosition(Ecran ecran)
         {

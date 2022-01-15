@@ -147,7 +147,7 @@ namespace Jeu
                     this.Animation = TypeAnimation.walkWest;   //animation
                     deplacement = new Vector2(-1, 0);           //vecteur deplacement
                     //collision
-                    toucheBordFenetre = PositionPerso.X - this.SpritePerso.TextureRegion.Width / 2 <= 0;    //gauche de fenetre 
+                    toucheBordFenetre = PositionPerso.X  <= 0;    //gauche de fenetre 
                     Collision = Perso.IsCollision(positionColonnePerso - 1, positionLignePerso, screen);     //batiment
                 }
                 //deplacement droite
@@ -157,7 +157,7 @@ namespace Jeu
                     deplacement = new Vector2(+1, 0);           //vecteur deplacement
 
                     //collision
-                    toucheBordFenetre = PositionPerso.X + this.SpritePerso.TextureRegion.Width / 2 >= screen.GraphicsDevice.Viewport.Width;    //droite de fenetre 
+                    toucheBordFenetre = PositionPerso.X >= screen.GraphicsDevice.Viewport.Width;    //droite de fenetre 
                     Collision = Perso.IsCollision(positionColonnePerso + 1, positionLignePerso, screen);     //batiment
 
                 }
@@ -193,7 +193,7 @@ namespace Jeu
         }
         public static TypeCollisionMap IsCollision(float x, float y, ScreenMap map)
         {
-            List<int> Tiles_Speciales = new List<int> { 0, 74, 72, 73 };  //indice = numéro de pièce
+            List<int> Tiles_Speciales = new List<int> { 75, 312, 72, 74 };  //indice = numéro de pièce
 
             TypeCollisionMap collision = TypeCollisionMap.Rien;
             TiledMapTile? tile;
@@ -204,7 +204,9 @@ namespace Jeu
                 if (!tile.Value.IsBlank)
                 {
                     //Console.WriteLine(tile.Value.GlobalIdentifier);   //numéro de tile actuel
-                    if (tile.Value.GlobalIdentifier == Tiles_Speciales[1])
+                    if (tile.Value.GlobalIdentifier == Tiles_Speciales[0])
+                        collision = TypeCollisionMap.PorteVersPiece0;
+                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[1])
                         collision = TypeCollisionMap.PorteVersPiece1;
                     else if (tile.Value.GlobalIdentifier == Tiles_Speciales[2])
                         collision = TypeCollisionMap.PorteVersPiece2;
@@ -215,7 +217,7 @@ namespace Jeu
 
                 }
             }
-            Console.WriteLine("collision : " + collision);
+            //Console.WriteLine("collision : " + collision);
             return collision;
         }
         

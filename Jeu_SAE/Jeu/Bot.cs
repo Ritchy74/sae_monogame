@@ -146,13 +146,14 @@ namespace Jeu
             int y = (int)(PositionBot.Y / screen.Map.TileHeight);
             return new Vector2(x, y);
         }
-        public void MoveAStar(Vector2 newPosition, ScreenMap screen, GameTime gameTime)
+        public void MoveAStar( Vector2 newPosition, ScreenMap screen, GameTime gameTime)
         {
             Vector2 deplacement = new Vector2(0, 0);    //deplacement sprite
-            int x = (int)XY_ToVector(screen).X;
-            int y = (int)XY_ToVector(screen).Y;
-            //Console.WriteLine(x +" / "+ newPosition.X);
-            //Console.WriteLine(y +" / "+ newPosition.Y);
+            Vector2 xy = XY_ToVector(screen);
+            int x = (int)xy.X;
+            int y = (int)xy.Y;
+            Console.WriteLine(x + " / " + newPosition.X);
+            Console.WriteLine(y + " / " + newPosition.Y);
             if (x < newPosition.X)
             {
                 this._animation = TypeAnimation.walkEast;   //animation
@@ -173,14 +174,11 @@ namespace Jeu
                 this._animation = TypeAnimation.walkNorth;   //animation
                 deplacement = new Vector2(0, -1);           //vecteur deplacement
             }
-            Console.WriteLine(deplacement);
+            //Console.WriteLine(deplacement);
             PositionBot += deplacement;
             //jouer animation perso
             this.SpritePerso.Play(this._animation.ToString());
             this.SpritePerso.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-
-
-            //PositionBot = new Vector2(x, y);
         }
       
       
