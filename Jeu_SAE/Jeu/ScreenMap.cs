@@ -130,13 +130,13 @@ namespace Jeu
         {
             _renduMap.Draw();  //dessine la map
             //faire boucle sur perso pour tous les dessiner
-            for (int i = 0; i < LesPersoADessiner.Count; i++)
-            {
-                this.game.SpriteBatch.Draw(this.LesPersoADessiner[i].SpritePerso, this.LesPersoADessiner[i].PositionPerso); //dessine les perso
-            }
             for (int i = 0; i < LesBotsADessiner.Count; i++)
             {
                 this.game.SpriteBatch.Draw(this.LesBotsADessiner[i].SpritePerso, this.LesBotsADessiner[i].PositionBot); //dessine les bots
+            }
+            for (int i = 0; i < LesPersoADessiner.Count; i++)
+            {
+                this.game.SpriteBatch.Draw(this.LesPersoADessiner[i].SpritePerso, this.LesPersoADessiner[i].PositionPerso); //dessine les perso
             }
         }
     }

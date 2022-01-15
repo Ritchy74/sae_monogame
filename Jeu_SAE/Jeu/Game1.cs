@@ -281,9 +281,16 @@ namespace Jeu
                 ChangementScreen(Ecran.Piece3);
 
 
+            Vector2 vectorPositionBot = _listeBots[1].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
+            Vector2 vectorPositionPerso = _listePerso[0].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
 
-            _listeBots[0].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, TypeControl.clavier_IJKL);
-            _listeBots[1].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, TypeControl.clavier_IJKL);
+            Node chemin = Astar.AlgoAStar(new Node(vectorPositionPerso),new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
+            if (!(chemin.Parent is null))
+                _listeBots[1].MoveAStar(chemin.Parent.Position, _listeScreenMap[(int)_ecranEnCours], gameTime);
+
+
+            //_listeBots[0].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, TypeControl.clavier_IJKL);
+            //_listeBots[1].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, TypeControl.clavier_IJKL);
             base.Update(gameTime);
 
         }

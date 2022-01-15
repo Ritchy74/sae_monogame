@@ -101,7 +101,12 @@ namespace Jeu
                 this._ptDeVie = value;
             }
         }
-
+        public Vector2 XY_ToVector(ScreenMap screen)
+        {
+            int x = (int)(PositionPerso.X / screen.Map.TileWidth);
+            int y = (int)(PositionPerso.Y / screen.Map.TileHeight);
+            return new Vector2(x, y);
+        }
         public void Move(ScreenMap screen, GameTime gameTime, TypeControl typeDeControle)
         {
             if (Animation != TypeAnimation.dead && Animation != TypeAnimation.idleDead)

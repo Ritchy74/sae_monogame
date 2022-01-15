@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
+using Microsoft.Xna.Framework;
 using System.Text;
+using MonoGame.Extended.Tiled;
 
 namespace Jeu
 {
@@ -18,19 +19,26 @@ namespace Jeu
         {
             Position = position;
         }
-        public bool IsTraversable()
+        public bool IsTraversable(ScreenMap map)
         {
-            //if tile in coucheobstacle alors non
-            //else
-            return true;
+            TiledMapTile? tile;
+            TiledMapTileLayer coucheObstacle = map.CoucheObstacle;
+            bool res = true;
+            if (coucheObstacle.TryGetTile((ushort)Position.X, (ushort)Position.Y, out tile))
+            {
+                if (!tile.Value.IsBlank)
+                    res = false;
+            }
+            return res;
         }
         public List<Node> GetVoisins()
         {
             List<Node> res = new List<Node>();
-            res.Add(new Node(new Vector2(Position.X + 1, Position.Y)));
-            res.Add(new Node(new Vector2(Position.X, Position.Y + 1)));
-            res.Add(new Node(new Vector2(Position.X - 1, Position.Y)));
-            res.Add(new Node(new Vector2(Position.X, Position.Y - 1)));
+            int taille = 1;
+            res.Add(new Node(new Vector2(Position.X + taille, Position.Y)));
+            res.Add(new Node(new Vector2(Position.X, Position.Y + taille)));
+            res.Add(new Node(new Vector2(Position.X - taille, Position.Y)));
+            res.Add(new Node(new Vector2(Position.X, Position.Y - taille)));
             Voisins = res;
             return res;
         }

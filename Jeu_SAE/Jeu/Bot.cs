@@ -25,12 +25,22 @@ namespace Jeu
         private int _degatsBot;
         private int _vitesseBot;
 
+        public Bot(Vector2 _positionPerso, AnimatedSprite _spritePerso)
+        {
+            this.SpritePerso = _spritePerso;
+            PositionBot = _positionPerso;
+
+            //inititalisations
+            this.ChangementDifficulteBot(0);
+        }
+
+        
         public void ChangementDifficulteBot(int difficulte)
         {
             if (difficulte == 0)
             {
                 DegatsBot = 0;
-                VitesseBot = 30;
+                VitesseBot = 10;
             }
             else if (difficulte==1)
             {
@@ -53,16 +63,8 @@ namespace Jeu
                 VitesseBot = 110;
             }
         }
-        public Bot(Vector2 _positionPerso, AnimatedSprite _spritePerso)
-        {
-            this.SpritePerso = _spritePerso;
-            PositionBot = _positionPerso;
 
-            //inititalisations
-            this.ChangementDifficulteBot(0);
-        }
-
-
+        
         public TypeCollisionMap Collision       //publique pour chamgements de scènes
         {
             get
@@ -138,70 +140,48 @@ namespace Jeu
                 res = true;
             return res;
         }
-        public void Move(ScreenMap screen, GameTime gameTime, TypeControl typeDeControle)
+        public Vector2 XY_ToVector(ScreenMap screen)
         {
-            // translation de la position du personnage en pixel en ligne et colonne pour la matrice
-            float positionColonnePerso = (PositionBot.X / screen.Map.TileWidth);
-            float positionLignePerso = (PositionBot.Y / screen.Map.TileHeight);
-            //réinitialisation
+            int x = (int)(PositionBot.X / screen.Map.TileWidth);
+            int y = (int)(PositionBot.Y / screen.Map.TileHeight);
+            return new Vector2(x, y);
+        }
+        public void MoveAStar(Vector2 newPosition, ScreenMap screen, GameTime gameTime)
+        {
             Vector2 deplacement = new Vector2(0, 0);    //deplacement sprite
-            this._animation = TypeAnimation.idle;       //position immobile
-            bool toucheBordFenetre = false;             //collision avec bord fenetre
-            float deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;      //deltatime
-            this.walkSpeed = deltaSeconds * VitesseBot;                         //vitesse de deplacement du sprite
-            //récupère état direction du perso
-            DirectionEntite directionPerso = Controller.ReadClavier((int)typeDeControle);
-
-            //deplacement gauche
-            if (directionPerso == DirectionEntite.Left)
+            int x = (int)XY_ToVector(screen).X;
+            int y = (int)XY_ToVector(screen).Y;
+            Console.WriteLine(x +" / "+ newPosition.X);
+            Console.WriteLine(y +" / "+ newPosition.Y);
+            if (x < newPosition.X)
+            {
+                this._animation = TypeAnimation.walkEast;   //animation
+                deplacement = new Vector2(1, 0);           //vecteur deplacement
+            }
+            else if (x > newPosition.X)
             {
                 this._animation = TypeAnimation.walkWest;   //animation
                 deplacement = new Vector2(-1, 0);           //vecteur deplacement
-                //collision
-                toucheBordFenetre = PositionBot.X - this.SpritePerso.TextureRegion.Width / 2 <= 0;    //gauche de fenetre 
-                Collision = Bot.IsCollision(positionColonnePerso - 1, positionLignePerso, screen);     //batiment
             }
-            //deplacement droite
-            if (directionPerso == DirectionEntite.Right)
+            else if (y < newPosition.Y)
             {
-                this._animation = TypeAnimation.walkEast;   //animation
-                deplacement = new Vector2(+1, 0);           //vecteur deplacement
-
-                //collision
-                toucheBordFenetre = PositionBot.X + this.SpritePerso.TextureRegion.Width / 2 >= screen.GraphicsDevice.Viewport.Width;    //droite de fenetre 
-                Collision = Bot.IsCollision(positionColonnePerso + 1, positionLignePerso, screen);     //batiment
-
+                this._animation = TypeAnimation.walkSouth;   //animation
+                deplacement = new Vector2(0, 1);           //vecteur deplacement
             }
-            //deplacement haut
-            if (directionPerso == DirectionEntite.Up)
+            else
             {
-                this._animation = TypeAnimation.walkNorth;  //animation
+                this._animation = TypeAnimation.walkNorth;   //animation
                 deplacement = new Vector2(0, -1);           //vecteur deplacement
-                //collision
-                toucheBordFenetre = PositionBot.Y - this.SpritePerso.TextureRegion.Height / 2 <= 0;    //haut de fenetre 
-                Collision = Bot.IsCollision(positionColonnePerso, positionLignePerso - 1, screen);     //batiment
-
             }
-            //deplacement bas
-            if (directionPerso == DirectionEntite.Down)
-            {
-                this._animation = TypeAnimation.walkSouth;  //animation
-                deplacement = new Vector2(0, +1);           //vecteur deplacement
-
-                //collision
-                toucheBordFenetre = PositionBot.Y + this.SpritePerso.TextureRegion.Height / 2 >= screen.GraphicsDevice.Viewport.Height;    //bas de fenetre 
-                Collision = Bot.IsCollision(positionColonnePerso, positionLignePerso + 2, screen);     //batiment
-
-            }
-
-            //si pas de collision alors on avance
-            if (Collision == TypeCollisionMap.Rien && !toucheBordFenetre)
-                PositionBot += walkSpeed * deplacement;
-
+            PositionBot += deplacement;
             //jouer animation perso
             this.SpritePerso.Play(this._animation.ToString());
             this.SpritePerso.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+
+            //PositionBot = new Vector2(x, y);
         }
+      
         public static TypeCollisionMap IsCollision(float x, float y, ScreenMap map)
         {
             List<int> Tiles_Speciales = new List<int> { 0, 74, 72, 73 };  //indice = numéro de pièce

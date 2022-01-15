@@ -10,7 +10,7 @@ namespace Jeu
         public static void Start()
         {
 
-            Astar.AlgoAStar(new Node(new Vector2(3, 3)));
+            //Astar.AlgoAStar(new Node(new Vector2(3, 3)));
             int nbjoueur = 0;
             using (var menu = new Menu())
             {
