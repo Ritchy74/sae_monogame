@@ -19,40 +19,43 @@ namespace Jeu
         {
             Position = position;
         }
+
         public bool IsTraversable(ScreenMap map)
         {
             TiledMapTile? tile;
             TiledMapTileLayer coucheObstacle = map.CoucheObstacle;
             bool res = true;
-            if (coucheObstacle.TryGetTile((ushort)Position.X, (ushort)Position.Y, out tile))
+            //si la tuile actuelle est une de la couche obstacle
+            if (coucheObstacle.TryGetTile((ushort)Position.X, (ushort)Position.Y, out tile))   
             {
                 if (!tile.Value.IsBlank)
-                    res = false;
+                    res = false;    //on return false
             }
             return res;
         }
         public List<Node> GetVoisins()
         {
             List<Node> res = new List<Node>();
-            int taille = 1;
-            res.Add(new Node(new Vector2(Position.X + taille, Position.Y)));
-            res.Add(new Node(new Vector2(Position.X, Position.Y + taille)));
-            res.Add(new Node(new Vector2(Position.X - taille, Position.Y)));
-            res.Add(new Node(new Vector2(Position.X, Position.Y - taille)));
+            int taille = 1; //on avance de 1tuile par 1tuile
+            res.Add(new Node(new Vector2(Position.X + taille, Position.Y)));    //droite
+            res.Add(new Node(new Vector2(Position.X, Position.Y + taille)));    //bas
+            res.Add(new Node(new Vector2(Position.X - taille, Position.Y)));    //gauche
+            res.Add(new Node(new Vector2(Position.X, Position.Y - taille)));    //haut
             Voisins = res;
             return res;
         }
         public int CalculCost(Node par, Node target)
         {
-            int gc = par.GCost + 1;
-            int hc = ((int)target.Position.X - (int)Position.X) + ((int)target.Position.Y - (int)Position.Y);
-            return gc + hc;
+            int gc = par.GCost + 1;     //cout depuis de début
+            int hc = Math.Abs((int)target.Position.X - (int)Position.X) + Math.Abs((int)target.Position.Y - (int)Position.Y);   //cout pour aller jusqu'au target
+            return gc + hc; //f_cost = g_cost+h_cost
         }
         public void SetFCost(Node par, Node target)
         {
+            //on set le parent et le cost
             Parent = par;
             GCost = par.GCost + 1;
-            HCost = Math.Abs((int)target.Position.X - (int)Position.X) + Math.Abs((int)target.Position.Y - (int)Position.Y);
+            HCost = Math.Abs((int)target.Position.X - (int)Position.X) + Math.Abs((int)target.Position.Y - (int)Position.Y); //utiliser valeur absolue pour éviter: -10+10=0 (en réalité =20)
             FCost = GCost + HCost;
         }
 

@@ -24,7 +24,6 @@ namespace Jeu
         //listes
         private List<Perso> _listePerso = new List<Perso>();                            //perso
         private List<Bot> _listeBots = new List<Bot>();                            //bots
-        private List<TypeControl> _listeTypeControlePerso = new List<TypeControl>();    //façon de controler les perso
         private List<ScreenMap> _listeScreenMap = new List<ScreenMap>();                //screens
         private List<Vector2> _listeVecteursSpawnParMap = new List<Vector2>();          //point de respawn par map
         //nbr perso
@@ -191,15 +190,12 @@ namespace Jeu
                 heure = "00:00";
             }
 
+            for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
+            {
+                _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].ChangementDifficulteBot(newDiff);
 
+            }
 
-                for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
-                {
-                    _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].ChangementDifficulteBot(newDiff);
-
-                }
-            Console.WriteLine((int)_timer);
-            Console.WriteLine("dew diff = " + newDiff);
             if (_timer <= 0)
                 Exit();
         }
@@ -224,16 +220,14 @@ namespace Jeu
                     if (_listeStartCompteurDead[j])
                     {
                         persoActuel.Animation = Perso.TypeAnimation.dead;    //passe en dead
-                        //Console.WriteLine($"COLLISION JOUEUR {j} AVEC BOT");
                         _listeCompteurDead[j] += deltaSeconds;
-                        Console.WriteLine($"TEMPS MORT JOUEUR {j}: {(int)_listeCompteurDead[j]}");
                         if (_listeCompteurDead[j] >= 10)
                         {
                             _listePerso.Remove(persoActuel);
                             _listeStartCompteurDead.Remove(_listeStartCompteurDead[j]);
                             _listeCompteurDead.Remove(_listeCompteurDead[j]);
                         }
-                        else if (_listeCompteurDead[j] >= 2)
+                        else if (_listeCompteurDead[j] >= 1)
                         {
                             persoActuel.Animation = Perso.TypeAnimation.idleDead;
                         }
@@ -257,6 +251,7 @@ namespace Jeu
             IsCollisionBot(deltaSeconds);
 
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
+            //deplacement chaque perso
             for (int i = 0; i < _listePerso.Count; i++)
             {
                 //récupérationdu type de colision
@@ -264,7 +259,29 @@ namespace Jeu
                     _isCollisionSpeciale = _listePerso[i].Collision;
 
                 //update position des perso
-                _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listeTypeControlePerso[i]);
+                _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl);
+            }
+
+            //deplacement chaque bot
+            for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
+            {
+                Node chemin = new Node(new Vector2(0,0));
+                int min=10000;
+                for (int j = 0; j < _listePerso.Count; j++)
+                {
+                    //on calcule & compare le cout pour chaque perso et chaque bot
+                    Vector2 vectorPositionBot = _listeBots[i].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);               
+                    Vector2 vectorPositionPerso = _listePerso[j].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
+                    Node temp = Astar.AlgoAStar(new Node(vectorPositionPerso), new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
+                    if (min > temp.FCost)
+                    {
+                        chemin = temp;
+                        min = chemin.FCost;
+                    }
+                    
+                }
+                if (!(chemin.Parent is null))
+                    _listeBots[i].MoveAStar(chemin.Parent.Position, _listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
             }
 
 
@@ -281,16 +298,7 @@ namespace Jeu
                 ChangementScreen(Ecran.Piece3);
 
 
-            Vector2 vectorPositionBot = _listeBots[1].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
-            Vector2 vectorPositionPerso = _listePerso[0].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
 
-            Node chemin = Astar.AlgoAStar(new Node(vectorPositionPerso),new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
-            if (!(chemin.Parent is null))
-                _listeBots[1].MoveAStar(chemin.Parent.Position, _listeScreenMap[(int)_ecranEnCours], gameTime);
-
-
-            //_listeBots[0].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, TypeControl.clavier_IJKL);
-            //_listeBots[1].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, TypeControl.clavier_IJKL);
             base.Update(gameTime);
 
         }
@@ -307,7 +315,7 @@ namespace Jeu
         {
             //creation bot
             _persoBotTest = new Bot(new Vector2(100, 50), _spritePersoBotTest);
-            _monstre = new Bot(new Vector2(50, 50), _spriteMonstre);
+            _monstre = new Bot(new Vector2(200, 200), _spriteMonstre);
             //ajout des bots à la liste
             _listeBots.Add(_persoBotTest);
             _listeBots.Add(_monstre);
@@ -316,16 +324,12 @@ namespace Jeu
         public void CreationPersos()    //génération de tout ce qui tourne autour des perso
         {
             //creation persos
-            _perso1 = new Perso(new Vector2(50, 175), _spritePerso1);   //creation perso1
-            _perso2 = new Perso(new Vector2(120, 230), _spritePerso2);    //creation perso2
+            _perso1 = new Perso(new Vector2(50, 175), _spritePerso1, TypeControl.Clavier_HBGD);   //creation perso1
+            _perso2 = new Perso(new Vector2(50, 70), _spritePerso2, TypeControl.Clavier_ZQSD);    //creation perso2
             //ajout des perso à la liste
             _listePerso.Add(_perso1);   //perso1
             if (NbrPerso==2)
                 _listePerso.Add(_perso2);   //perso2
-            //ajout des types de controles à la liste
-            _listeTypeControlePerso.Add(TypeControl.Clavier_HBGD);  //haut,bas,gauche,droite
-            if (NbrPerso == 2)
-                _listeTypeControlePerso.Add(TypeControl.Clavier_ZQSD);  //Z,Q,S,D
             //initialisation des compteurs de mort pour les persos
             for (int i =0; i<_listePerso.Count;i++)
             {
@@ -350,7 +354,8 @@ namespace Jeu
             {
             _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
             }
-            _listeScreenMap[0].UpdateListBotsAAfficher(_listeBots);
+            _listeScreenMap[0].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0]});
+            _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
         }
         public void ReinitialisationPosition(Ecran ecran)
         {

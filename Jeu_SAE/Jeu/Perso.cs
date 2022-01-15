@@ -25,14 +25,17 @@ namespace Jeu
         private TypeAnimation _animation;
         AnimatedSprite _spritePerso;
         private float _ptDeVie;
+        private TypeControl _typeDeControl;
 
-        public Perso(Vector2 _positionPerso, AnimatedSprite _spritePerso)
+        public Perso(Vector2 _positionPerso, AnimatedSprite _spritePerso, TypeControl typeDeControle)
         {
+            //sprites
             this.SpritePerso = _spritePerso;
             PositionPerso = _positionPerso;
             
             //inititalisations
             this._vitessePerso = 200;
+            TypeDeControl = typeDeControle;
             PtDeVie = 100;
         }
 
@@ -101,6 +104,20 @@ namespace Jeu
                 this._ptDeVie = value;
             }
         }
+
+        public TypeControl TypeDeControl
+        {
+            get
+            {
+                return this._typeDeControl;
+            }
+
+            set
+            {
+                this._typeDeControl = value;
+            }
+        }
+
         public Vector2 XY_ToVector(ScreenMap screen)
         {
             int x = (int)(PositionPerso.X / screen.Map.TileWidth);

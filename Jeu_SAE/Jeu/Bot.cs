@@ -151,8 +151,8 @@ namespace Jeu
             Vector2 deplacement = new Vector2(0, 0);    //deplacement sprite
             int x = (int)XY_ToVector(screen).X;
             int y = (int)XY_ToVector(screen).Y;
-            Console.WriteLine(x +" / "+ newPosition.X);
-            Console.WriteLine(y +" / "+ newPosition.Y);
+            //Console.WriteLine(x +" / "+ newPosition.X);
+            //Console.WriteLine(y +" / "+ newPosition.Y);
             if (x < newPosition.X)
             {
                 this._animation = TypeAnimation.walkEast;   //animation
