@@ -262,27 +262,6 @@ namespace Jeu
                 _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl);
             }
 
-            //deplacement chaque bot
-            for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
-            {
-                Node chemin = new Node(new Vector2(0,0));
-                int min=10000;
-                for (int j = 0; j < _listePerso.Count; j++)
-                {
-                    //on calcule & compare le cout pour chaque perso et chaque bot
-                    Vector2 vectorPositionBot = _listeBots[i].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);               
-                    Vector2 vectorPositionPerso = _listePerso[j].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
-                    Node temp = Astar.AlgoAStar(new Node(vectorPositionPerso), new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
-                    if (min > temp.FCost)
-                    {
-                        chemin = temp;
-                        min = chemin.FCost;
-                    }
-                    
-                }
-                if (!(chemin.Parent is null))
-                    _listeBots[i].MoveAStar(chemin.Parent.Position, _listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
-            }
 
 
             //changement vers piece 1
@@ -298,6 +277,30 @@ namespace Jeu
                 ChangementScreen(Ecran.Piece3);
 
 
+            //deplacement chaque bot
+            for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
+            {
+                Node chemin = new Node(new Vector2(0,0));
+                int min=10000;
+                for (int j = 0; j < _listePerso.Count; j++)
+                {
+                    //on calcule & compare le cout pour chaque perso et chaque bot
+                    Vector2 vectorPositionBot = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);               
+                    Vector2 vectorPositionPerso = _listePerso[j].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
+                    Node temp = Astar.AlgoAStar(new Node(vectorPositionPerso), new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
+                    if (min > temp.FCost)
+                    {
+                        chemin = temp;
+                        min = chemin.FCost;
+                    }
+                    
+                }
+                if (!(chemin.Parent is null))
+                {
+                    _listeBots[i].MoveAStar(chemin.Parent.Position, _listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
+                    Console.WriteLine("bot in : " + chemin.Position+ " / bouge vers : "+chemin.Parent.Position);
+                }
+            }
 
             base.Update(gameTime);
 
@@ -315,7 +318,7 @@ namespace Jeu
         {
             //creation bot
             _persoBotTest = new Bot(new Vector2(100, 50), _spritePersoBotTest);
-            _monstre = new Bot(new Vector2(200, 200), _spriteMonstre);
+            _monstre = new Bot(new Vector2(80, 150), _spriteMonstre);
             //ajout des bots à la liste
             _listeBots.Add(_persoBotTest);
             _listeBots.Add(_monstre);
@@ -325,7 +328,7 @@ namespace Jeu
         {
             //creation persos
             _perso1 = new Perso(new Vector2(50, 175), _spritePerso1, TypeControl.Clavier_HBGD);   //creation perso1
-            _perso2 = new Perso(new Vector2(50, 70), _spritePerso2, TypeControl.Clavier_ZQSD);    //creation perso2
+            _perso2 = new Perso(new Vector2(60, 150), _spritePerso2, TypeControl.Clavier_ZQSD);    //creation perso2
             //ajout des perso à la liste
             _listePerso.Add(_perso1);   //perso1
             if (NbrPerso==2)
@@ -356,6 +359,7 @@ namespace Jeu
             }
             _listeScreenMap[0].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0]});
             _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
+            _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
         }
         public void ReinitialisationPosition(Ecran ecran)
         {

@@ -173,6 +173,7 @@ namespace Jeu
                 this._animation = TypeAnimation.walkNorth;   //animation
                 deplacement = new Vector2(0, -1);           //vecteur deplacement
             }
+            Console.WriteLine(deplacement);
             PositionBot += deplacement;
             //jouer animation perso
             this.SpritePerso.Play(this._animation.ToString());
@@ -182,33 +183,7 @@ namespace Jeu
             //PositionBot = new Vector2(x, y);
         }
       
-        public static TypeCollisionMap IsCollision(float x, float y, ScreenMap map)
-        {
-            List<int> Tiles_Speciales = new List<int> { 0, 74, 72, 73 };  //indice = numéro de pièce
-
-            TypeCollisionMap collision = TypeCollisionMap.Rien;
-            TiledMapTile? tile;
-            TiledMapTileLayer coucheObstacle = map.CoucheObstacle;
-
-            if (coucheObstacle.TryGetTile((ushort)x, (ushort)y, out tile))
-            {
-                if (!tile.Value.IsBlank)
-                {
-                    //Console.WriteLine(tile.Value.GlobalIdentifier);   //numéro de tile actuel
-                    if (tile.Value.GlobalIdentifier == Tiles_Speciales[1])
-                        collision = TypeCollisionMap.PorteVersPiece1;
-                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[2])
-                        collision = TypeCollisionMap.PorteVersPiece2;
-                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[3])
-                        collision = TypeCollisionMap.PorteVersPiece3;
-                    else
-                        collision = TypeCollisionMap.Obstacle;
-
-                }
-            }
-            Console.WriteLine("collision : " + collision);
-            return collision;
-        }
+      
         
     }
 }
