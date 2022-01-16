@@ -78,6 +78,38 @@
 /processorParam:TextureFormat=Color
 /build:joueur.png
 
+#begin mansion_maps_version4/nesx2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:mansion_maps_version4/nesx2.png
+
+#begin mansion_maps_version4/piece_0.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_maps_version4/piece_0.tmx
+
+#begin mansion_maps_version4/piece_1.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_maps_version4/piece_1.tmx
+
+#begin mansion_maps_version4/piece_2.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_maps_version4/piece_2.tmx
+
+#begin mansion_maps_version4/tiles_mansion.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:mansion_maps_version4/tiles_mansion.tsx
+
 #begin mansion_maps_version5/nesx2.png
 /importer:TextureImporter
 /processor:TextureProcessor

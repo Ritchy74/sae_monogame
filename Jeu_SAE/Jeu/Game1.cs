@@ -26,9 +26,14 @@ namespace Jeu
         private List<Bot> _listeBots = new List<Bot>();                            //bots
         private List<ScreenMap> _listeScreenMap = new List<ScreenMap>();                //screens
         private List<Vector2> _listeVecteursSpawnParMap = new List<Vector2>();          //point de respawn par map
-        private List<Rectangle> _listePlacards = new List<Rectangle>();                 //liste de placards
         private List<Vector2> _listeVecteursRondeBot = new List<Vector2>();             //les points de passages quand les bots font leur ronde
         private int _indiceRonde;
+        //placards
+        private List<Rectangle> _listePlacards = new List<Rectangle>();                 //liste de placards
+        private List<Vector2> _listePositionPlacards = new List<Vector2>();             //liste origine des placards
+        private Vector2 _oldPosition;
+        private float temp;
+        private int _compteurPlacard = 0;
         //nbr perso
         private int _nbrPerso;
         //perso1
@@ -49,7 +54,7 @@ namespace Jeu
         private ScreenMap _screenMapPiece0; //screen principal
         private ScreenMap _screenMapPiece1; //screen pièce 1
         private ScreenMap _screenMapPiece2;   //screen pièce2
-        private ScreenMap _screenMapPiece3;   //screen pièce2
+        //private ScreenMap _screenMapPiece3;   //screen pièce2
         private Ecran _ecranEnCours;            //screen actuel (nom pour comparer)
         //manager
         private readonly ScreenManager _screenManager;
@@ -59,7 +64,7 @@ namespace Jeu
         private SpriteFont _police;
         private Vector2 _posTimer;
         private string heure;
-        private const int TEMPS_TOTAL = 100;
+        private const int TEMPS_TOTAL = 300;
         private int _tempsParHeure;
         //dead  
         private List<bool> _listeStartCompteurDead = new List<bool>();    //mettre en liste pour tous persos
@@ -120,6 +125,7 @@ namespace Jeu
         protected override void Initialize()
         {
             _timer = TEMPS_TOTAL;   //temps de jeu total
+            temp = _timer;
             _posTimer = new Vector2(1, 1);
             heure = "";
             _tempsParHeure = TEMPS_TOTAL / 6;
@@ -240,52 +246,46 @@ namespace Jeu
             }
           
         }
-
-        protected override void Update(GameTime gameTime)
+        public void MethodePlacard(int i)
         {
-            
-            //quit game
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count==0)
-                Exit();
-            //deltatime
-            deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;     
-            //faire écouler le timer dans le jeu 
-            Time();     
-            //collision perso avec bot
-            IsCollisionBot(deltaSeconds);
-
-            _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
-            //deplacement chaque perso
-            for (int i = 0; i < _listePerso.Count; i++)
+            //placard
+            Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
+            KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
+            if (rectPerso.Intersects(_listePlacards[(int)_ecranEnCours]))
             {
-                //récupérationdu type de colision
-                if (_listePerso[i].Collision != TypeCollisionMap.Rien)
-                    _isCollisionSpeciale = _listePerso[i].Collision;
+                if (!_listePerso[i].IsInPlacard && _timer <= temp - 10)
+                {
+                    Console.WriteLine("tu peux te cacher en appuyant sur C");
 
-                //update position des perso
-                _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl);
+                    if (keyboardState.IsKeyDown(Keys.C))
+                    {
+                        _compteurPlacard++;
+                        Console.WriteLine($"perso {i + 1} caché");
+                        temp = _timer;
+                        _oldPosition = _listePerso[i].PositionPerso;
+                        _listePerso[i].IsInPlacard = true;
+                        //_listePerso[i].PositionPerso = _listePositionPlacards[(int)_ecranEnCours] ;
+                        _listePerso[i].PositionPerso = new Vector2(800, 800);
+                    }
+                }
             }
+            if (_listePerso[i].IsInPlacard)
+            {
+                Console.WriteLine("tu peux te décacher en appuyant sur E");
 
-
-            //changement vers piece 0
-            if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece0)
-                ChangementScreen(Ecran.Piece0,_listeVecteursSpawnParMap[0]);
-            //changement vers piece 1
-            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)
-                ChangementScreen(Ecran.Piece1,_listeVecteursSpawnParMap[1]);
-            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_basGauche)
-                ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[2]);
-            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautGauche)
-                ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[3]);
-            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautDroite)
-                ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[4]);
-            //changement vers piece 2
-            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_bas)
-                ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[5]);
-            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_haut)
-                ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
-
-            //deplacement chaque bot
+                if (keyboardState.IsKeyDown(Keys.E) && _timer <= temp - 0.5 || _compteurPlacard == 2)
+                { 
+                    //Console.WriteLine(_compteurPlacard);
+                    _compteurPlacard--;
+                    Console.WriteLine($"perso {i + 1} decaché");
+                    temp = _timer;
+                    _listePerso[i].PositionPerso = _oldPosition;
+                    _listePerso[i].IsInPlacard = false;
+                }
+            }
+        }
+        public void DeplacementBot(GameTime gameTime)
+        {
             for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
             {
                 Bot botActuel = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i];
@@ -294,22 +294,25 @@ namespace Jeu
                 int botY = (int)vectTemp.Y;
                 int cheminX = (int)botActuel.CheminAPrendre.Parent.Position.X;
                 int cheminY = (int)botActuel.CheminAPrendre.Parent.Position.Y;
-                int min=10000;
+                int min = 10000;
                 //Console.WriteLine(botX + "/" + botY + "          /         " + cheminX + "/" + cheminY);
                 if (botX == cheminX && botY == cheminY)
                 {
 
                     for (int j = 0; j < _listePerso.Count; j++)
                     {
-                        //on calcule & compare le cout pour chaque perso et chaque bot
-                        Vector2 vectorPositionBot = new Vector2(botX,botY) ;               
-                        Vector2 vectorPositionPerso = _listePerso[j].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
-                        //Console.WriteLine("algo");
-                        Node temp = Astar.AlgoAStar(new Node(vectorPositionPerso), new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
-                        if (min > temp.FCost)
+                        if (!_listePerso[j].IsInPlacard)
                         {
-                            botActuel.CheminAPrendre = temp;
-                            min = botActuel.CheminAPrendre.FCost;
+                            //on calcule & compare le cout pour chaque perso et chaque bot
+                            Vector2 vectorPositionBot = new Vector2(botX, botY);
+                            Vector2 vectorPositionPerso = _listePerso[j].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
+                            //Console.WriteLine("algo");
+                            Node temp = Astar.AlgoAStar(new Node(vectorPositionPerso), new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
+                            if (min > temp.FCost)
+                            {
+                                botActuel.CheminAPrendre = temp;
+                                min = botActuel.CheminAPrendre.FCost;
+                            }
                         }
                     }
                 }
@@ -330,14 +333,64 @@ namespace Jeu
                     if (_indiceRonde == 4)  //on reset si on sort de la liste
                         _indiceRonde = 0;
                     Node temp = Astar.AlgoAStar(newDirection, new Node(new Vector2(botX, botY)), _listeScreenMap[(int)_ecranEnCours]);
-                    botActuel.CheminAPrendre = temp; 
+                    botActuel.CheminAPrendre = temp;
                     _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].MoveAStar(_listeScreenMap[(int)_ecranEnCours], gameTime);
                 }
             }
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            
+            //quit game
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count==0)
+                Exit();
+            //deltatime
+            deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;     
+            //faire écouler le timer dans le jeu 
+            Time();     
+            //collision perso avec bot
+            IsCollisionBot(deltaSeconds);
+            //deplacement chaque perso
+            _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
+            for (int i = 0; i < _listePerso.Count; i++)
+            {
+                //gérer les entrées et sorties dans les placards
+                MethodePlacard(i);
+
+                //récupérationdu type de colision
+                if (_listePerso[i].Collision != TypeCollisionMap.Rien)
+                    _isCollisionSpeciale = _listePerso[i].Collision;
+
+                //update position des perso
+                if (!_listePerso[i].IsInPlacard)
+                    _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl);
 
 
+                //changement vers piece 0
+                if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece0)
+                    ChangementScreen(Ecran.Piece0, _listeVecteursSpawnParMap[0]);
+                //changement vers piece 1
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)
+                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[1]);
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_basGauche)
+                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[2]);
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautGauche)
+                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[3]);
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautDroite)
+                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[4]);
+                //changement vers piece 2
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_bas)
+                    ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[5]);
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_haut)
+                    ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
+            }
+
+            //deplacement chaque bot
+            DeplacementBot(gameTime);
+
+            //
             base.Update(gameTime);
-
         }
         protected override void Draw(GameTime gameTime)
         {
@@ -402,7 +455,13 @@ namespace Jeu
             _listeVecteursSpawnParMap.Add(new Vector2(600, 450));     //ajout vecteur2 map2
 
             //ajout rectangles placards à la liste (1 par map)
-            
+            _listePositionPlacards.Add(new Vector2(0, 0));
+            _listePositionPlacards.Add(new Vector2(448, 192));
+            _listePositionPlacards.Add(new Vector2(80, 0));
+            _listePlacards.Add(new Rectangle(0, 0, 0, 0));  //map 0 (y'en a pas)
+            _listePlacards.Add(new Rectangle(448, 192, 64, 96));  //map1
+            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map2
+
             //initialisation position perso et bot
             for (int i = 0; i < _listeScreenMap.Count; i++)
             {
@@ -421,6 +480,11 @@ namespace Jeu
         }
         public void ChangementScreen(Ecran versCetEcran, Vector2 newPosPerso)
         {
+            for (int i = 0; i < _listePerso.Count; i++)
+            {
+                _listePerso[i].IsInPlacard = false;
+                _compteurPlacard--;
+            }
             Console.WriteLine($"CHARGEMENT  {versCetEcran.ToString()}");
             ReinitialisationPosition(newPosPerso);
             //_listeScreenMap[(int)_ecranEnCours].UpdateListBotsAAfficher(new List<Bot>()); 

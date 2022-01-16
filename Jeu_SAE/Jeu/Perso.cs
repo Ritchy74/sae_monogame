@@ -26,6 +26,7 @@ namespace Jeu
         AnimatedSprite _spritePerso;
         private float _ptDeVie;
         private TypeControl _typeDeControl;
+        private bool _isInPlacard;
 
         public Perso(Vector2 _positionPerso, AnimatedSprite _spritePerso, TypeControl typeDeControle)
         {
@@ -36,6 +37,7 @@ namespace Jeu
             //inititalisations
             this._vitessePerso = 200;
             TypeDeControl = typeDeControle;
+            IsInPlacard = false;
             PtDeVie = 100;
         }
 
@@ -115,6 +117,19 @@ namespace Jeu
             set
             {
                 this._typeDeControl = value;
+            }
+        }
+
+        public bool IsInPlacard
+        {
+            get
+            {
+                return this._isInPlacard;
+            }
+
+            set
+            {
+                this._isInPlacard = value;
             }
         }
 
@@ -223,7 +238,7 @@ namespace Jeu
 
                 }
             }
-            //Console.WriteLine("collision : " + collision);
+            Console.WriteLine("collision : " + collision);
             return collision;
         }
         
