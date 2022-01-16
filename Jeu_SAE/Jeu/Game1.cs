@@ -125,8 +125,8 @@ namespace Jeu
             _posTimer = new Vector2(1, 1);
             heure = "";
             _tempsParHeure = TEMPS_TOTAL / 6;
-            _chemin = new Node(new Vector2(50, 50));
-            _chemin.Parent = new Node(new Vector2(50, 50));
+            _chemin = new Node(new Vector2(20, 20));
+            _chemin.Parent = new Node(new Vector2(20, 20));
             _tempsDepuisDebut = 0;
             base.Initialize();
         }
@@ -339,8 +339,8 @@ namespace Jeu
         public void CreationBots()
         {
             //creation bot
-            _persoBotTest = new Bot(new Vector2(400, 400), _spritePersoBotTest);
-            _monstre = new Bot(new Vector2(400, 400), _spriteMonstre);
+            _persoBotTest = new Bot(new Vector2(320, 320), _spritePersoBotTest);
+            _monstre = new Bot(new Vector2(320, 320), _spriteMonstre);
             //ajout des bots à la liste
             _listeBots.Add(_persoBotTest);
             _listeBots.Add(_monstre);
@@ -364,20 +364,20 @@ namespace Jeu
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version2/Piece_0", "obstacles", 800, 800);              //creation map0
-            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version2/Piece_1", "obstacles", 800, 800);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version2/Piece_2", "obstacles", 800, 800);              //creation map2
-            _screenMapPiece3 = new ScreenMap(this, "mansion_maps_version2/Piece_3", "obstacles", 800, 800);              //creation map3
+            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version4/Piece_0", "obstacles", 640, 640);              //creation map0
+            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version4/Piece_1", "obstacles", 640, 640);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version4/Piece_2", "obstacles", 640, 640);              //creation map2
+            //_screenMapPiece3 = new ScreenMap(this, "mansion_maps_version2/Piece_3", "obstacles", 640, 640);              //creation map3
             //ajout des maps à la liste
             _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
             _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
             _listeScreenMap.Add(_screenMapPiece2);      //ajout map2
-            _listeScreenMap.Add(_screenMapPiece3);      //ajout map3
+            //_listeScreenMap.Add(_screenMapPiece3);      //ajout map3
             //ajout des vecteurs par piece
             _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map0
             _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map1 
             _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map2
-            _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map3
+            //_listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map3
             for (int i = 0; i < _listeScreenMap.Count; i++)
             {
             _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);

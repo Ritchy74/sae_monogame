@@ -193,7 +193,7 @@ namespace Jeu
         }
         public static TypeCollisionMap IsCollision(float x, float y, ScreenMap map)
         {
-            List<int> Tiles_Speciales = new List<int> { 75, 312, 72, 74 };  //indice = numéro de pièce
+            List<int> Tiles_Speciales = new List<int> { 272, 312,314,313, 74, 73};  //indice = numéro de pièce
 
             TypeCollisionMap collision = TypeCollisionMap.Rien;
             TiledMapTile? tile;
@@ -206,18 +206,18 @@ namespace Jeu
                     //Console.WriteLine(tile.Value.GlobalIdentifier);   //numéro de tile actuel
                     if (tile.Value.GlobalIdentifier == Tiles_Speciales[0])
                         collision = TypeCollisionMap.PorteVersPiece0;
-                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[1])
+                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[1] || tile.Value.GlobalIdentifier == Tiles_Speciales[2] || tile.Value.GlobalIdentifier == Tiles_Speciales[3])
                         collision = TypeCollisionMap.PorteVersPiece1;
-                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[2])
+                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[4] || tile.Value.GlobalIdentifier == Tiles_Speciales[5])
                         collision = TypeCollisionMap.PorteVersPiece2;
-                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[3])
-                        collision = TypeCollisionMap.PorteVersPiece3;
+                    //else if (tile.Value.GlobalIdentifier == Tiles_Speciales[3])
+                    //    collision = TypeCollisionMap.PorteVersPiece3;
                     else
                         collision = TypeCollisionMap.Obstacle;
 
                 }
             }
-            //Console.WriteLine("collision : " + collision);
+            Console.WriteLine("collision : " + collision);
             return collision;
         }
         
