@@ -40,6 +40,8 @@ namespace Jeu
                 //on termine si on est arrivé jusqu'au target
                 if (current == target)
                 {
+                    if (current.Parent is null)     //pour éviter de bug, si le bot est déjà sur le perso
+                        current.Parent = current;   //on créé un parent
                     return current;
                 }
 

@@ -24,45 +24,22 @@ namespace Jeu
         //diff bot
         private int _degatsBot;
         private int _vitesseBot;
+        private int _distanceAggro;
+        //chemin bot
+        private Node _cheminAPrendre;
 
-        public Bot(Vector2 _positionPerso, AnimatedSprite _spritePerso)
+        public Bot(Vector2 _positionPerso, AnimatedSprite _spritePerso, Node cheminAPrendre)
         {
             this.SpritePerso = _spritePerso;
             PositionBot = _positionPerso;
-
+            CheminAPrendre = cheminAPrendre;
+            cheminAPrendre.Parent = cheminAPrendre;
             //inititalisations
             this.ChangementDifficulteBot(0);
         }
 
         
-        public void ChangementDifficulteBot(int difficulte)
-        {
-            if (difficulte == 0)
-            {
-                DegatsBot = 0;
-                VitesseBot = 10;
-            }
-            else if (difficulte==1)
-            {
-                DegatsBot = 10;
-                VitesseBot = 50;
-            }
-            else if (difficulte == 2)
-            {
-                DegatsBot = 20;
-                VitesseBot = 50;
-            }
-            else if (difficulte == 3)
-            {
-                DegatsBot = 30;
-                VitesseBot = 70;
-            }
-            else if (difficulte == 4)
-            {
-                DegatsBot = 50;
-                VitesseBot = 110;
-            }
-        }
+       
 
         
         public TypeCollisionMap Collision       //publique pour chamgements de scènes
@@ -130,6 +107,32 @@ namespace Jeu
             }
         }
 
+        internal Node CheminAPrendre
+        {
+            get
+            {
+                return this._cheminAPrendre;
+            }
+
+            set
+            {
+                this._cheminAPrendre = value;
+            }
+        }
+
+        public int DistanceAggro
+        {
+            get
+            {
+                return this._distanceAggro;
+            }
+
+            set
+            {
+                this._distanceAggro = value;
+            }
+        }
+
         public static bool IsColliBot_Play(Bot leBot, Perso lePerso)
         {
             bool res = false;
@@ -146,14 +149,46 @@ namespace Jeu
             int y = (int)(PositionBot.Y / screen.Map.TileHeight);
             return new Vector2(x, y);
         }
-        public void MoveAStar( Vector2 newPosition, ScreenMap screen, GameTime gameTime)
+        public void ChangementDifficulteBot(int difficulte)
+        {
+            if (difficulte == 0)
+            {
+                DistanceAggro = 10;
+                DegatsBot = 0;
+                VitesseBot = 5;
+            }
+            else if (difficulte == 1)
+            {
+                DistanceAggro = 15;
+                DegatsBot = 10;
+                VitesseBot = 7;
+            }
+            else if (difficulte == 2)
+            {
+                DistanceAggro = 15;
+                DegatsBot = 20;
+                VitesseBot = 9;
+            }
+            else if (difficulte == 3)
+            {
+                DistanceAggro = 20;
+                DegatsBot = 30;
+                VitesseBot = 12;
+            }
+            else if (difficulte == 4)
+            {
+                DegatsBot = 50;
+                VitesseBot = 15;
+            }
+        }
+
+        public void MoveAStar2(Node newNode, ScreenMap screen, GameTime gameTime)
         {
             Vector2 deplacement = new Vector2(0, 0);    //deplacement sprite
             Vector2 xy = XY_ToVector(screen);
             int x = (int)xy.X;
             int y = (int)xy.Y;
-            //Console.WriteLine(x + " / " + newPosition.X);
-            //Console.WriteLine(y + " / " + newPosition.Y);
+            Vector2 newPosition = newNode.Parent.Position;
             if (x < newPosition.X)
             {
                 this._animation = TypeAnimation.walkEast;   //animation
@@ -175,7 +210,40 @@ namespace Jeu
                 deplacement = new Vector2(0, -1);           //vecteur deplacement
             }
             //Console.WriteLine(deplacement);
-            PositionBot += deplacement/2;
+            PositionBot += (deplacement * VitesseBot) / 10;
+            //jouer animation perso
+            this.SpritePerso.Play(this._animation.ToString());
+            this.SpritePerso.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+        }
+        public void MoveAStar( ScreenMap screen, GameTime gameTime)
+        {
+            Vector2 deplacement = new Vector2(0, 0);    //deplacement sprite
+            Vector2 xy = XY_ToVector(screen);
+            int x = (int)xy.X;
+            int y = (int)xy.Y;
+            Vector2 newPosition = CheminAPrendre.Parent.Position;
+            if (x < newPosition.X)
+            {
+                this._animation = TypeAnimation.walkEast;   //animation
+                deplacement = new Vector2(1, 0);           //vecteur deplacement
+            }
+            else if (x > newPosition.X)
+            {
+                this._animation = TypeAnimation.walkWest;   //animation
+                deplacement = new Vector2(-1, 0);           //vecteur deplacement
+            }
+            else if (y < newPosition.Y)
+            {
+                this._animation = TypeAnimation.walkSouth;   //animation
+                deplacement = new Vector2(0, 1);           //vecteur deplacement
+            }
+            else
+            {
+                this._animation = TypeAnimation.walkNorth;   //animation
+                deplacement = new Vector2(0, -1);           //vecteur deplacement
+            }
+            //Console.WriteLine(deplacement);
+            PositionBot += (deplacement*VitesseBot)/10;
             //jouer animation perso
             this.SpritePerso.Play(this._animation.ToString());
             this.SpritePerso.Update((float)gameTime.ElapsedGameTime.TotalSeconds);

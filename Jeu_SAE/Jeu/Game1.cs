@@ -26,6 +26,8 @@ namespace Jeu
         private List<Bot> _listeBots = new List<Bot>();                            //bots
         private List<ScreenMap> _listeScreenMap = new List<ScreenMap>();                //screens
         private List<Vector2> _listeVecteursSpawnParMap = new List<Vector2>();          //point de respawn par map
+        private List<Vector2> _listeVecteursRondeBot = new List<Vector2>();             //les points de passages quand les bots font leur ronde
+        private int _indiceRonde;
         //nbr perso
         private int _nbrPerso;
         //perso1
@@ -63,12 +65,7 @@ namespace Jeu
         private List<float> _listeCompteurDead = new List<float>();
         //son, ambiance, musique
         private Song _ambiance;
-        private SoundEffect _sonporte;
-        //
-        private Node _chemin;
-        //
-        private float _tempsDepuisDebut;
-        
+        private SoundEffect _sonporte;        
 
         public SpriteBatch SpriteBatch
         {
@@ -125,9 +122,6 @@ namespace Jeu
             _posTimer = new Vector2(1, 1);
             heure = "";
             _tempsParHeure = TEMPS_TOTAL / 6;
-            _chemin = new Node(new Vector2(20, 20));
-            _chemin.Parent = new Node(new Vector2(20, 20));
-            _tempsDepuisDebut = 0;
             base.Initialize();
         }
 
@@ -255,11 +249,8 @@ namespace Jeu
             deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;     
             //faire écouler le timer dans le jeu 
             Time();     
-            //collision bot
+            //collision perso avec bot
             IsCollisionBot(deltaSeconds);
-
-            //tempsdepuisdebut
-
 
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
             //deplacement chaque perso
@@ -295,11 +286,12 @@ namespace Jeu
             //deplacement chaque bot
             for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
             {
+                Bot botActuel = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i];
                 Vector2 vectTemp = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
                 int botX = (int)vectTemp.X;
                 int botY = (int)vectTemp.Y;
-                int cheminX = (int)_chemin.Parent.Position.X;
-                int cheminY = (int)_chemin.Parent.Position.Y;
+                int cheminX = (int)botActuel.CheminAPrendre.Parent.Position.X;
+                int cheminY = (int)botActuel.CheminAPrendre.Parent.Position.Y;
                 int min=10000;
                 //Console.WriteLine(botX + "/" + botY + "          /         " + cheminX + "/" + cheminY);
                 if (botX == cheminX && botY == cheminY)
@@ -314,16 +306,30 @@ namespace Jeu
                         Node temp = Astar.AlgoAStar(new Node(vectorPositionPerso), new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
                         if (min > temp.FCost)
                         {
-                            _chemin = temp;
-                            min = _chemin.FCost;
+                            botActuel.CheminAPrendre = temp;
+                            min = botActuel.CheminAPrendre.FCost;
                         }
-                    
                     }
                 }
-                if (!(_chemin.Parent is null))
+                if (!(botActuel.CheminAPrendre.Parent is null) && botActuel.CheminAPrendre.Parent.FCost < botActuel.DistanceAggro)
                 {
-                    _listeBots[i].MoveAStar(_chemin.Parent.Position, _listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
+                    //Console.WriteLine("il te suit");
+                    _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].MoveAStar(_listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
                     //Console.WriteLine("bot in : " + chemin.Position+ " / bouge vers : "+chemin.Parent.Position);
+                }
+                else
+                {
+                    //Console.WriteLine("il rentre");
+                    Node newDirection = new Node(_listeVecteursRondeBot[_indiceRonde]);
+                    newDirection.Parent = newDirection;
+
+                    if (newDirection.Position.X == botX && newDirection.Position.Y == botY) //si on est arrivé au lieu de passage
+                        _indiceRonde++;                                                     //on change de lieu
+                    if (_indiceRonde == 4)  //on reset si on sort de la liste
+                        _indiceRonde = 0;
+                    Node temp = Astar.AlgoAStar(newDirection, new Node(new Vector2(botX, botY)), _listeScreenMap[(int)_ecranEnCours]);
+                    botActuel.CheminAPrendre = temp; 
+                    _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].MoveAStar(_listeScreenMap[(int)_ecranEnCours], gameTime);
                 }
             }
 
@@ -342,11 +348,17 @@ namespace Jeu
         public void CreationBots()
         {
             //creation bot
-            _persoBotTest = new Bot(new Vector2(320, 320), _spritePersoBotTest);
-            _monstre = new Bot(new Vector2(90, 90), _spriteMonstre);
+            _persoBotTest = new Bot(new Vector2(320, 320), _spritePersoBotTest, new Node(new Vector2(20, 20)));
+            _monstre = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
             //ajout des bots à la liste
             _listeBots.Add(_persoBotTest);
             _listeBots.Add(_monstre);
+            //ajout des vecteurs de ronde à la liste
+            _listeVecteursRondeBot.Add(new Vector2(5,5));
+            _listeVecteursRondeBot.Add(new Vector2(35,5));
+            _listeVecteursRondeBot.Add(new Vector2(35,28));
+            _listeVecteursRondeBot.Add(new Vector2(10,32));
+            _indiceRonde = 0;
 
         }
         public void CreationPersos()    //génération de tout ce qui tourne autour des perso
@@ -380,11 +392,11 @@ namespace Jeu
             //ajout des vecteurs par piece et par map (plusieurs spawns par map)
             _listeVecteursSpawnParMap.Add(new Vector2(320, 450));   //ajout vecteur1 map0
             _listeVecteursSpawnParMap.Add(new Vector2(320, 550));   //ajout vecteur1 map1 
-            _listeVecteursSpawnParMap.Add(new Vector2(50, 400));    //ajout vecteur2 map1
-            _listeVecteursSpawnParMap.Add(new Vector2(50, 75));     //ajout vecteur3 map1
-            _listeVecteursSpawnParMap.Add(new Vector2(590, 75));     //ajout vecteur4 map1
-            _listeVecteursSpawnParMap.Add(new Vector2(590, 75));     //ajout vecteur1 map2
-            _listeVecteursSpawnParMap.Add(new Vector2(590, 500));     //ajout vecteur2 map2
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 425));    //ajout vecteur2 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 90));     //ajout vecteur3 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur4 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur1 map2
+            _listeVecteursSpawnParMap.Add(new Vector2(600, 450));     //ajout vecteur2 map2
             
             //initialisation position perso et bot
             for (int i = 0; i < _listeScreenMap.Count; i++)
