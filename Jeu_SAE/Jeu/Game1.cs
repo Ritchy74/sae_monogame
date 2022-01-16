@@ -276,20 +276,23 @@ namespace Jeu
 
             //changement vers piece 0
             if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece0)
-                ChangementScreen(Ecran.Piece0);
+                ChangementScreen(Ecran.Piece0,_listeVecteursSpawnParMap[0]);
             //changement vers piece 1
-            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1)
-                ChangementScreen(Ecran.Piece1);
+            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)
+                ChangementScreen(Ecran.Piece1,_listeVecteursSpawnParMap[1]);
+            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_basGauche)
+                ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[2]);
+            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautGauche)
+                ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[3]);
+            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautDroite)
+                ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[4]);
             //changement vers piece 2
-            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2)
-                ChangementScreen(Ecran.Piece2);
-            //changement vers piece 3
-            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece3)
-                ChangementScreen(Ecran.Piece3);
-
+            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_bas)
+                ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[5]);
+            else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_haut)
+                ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
 
             //deplacement chaque bot
-
             for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
             {
                 Vector2 vectTemp = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
@@ -340,7 +343,7 @@ namespace Jeu
         {
             //creation bot
             _persoBotTest = new Bot(new Vector2(320, 320), _spritePersoBotTest);
-            _monstre = new Bot(new Vector2(320, 320), _spriteMonstre);
+            _monstre = new Bot(new Vector2(90, 90), _spriteMonstre);
             //ajout des bots à la liste
             _listeBots.Add(_persoBotTest);
             _listeBots.Add(_monstre);
@@ -349,8 +352,8 @@ namespace Jeu
         public void CreationPersos()    //génération de tout ce qui tourne autour des perso
         {
             //creation persos
-            _perso1 = new Perso(new Vector2(400, 400), _spritePerso1, TypeControl.Clavier_HBGD);   //creation perso1
-            _perso2 = new Perso(new Vector2(400, 400), _spritePerso2, TypeControl.Clavier_ZQSD);    //creation perso2
+            _perso1 = new Perso(new Vector2(320, 450), _spritePerso1, TypeControl.Clavier_HBGD);   //creation perso1
+            _perso2 = new Perso(new Vector2(320, 450), _spritePerso2, TypeControl.Clavier_ZQSD);    //creation perso2
             //ajout des perso à la liste
             _listePerso.Add(_perso1);   //perso1
             if (NbrPerso==2)
@@ -373,30 +376,37 @@ namespace Jeu
             _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
             _listeScreenMap.Add(_screenMapPiece2);      //ajout map2
             //_listeScreenMap.Add(_screenMapPiece3);      //ajout map3
-            //ajout des vecteurs par piece
-            _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map0
-            _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map1 
-            _listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map2
-            //_listeVecteursSpawnParMap.Add(new Vector2(200, 400));     //ajout vecteur map3
+
+            //ajout des vecteurs par piece et par map (plusieurs spawns par map)
+            _listeVecteursSpawnParMap.Add(new Vector2(320, 450));   //ajout vecteur1 map0
+            _listeVecteursSpawnParMap.Add(new Vector2(320, 550));   //ajout vecteur1 map1 
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 400));    //ajout vecteur2 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 75));     //ajout vecteur3 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(590, 75));     //ajout vecteur4 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(590, 75));     //ajout vecteur1 map2
+            _listeVecteursSpawnParMap.Add(new Vector2(590, 500));     //ajout vecteur2 map2
+            
+            //initialisation position perso et bot
             for (int i = 0; i < _listeScreenMap.Count; i++)
             {
             _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
             }
             _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0] });
+            _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
         }
-        public void ReinitialisationPosition(Ecran ecran)
+        public void ReinitialisationPosition(Vector2 position)
         {
             for (int i = 0; i < _listePerso.Count; i++)
             {
-                _listePerso[i].PositionPerso = _listeVecteursSpawnParMap[(int)ecran];  //reinitialise position perso
+                _listePerso[i].PositionPerso = position;  //reinitialise position perso
                 _listePerso[i].Collision = TypeCollisionMap.Rien;      //reinitialise les collisions pour pas etre bloqué
             }
         }
-        public void ChangementScreen(Ecran versCetEcran)
+        public void ChangementScreen(Ecran versCetEcran, Vector2 newPosPerso)
         {
             Console.WriteLine($"CHARGEMENT  {versCetEcran.ToString()}");
-            ReinitialisationPosition(versCetEcran);
-            //_listeScreenMap[(int)_ecranEnCours].UpdateListBotsAAfficher(new List<Bot>());
+            ReinitialisationPosition(newPosPerso);
+            //_listeScreenMap[(int)_ecranEnCours].UpdateListBotsAAfficher(new List<Bot>()); 
             _ecranEnCours = versCetEcran;                   //changement enum ecran
             //_listeScreenMap[(int)_ecranEnCours].UpdateListBotsAAfficher(_listeBots);
             _screenManager.LoadScreen(_listeScreenMap[(int)_ecranEnCours]);            //chargement nouvelle map

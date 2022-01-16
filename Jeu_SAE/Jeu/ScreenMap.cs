@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace Jeu
 {
-    public enum TypeCollisionMap { Rien, Obstacle, PorteVersPiece0, PorteVersPiece1, PorteVersPiece3, PorteVersPiece2 };
+    public enum TypeCollisionMap { Rien, Obstacle, PorteVersPiece0, PorteVersPiece1_bas, PorteVersPiece1_basGauche, PorteVersPiece1_hautGauche, PorteVersPiece1_hautDroite, PorteVersPiece2_bas, PorteVersPiece2_haut };
 
     class ScreenMap : GameScreen
     {
