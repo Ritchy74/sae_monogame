@@ -65,7 +65,9 @@ namespace Jeu
         private Song _ambiance;
         private SoundEffect _sonporte;
         //
-        private Node chemin;
+        private Node _chemin;
+        //
+        private float _tempsDepuisDebut;
         
 
         public SpriteBatch SpriteBatch
@@ -123,8 +125,9 @@ namespace Jeu
             _posTimer = new Vector2(1, 1);
             heure = "";
             _tempsParHeure = TEMPS_TOTAL / 6;
-            chemin = new Node(new Vector2(50, 50));
-            chemin.Parent = new Node(new Vector2(50, 50));
+            _chemin = new Node(new Vector2(50, 50));
+            _chemin.Parent = new Node(new Vector2(50, 50));
+            _tempsDepuisDebut = 0;
             base.Initialize();
         }
 
@@ -255,6 +258,9 @@ namespace Jeu
             //collision bot
             IsCollisionBot(deltaSeconds);
 
+            //tempsdepuisdebut
+
+
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
             //deplacement chaque perso
             for (int i = 0; i < _listePerso.Count; i++)
@@ -283,13 +289,14 @@ namespace Jeu
 
 
             //deplacement chaque bot
+
             for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
             {
                 Vector2 vectTemp = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
                 int botX = (int)vectTemp.X;
                 int botY = (int)vectTemp.Y;
-                int cheminX = (int)chemin.Parent.Position.X;
-                int cheminY = (int)chemin.Parent.Position.Y;
+                int cheminX = (int)_chemin.Parent.Position.X;
+                int cheminY = (int)_chemin.Parent.Position.Y;
                 int min=10000;
                 //Console.WriteLine(botX + "/" + botY + "          /         " + cheminX + "/" + cheminY);
                 if (botX == cheminX && botY == cheminY)
@@ -300,19 +307,19 @@ namespace Jeu
                         //on calcule & compare le cout pour chaque perso et chaque bot
                         Vector2 vectorPositionBot = new Vector2(botX,botY) ;               
                         Vector2 vectorPositionPerso = _listePerso[j].XY_ToVector(_listeScreenMap[(int)_ecranEnCours]);
-                        Console.WriteLine("algo");
+                        //Console.WriteLine("algo");
                         Node temp = Astar.AlgoAStar(new Node(vectorPositionPerso), new Node(vectorPositionBot), _listeScreenMap[(int)_ecranEnCours]);
                         if (min > temp.FCost)
                         {
-                            chemin = temp;
-                            min = chemin.FCost;
+                            _chemin = temp;
+                            min = _chemin.FCost;
                         }
                     
                     }
                 }
-                if (!(chemin.Parent is null))
+                if (!(_chemin.Parent is null))
                 {
-                    _listeBots[i].MoveAStar(chemin.Parent.Position, _listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
+                    _listeBots[i].MoveAStar(_chemin.Parent.Position, _listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
                     //Console.WriteLine("bot in : " + chemin.Position+ " / bouge vers : "+chemin.Parent.Position);
                 }
             }
