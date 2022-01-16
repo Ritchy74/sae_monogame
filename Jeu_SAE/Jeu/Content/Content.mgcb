@@ -78,7 +78,7 @@
 /processorParam:TextureFormat=Color
 /build:joueur.png
 
-#begin mansion_maps_version1/NES Mansion Tile Set.png
+#begin mansion_maps_version5/nesx2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -88,96 +88,27 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:mansion_maps_version1/NES Mansion Tile Set.png
+/build:mansion_maps_version5/nesx2.png
 
-#begin mansion_maps_version1/Piece_1.tmx
+#begin mansion_maps_version5/piece_0.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
-/build:mansion_maps_version1/Piece_1.tmx
+/build:mansion_maps_version5/piece_0.tmx
 
-#begin mansion_maps_version1/Piece_2.tmx
+#begin mansion_maps_version5/piece_1.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
-/build:mansion_maps_version1/Piece_2.tmx
+/build:mansion_maps_version5/piece_1.tmx
 
-#begin mansion_maps_version1/Piece_3.tmx
+#begin mansion_maps_version5/piece_2.tmx
 /importer:TiledMapImporter
 /processor:TiledMapProcessor
-/build:mansion_maps_version1/Piece_3.tmx
+/build:mansion_maps_version5/piece_2.tmx
 
-#begin mansion_maps_version1/Tiles_Mansion.tsx
+#begin mansion_maps_version5/tiles_mansion.tsx
 /importer:TiledMapTilesetImporter
 /processor:TiledMapTilesetProcessor
-/build:mansion_maps_version1/Tiles_Mansion.tsx
-
-#begin mansion_maps_version2/NES Mansion Tile Set.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:mansion_maps_version2/NES Mansion Tile Set.png
-
-#begin mansion_maps_version2/piece_0.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:mansion_maps_version2/piece_0.tmx
-
-#begin mansion_maps_version2/piece_1.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:mansion_maps_version2/piece_1.tmx
-
-#begin mansion_maps_version2/piece_2.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:mansion_maps_version2/piece_2.tmx
-
-#begin mansion_maps_version2/piece_3.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:mansion_maps_version2/piece_3.tmx
-
-#begin mansion_maps_version2/Tiles_Mansion_V2.tsx
-/importer:TiledMapTilesetImporter
-/processor:TiledMapTilesetProcessor
-/build:mansion_maps_version2/Tiles_Mansion_V2.tsx
-
-#begin mansion_maps_version4/nesx2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:mansion_maps_version4/nesx2.png
-
-#begin mansion_maps_version4/piece_0.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:mansion_maps_version4/piece_0.tmx
-
-#begin mansion_maps_version4/piece_1.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:mansion_maps_version4/piece_1.tmx
-
-#begin mansion_maps_version4/piece_2.tmx
-/importer:TiledMapImporter
-/processor:TiledMapProcessor
-/build:mansion_maps_version4/piece_2.tmx
-
-#begin mansion_maps_version4/tiles_mansion.tsx
-/importer:TiledMapTilesetImporter
-/processor:TiledMapTilesetProcessor
-/build:mansion_maps_version4/tiles_mansion.tsx
+/build:mansion_maps_version5/tiles_mansion.tsx
 
 #begin monstre.png
 /importer:TextureImporter

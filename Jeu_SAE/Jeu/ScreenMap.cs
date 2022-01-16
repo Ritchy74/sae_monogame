@@ -113,7 +113,6 @@ namespace Jeu
             base.LoadContent();
         }
 
-
         public override void Update(GameTime gameTime)
         {
             //nothing

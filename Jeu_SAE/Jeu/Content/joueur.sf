@@ -6,16 +6,20 @@
   },
   "cycles": {
     "walkNorth": {
-      "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+      "frames": [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ],
+      "frameDuration": 0.05
     },
     "walkWest": {
-      "frames": [ 9, 10, 11, 12, 13, 14, 15, 16, 17 ]
+      "frames": [ 9, 10, 11, 12, 13, 14, 15, 16, 17 ],
+      "frameDuration": 0.05
     },
     "walkSouth": {
-      "frames": [ 18, 19, 20, 21, 22, 23, 24, 25, 26 ]
+      "frames": [ 18, 19, 20, 21, 22, 23, 24, 25, 26 ],
+      "frameDuration": 0.05
     },
     "walkEast": {
-      "frames": [ 27, 28, 29, 30, 31, 32, 33, 34, 35 ]
+      "frames": [ 27, 28, 29, 30, 31, 32, 33, 34, 35 ],
+      "frameDuration": 0.05
     },
     "dead": {
       "frames": [ 36, 37, 38, 39, 40, 41 ]

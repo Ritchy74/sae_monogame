@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="1">
+<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="1">
  <tileset firstgid="1" source="tiles_mansion.tsx"/>
+ <tileset firstgid="1681" source="../mansion_maps_version4/tiles_mansion.tsx"/>
  <layer id="2" name="sol" width="40" height="40">
   <data encoding="csv">
 901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,901,

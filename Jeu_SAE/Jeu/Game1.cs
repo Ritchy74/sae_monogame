@@ -26,6 +26,7 @@ namespace Jeu
         private List<Bot> _listeBots = new List<Bot>();                            //bots
         private List<ScreenMap> _listeScreenMap = new List<ScreenMap>();                //screens
         private List<Vector2> _listeVecteursSpawnParMap = new List<Vector2>();          //point de respawn par map
+        private List<Rectangle> _listePlacards = new List<Rectangle>();                 //liste de placards
         private List<Vector2> _listeVecteursRondeBot = new List<Vector2>();             //les points de passages quand les bots font leur ronde
         private int _indiceRonde;
         //nbr perso
@@ -239,6 +240,7 @@ namespace Jeu
             }
           
         }
+
         protected override void Update(GameTime gameTime)
         {
             
@@ -333,6 +335,7 @@ namespace Jeu
                 }
             }
 
+
             base.Update(gameTime);
 
         }
@@ -379,9 +382,9 @@ namespace Jeu
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version4/Piece_0", "obstacles", 640, 640);              //creation map0
-            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version4/Piece_1", "obstacles", 640, 640);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version4/Piece_2", "obstacles", 640, 640);              //creation map2
+            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version5/Piece_0", "obstacles", 640, 640);              //creation map0
+            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version5/Piece_1", "obstacles", 640, 640);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version5/Piece_2", "obstacles", 640, 640);              //creation map2
             //_screenMapPiece3 = new ScreenMap(this, "mansion_maps_version2/Piece_3", "obstacles", 640, 640);              //creation map3
             //ajout des maps à la liste
             _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
@@ -397,6 +400,8 @@ namespace Jeu
             _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur4 map1
             _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur1 map2
             _listeVecteursSpawnParMap.Add(new Vector2(600, 450));     //ajout vecteur2 map2
+
+            //ajout rectangles placards à la liste (1 par map)
             
             //initialisation position perso et bot
             for (int i = 0; i < _listeScreenMap.Count; i++)
