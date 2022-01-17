@@ -290,6 +290,7 @@ namespace Jeu
             else if (_timer <= (_tempsParHeure*5))
             {
                 heure = "01:00";
+                newDiff = 1;
             }
             else
             {
