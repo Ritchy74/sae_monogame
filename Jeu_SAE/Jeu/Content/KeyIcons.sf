@@ -1,0 +1,21 @@
+{
+  "textureAtlas": {
+    "texture": "KeyIcons.png",
+    "regionWidth": 32,
+    "regionHeight": 32
+  },
+  "cycles": {
+    "key1": {
+      "frames": [0]
+    },
+    "key2": {
+      "frames": [1]
+    },
+    "key3": {
+      "frames": [2]
+    },
+    "key4": {
+      "frames": [3]
+    }
+  }
+}
