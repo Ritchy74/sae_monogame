@@ -253,14 +253,14 @@ namespace Jeu
             KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
             if (rectPerso.Intersects(_listePlacards[(int)_ecranEnCours]))
             {
-                if (!_listePerso[i].IsInPlacard && _timer <= temp - 10)
+                if (!_listePerso[i].IsInPlacard && _timer <= temp - 5)
                 {
                     Console.WriteLine("tu peux te cacher en appuyant sur C");
 
                     if (keyboardState.IsKeyDown(Keys.C))
                     {
-                        _compteurPlacard++;
-                        Console.WriteLine($"perso {i + 1} caché");
+                        _compteurPlacard= _compteurPlacard+1;
+                        Console.WriteLine($"perso {i + 1} caché / "+_compteurPlacard);
                         temp = _timer;
                         _oldPosition = _listePerso[i].PositionPerso;
                         _listePerso[i].IsInPlacard = true;
@@ -273,7 +273,7 @@ namespace Jeu
             {
                 Console.WriteLine("tu peux te décacher en appuyant sur E");
 
-                if (keyboardState.IsKeyDown(Keys.E) && _timer <= temp - 0.5 || _compteurPlacard == 2)
+                if (keyboardState.IsKeyDown(Keys.E) && _timer <= temp - 0.5 || _compteurPlacard == 2 || _timer <= temp - 10)
                 { 
                     //Console.WriteLine(_compteurPlacard);
                     _compteurPlacard--;
@@ -316,9 +316,9 @@ namespace Jeu
                         }
                     }
                 }
-                if (!(botActuel.CheminAPrendre.Parent is null) && botActuel.CheminAPrendre.Parent.FCost < botActuel.DistanceAggro)
+                if (!(botActuel.CheminAPrendre.Parent is null) && botActuel.CheminAPrendre.Parent.FCost < botActuel.DistanceAggro && _compteurPlacard<_listePerso.Count)
                 {
-                    //Console.WriteLine("il te suit");
+                    //Console.WriteLine("il te suit"+_compteurPlacard);
                     _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].MoveAStar(_listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
                     //Console.WriteLine("bot in : " + chemin.Position+ " / bouge vers : "+chemin.Parent.Position);
                 }
@@ -483,7 +483,8 @@ namespace Jeu
             for (int i = 0; i < _listePerso.Count; i++)
             {
                 _listePerso[i].IsInPlacard = false;
-                _compteurPlacard--;
+                if (_compteurPlacard>1)
+                    _compteurPlacard--;
             }
             Console.WriteLine($"CHARGEMENT  {versCetEcran.ToString()}");
             ReinitialisationPosition(newPosPerso);
