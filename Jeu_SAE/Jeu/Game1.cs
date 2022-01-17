@@ -150,10 +150,10 @@ namespace Jeu
             _tempsParHeure = TEMPS_TOTAL / 6;
 
             //Position de la vie des joueurs
-            _posPV_J1 = new Vector2(20, 736);
-            _posPV_J2 = new Vector2(754, 736);
-            _posCoeur1 = new Vector2(0, 100);
-            _posCoeur2 = new Vector2(760, 784);
+            _posPV_J1 = new Vector2(35, 600);
+            _posPV_J2 = new Vector2(754, 600);
+            _posCoeur1 = new Vector2(0, 602);
+            _posCoeur2 = new Vector2(300, 600);
 
             base.Initialize();
         }
@@ -282,10 +282,10 @@ namespace Jeu
 
             SpriteBatch.Begin();
             _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
-            //_spriteBatch.Draw(_imgCoeur1, _posCoeur1, Color.White);
-            //_spriteBatch.Draw(_imgCoeur2, _posCoeur2, Color.White);
-            //_spriteBatch.DrawString(_policePV, "" + pvPerso1, _posPV_J1, Color.White);
-            //_spriteBatch.DrawString(_policePV, "" + pvPerso2, _posPV_J2, Color.White);
+            _spriteBatch.Draw(_imgCoeur1, _posCoeur1, Color.White);
+            _spriteBatch.Draw(_imgCoeur2, _posCoeur2, Color.White);
+            _spriteBatch.DrawString(_policePV, "" + pvPerso1, _posPV_J1, Color.White);
+            _spriteBatch.DrawString(_policePV, "" + pvPerso2, _posPV_J2, Color.White);
             base.Draw(gameTime);    //dessine objets
             SpriteBatch.End();
         }
