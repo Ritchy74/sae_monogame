@@ -200,19 +200,7 @@ namespace Jeu
                 MethodePlacard(i);
 
                 //gérer les clés
-                Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
-                if (rectPerso.Intersects(_listeCles[(int)_ecranEnCours].RectangleCle) && !_listeCles[(int)_ecranEnCours].IsPrise)
-                {
-                    KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
-                    Console.WriteLine("APPUYEZ SUR ESPACE POUR RECUPERER LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
-                    if (keyboardState.IsKeyDown(Keys.Space) )
-                    {
-                        Console.WriteLine("VOUS AVEZ TROUVE LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
-                        _listeCles[(int)_ecranEnCours].IsPrise = true;
-                    }
-
-                }
-                    
+                MethodeCle(i);        
 
                 //récupérationdu type de colision
                 if (_listePerso[i].Collision != TypeCollisionMap.Rien)
@@ -228,18 +216,33 @@ namespace Jeu
                     ChangementScreen(Ecran.Piece0, _listeVecteursSpawnParMap[0]);
                 //changement vers piece 1
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)
-                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[1]);
-                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_basGauche)
+                {
+                    if (!_listeCles[0].IsPrise) //clé dehors
+                        Console.WriteLine($"Il vous faut la clé {_listeCles[0].NomCle} pour continuer!");
+                    else
+                        ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[1]);
+                }
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_basGauche )
                     ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[2]);
-                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautGauche)
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautGauche )
                     ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[3]);
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautDroite)
                     ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[4]);
                 //changement vers piece 2
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_bas)
-                    ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[5]);
+                {
+                    if (!_listeCles[1].IsPrise)
+                        Console.WriteLine($"Il vous faut la clé {_listeCles[1].NomCle} pour continuer!");
+                    else
+                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[5]);
+                }
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_haut)
-                    ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
+                {
+                    if (!_listeCles[1].IsPrise)
+                        Console.WriteLine($"Il vous faut la clé {_listeCles[1].NomCle} pour continuer!");
+                    else
+                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
+                }
             }
 
             //deplacement chaque bot
@@ -301,6 +304,21 @@ namespace Jeu
 
             if (_timer <= 0)
                 Exit();
+        }
+        public void MethodeCle(int i )
+        {
+            Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
+            if (rectPerso.Intersects(_listeCles[(int)_ecranEnCours].RectangleCle) && !_listeCles[(int)_ecranEnCours].IsPrise)
+            {
+                KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
+                Console.WriteLine("APPUYEZ SUR ESPACE POUR RECUPERER LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
+                if (keyboardState.IsKeyDown(Keys.Space))
+                {
+                    Console.WriteLine("VOUS AVEZ TROUVE LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
+                    _listeCles[(int)_ecranEnCours].IsPrise = true;
+                }
+
+            }
         }
         public void IsCollisionBot(float deltaSecond)
         {
