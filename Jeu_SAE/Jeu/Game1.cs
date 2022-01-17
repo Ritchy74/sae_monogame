@@ -76,8 +76,13 @@ namespace Jeu
         //clés
         List<Cle> _listeCles = new List<Cle>();
         private AnimatedSprite _spriteCles;
-        //jornal
+        //journal
         List<Journal> _listeJournal = new List<Journal>();
+        //List<Texture2D> _listePage = new List<Texture2D>();
+        private Texture2D _pageAff;
+        private Vector2 _posPage;
+        private string _textePage;
+        private Vector2 _posTextePage;
         private AnimatedSprite _spriteJournal;
 
         //dead  
@@ -87,6 +92,7 @@ namespace Jeu
         //son, ambiance, musique
         private Song _ambiance;
         private SoundEffect _sonporte;
+        //private SoundEffect _sonPage;
 
         //Point de vie
         private Texture2D _imgCoeur1, _imgCoeur2;
@@ -166,12 +172,19 @@ namespace Jeu
             _posPV_J2 = new Vector2(-1000, -1000);
             _posCoeur1 = new Vector2(0, 602);
             _posCoeur2 = new Vector2(-1000, -1000);
+            
 
             //texte
             //LEO
             _positionTexte = new Vector2(100, 500);
             _leTexte = "";
             _timerTexte = 0;
+
+            _pageAff = Content.Load<Texture2D>("PAGES/paper-horiz");
+            _posPage = new Vector2(-1500, -1500);
+            _posTextePage = new Vector2(0, 0);
+
+
 
             base.Initialize();
         }
@@ -193,13 +206,20 @@ namespace Jeu
             _spriteJournal = new AnimatedSprite(spriteJournal);        //sprite journal
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
+            //_sonPage = Content.Load<SoundEffect>("sounds/FlippingPages.ogg");
             _police = Content.Load<SpriteFont>("timer");
             _policePV = Content.Load<SpriteFont>("PV");
             _imgCoeur1 = Content.Load<Texture2D>("coeur");
             _imgCoeur2 = Content.Load<Texture2D>("coeur");
-            _policeTexte = Content.Load<SpriteFont>("PV");
+            _policeTexte = Content.Load<SpriteFont>("texte");
             MediaPlayer.Play(_ambiance);
 
+            //page
+            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-horiz"));
+            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-plain"));
+            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-square"));
+            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-with-sidebar-plain"));
+            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-with-sidebar-runes"));
 
             //creation perso
             CreationPersos();
@@ -321,9 +341,11 @@ namespace Jeu
             _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
             _spriteBatch.Draw(_imgCoeur1, _posCoeur1, Color.White);
             _spriteBatch.Draw(_imgCoeur2, _posCoeur2, Color.White);
+            _spriteBatch.Draw(_pageAff, _posPage, Color.White);
             _spriteBatch.DrawString(_policePV, "" + pvPerso1, _posPV_J1, Color.White);
             _spriteBatch.DrawString(_policePV, "" + pvPerso2, _posPV_J2, Color.White);
             _spriteBatch.DrawString(_policeTexte, "" + _leTexte, _positionTexte, Color.White);  //LEO
+            _spriteBatch.DrawString(_policeTexte, "" + _textePage, _posTextePage, Color.Black);
             base.Draw(gameTime);    //dessine objets
             SpriteBatch.End();
         }
@@ -384,16 +406,34 @@ namespace Jeu
 
         public void MethodeJournal(int i)
         {
+            
+            KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
             Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
             if (rectPerso.Intersects(_listeJournal[(int)_ecranEnCours].RectangleJournal) && !_listeJournal[(int)_ecranEnCours].IsPrise )
             {
-                KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
-                _leTexte = "ESPACE pour: " + _listeJournal[(int)_ecranEnCours].NomJournal;  //LEO
+                
+                _leTexte = " ESPACE pour: " + _listeJournal[(int)_ecranEnCours].NomJournal;  //LEO
                 if (keyboardState.IsKeyDown(Keys.Space))
                 {
-                    _leTexte =  _listeJournal[(int)_ecranEnCours].TexteJournal;
-                    _timerTexte = 0;
+                    _textePage =  _listeJournal[(int)_ecranEnCours].TexteJournal;
+                    _pageAff = _listeJournal[(int)_ecranEnCours].Page;
+                    _posPage = _listeJournal[(int)_ecranEnCours].PositionFeuille;
+                    _posTextePage = _listeJournal[(int)_ecranEnCours].PositionTexte;
                     _listeJournal[(int)_ecranEnCours].IsPrise = true;
+                    //_sonPage.Play();
+                }
+            }
+            if (_listeJournal[(int)_ecranEnCours].IsPrise)
+            {
+                _leTexte = " C pour fermer la page";
+                if (keyboardState.IsKeyDown(Keys.C))
+                {
+                    _textePage = "";
+                    _pageAff = Content.Load<Texture2D>("PAGES/paper-horiz-demi");
+                    _posPage = new Vector2(-1500, -1500);
+                    _posTextePage = new Vector2(0, 0);
+                    _leTexte = "";
+                    //_sonPage.Play();
                 }
             }
         }
@@ -460,7 +500,7 @@ namespace Jeu
             {
                 if (!_listePerso[i].IsInPlacard && _timer <= temp - 5)
                 {
-                    _leTexte = "G pour: se cacher"; //LEO
+                    _leTexte = " G pour se cacher"; //LEO
                     //Console.WriteLine("tu peux te cacher en appuyant sur C");
 
                     if (keyboardState.IsKeyDown(Keys.G))
@@ -477,7 +517,7 @@ namespace Jeu
             }
             if (_listePerso[i].IsInPlacard)
             {
-                _leTexte = "T pour: sortir";    //LEO
+                _leTexte = " T pour sortir";    //LEO
                 //Console.WriteLine("tu peux te décacher en appuyant sur E");
 
                 if (keyboardState.IsKeyDown(Keys.T) && _timer <= temp - 0.5 || _compteurPlacard == 2 || _timer <= temp - 10)
@@ -559,9 +599,10 @@ namespace Jeu
             //les textes de fin (les textes des journaux) sont les textes à faire en image et à afficher
             //si tu veux les modifier pour les rendre mieux pour que le joueur se sente à fond dedans vas-y!!!
 
-            _listeJournal.Add(new Journal(new Vector2(320, 300), "journal 1", _spriteJournal, 0, "Il faut que je trouve une cle pour rentrer dans le batiment!"));
-            _listeJournal.Add(new Journal(new Vector2(130, 255), "journal 2", _spriteJournal, 1, "Je crois que le muse est hante, j'entends des bruits bizarres"));
-            _listeJournal.Add(new Journal(new Vector2(100, 150), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche..."));
+            _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "journal 1", _spriteJournal, 0, "Il faut que je trouve une \ncle pour rentrer dans\n le batiment !", Content.Load<Texture2D>("PAGES/paper-horiz-demi")));
+            _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(280, 50), "journal 2", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/paper-decouverte")));
+            //_listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(40, 50), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche...", Content.Load<Texture2D>("PAGES/paper-sidebar-demi")));
+            _listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(280, 130), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/paper-placard")));
         }
         public void CreationCles()
         {

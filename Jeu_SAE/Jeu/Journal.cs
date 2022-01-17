@@ -16,16 +16,21 @@ namespace Jeu
     {
         private Rectangle _rectangleJournal;
         private Vector2 _positionJournal;
+        private Vector2 _positionTexte;
+        private Vector2 _positionFeuille;
         private Vector2 _tailleJournal;
         private string _nomJournal;
         private bool _isPrise;
         private int _numeroJournal;
         private AnimatedSprite _spriteJournal;
         private string _texteJournal;
+        private Texture2D _page;
 
-        public Journal(Vector2 positionJournal, string nomJournal, AnimatedSprite spriteJournal, int numeroJournal, string texte)
+        public Journal(Vector2 positionJournal, Vector2 positionTexte, Vector2 positionFeuille, string nomJournal, AnimatedSprite spriteJournal, int numeroJournal, string texte, Texture2D page)
         {
             PositionJournal = positionJournal;
+            PositionTexte = positionTexte;
+            PositionFeuille = positionFeuille;
             int HITBOX = 25;
             this._tailleJournal = new Vector2(HITBOX * 2, HITBOX * 2);
             RectangleJournal = new Rectangle((int)PositionJournal.X - 5, (int)PositionJournal.Y, (int)_tailleJournal.X, (int)_tailleJournal.Y);
@@ -34,6 +39,7 @@ namespace Jeu
             NumeroJournal = numeroJournal;
             SpriteJournal = spriteJournal;
             TexteJournal = texte;
+            Page = page;
         }
 
         public Rectangle RectangleJournal
@@ -113,6 +119,30 @@ namespace Jeu
                 this._positionJournal = value;
             }
         }
+        public Vector2 PositionFeuille
+        {
+            get
+            {
+                return this._positionFeuille;
+            }
+
+            set
+            {
+                this._positionFeuille = value;
+            }
+        }
+        public Vector2 PositionTexte
+        {
+            get
+            {
+                return this._positionTexte;
+            }
+
+            set
+            {
+                this._positionTexte = value;
+            }
+        }
 
         public string TexteJournal
         {
@@ -124,6 +154,18 @@ namespace Jeu
             set
             {
                 this._texteJournal = value;
+            }
+        }
+        public Texture2D Page
+        {
+            get
+            {
+                return this._page;
+            }
+
+            set
+            {
+                this._page = value;
             }
         }
     }
