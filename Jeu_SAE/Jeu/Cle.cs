@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 namespace Jeu
 {
-    class journal
+    class Cle
     {
         private Rectangle _rectangleCle;
         private Vector2 _positionCle;
@@ -22,7 +22,7 @@ namespace Jeu
         private int _numeroCLe;
         private AnimatedSprite _spriteCle;
 
-        public journal(Vector2 positionCle, string nomCle, AnimatedSprite spritecle, int numeroCle)
+        public Cle(Vector2 positionCle, string nomCle, AnimatedSprite spritecle, int numeroCle)
         {
             PositionCle = positionCle;
             int HITBOX = 25;

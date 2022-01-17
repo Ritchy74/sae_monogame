@@ -25,7 +25,7 @@ namespace Jeu
         private string _nomCoucheObstacle;
         private List<Perso> _lesPersoADessiner;
         private List<Bot> _lesBotsADessiner;
-        private journal _cleADessiner;
+        private Cle _cleADessiner;
         //window
         private int _widthFenetre;
         private int _heightFenetre;
@@ -87,7 +87,7 @@ namespace Jeu
             }
         }
 
-        public ScreenMap(Game1 game, string nomMap, string nomCoucheObstacle, int widthFenetre, int heightFenetre, journal cle) : base(game)
+        public ScreenMap(Game1 game, string nomMap, string nomCoucheObstacle, int widthFenetre, int heightFenetre, Cle cle) : base(game)
         {
             this._nomMap = nomMap;                             //récupère nom map
             this._nomCoucheObstacle = nomCoucheObstacle;       //récupère nom couche obstacle
