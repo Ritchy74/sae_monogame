@@ -25,8 +25,9 @@ namespace Jeu
         public Cle(Vector2 positionCle, string nomCle, AnimatedSprite spritecle, int numeroCle)
         {
             PositionCle = positionCle;
-            this._tailleCle = new Vector2(100, 100);
-            RectangleCle = new Rectangle((int)positionCle.X, (int)positionCle.Y, (int)_tailleCle.X, (int)_tailleCle.Y);
+            int HITBOX = 25;
+            this._tailleCle = new Vector2(HITBOX*2, HITBOX*2);
+            RectangleCle = new Rectangle((int)positionCle.X -5 , (int)positionCle.Y , (int)_tailleCle.X, (int)_tailleCle.Y);
             NomCle = nomCle;
             IsPrise = false;
             NumeroCLe = numeroCle;

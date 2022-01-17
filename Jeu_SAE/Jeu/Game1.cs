@@ -191,10 +191,6 @@ namespace Jeu
             Time();
             //collision perso avec bot
             IsCollisionBot(deltaSeconds);
-            //collision cle
-            Rectangle rectPerso = new Rectangle((int)_listePerso[0].PositionPerso.X, (int)_listePerso[0].PositionPerso.Y, 48 - 2, 64 - 2);
-            if (rectPerso.Intersects(_listeCles[0].RectangleCle))
-                Console.WriteLine("VOUS AVEZ TROUVE LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
 
             //deplacement chaque perso
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
@@ -202,6 +198,21 @@ namespace Jeu
             {
                 //gérer les entrées et sorties dans les placards
                 MethodePlacard(i);
+
+                //gérer les clés
+                Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
+                if (rectPerso.Intersects(_listeCles[(int)_ecranEnCours].RectangleCle) && !_listeCles[(int)_ecranEnCours].IsPrise)
+                {
+                    KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
+                    Console.WriteLine("APPUYEZ SUR ESPACE POUR RECUPERER LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
+                    if (keyboardState.IsKeyDown(Keys.Space) )
+                    {
+                        Console.WriteLine("VOUS AVEZ TROUVE LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
+                        _listeCles[(int)_ecranEnCours].IsPrise = true;
+                    }
+
+                }
+                    
 
                 //récupérationdu type de colision
                 if (_listePerso[i].Collision != TypeCollisionMap.Rien)
@@ -425,10 +436,10 @@ namespace Jeu
         
         public void CreationCles()
         {
-            _listeCles.Add(new Cle(new Vector2(300, 300), "Cle principale",_spriteCles,0));
-            _listeCles.Add(new Cle(new Vector2(300, 300), "Cle 1",_spriteCles,1));
-            _listeCles.Add(new Cle(new Vector2(300, 300), "Cle 2",_spriteCles,2));
-            _listeCles.Add(new Cle(new Vector2(300, 300), "Cle 3",_spriteCles,3));
+            _listeCles.Add(new Cle(new Vector2(100, 500), "Cle principale",_spriteCles,0));
+            _listeCles.Add(new Cle(new Vector2( 515, 528), "Cle 1",_spriteCles,1));
+            _listeCles.Add(new Cle(new Vector2(107, 543), "Cle 2",_spriteCles,2));
+            //_listeCles.Add(new Cle(new Vector2(300, 300), "Cle 3",_spriteCles,3));
         }
         public void CreationBots()
         {
