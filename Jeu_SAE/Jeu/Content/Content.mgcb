@@ -197,6 +197,12 @@
 /processorParam:TextureFormat=Compressed
 /build:PV.spritefont
 
+#begin sounds/FlippingPages.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:sounds/FlippingPages.ogg
+
 #begin sounds/horror-ambience-8-background-effect.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
