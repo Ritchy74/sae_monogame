@@ -224,7 +224,7 @@ namespace Jeu
             //gérer le texte
             //LEO
             _timerTexte += deltaSeconds;
-            if (_timerTexte >= 2)   //reinitialisation du texte
+            if (_timerTexte >= 4)   //reinitialisation du texte
             {
                 _leTexte = "";
             }
@@ -241,8 +241,10 @@ namespace Jeu
                 Exit();
             //deltatime
             deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
             //faire écouler le timer dans le jeu 
-            Time();
+            if (_ecranEnCours != Ecran.Piece0)
+                Time();
             //collision perso avec bot
             IsCollisionBot(deltaSeconds);
             //Affichage des points de vie
