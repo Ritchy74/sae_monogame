@@ -26,6 +26,7 @@ namespace Jeu
         private List<Perso> _lesPersoADessiner;
         private List<Bot> _lesBotsADessiner;
         private Cle _cleADessiner;
+        private Journal _journalADessiner;
         //window
         private int _widthFenetre;
         private int _heightFenetre;
@@ -87,7 +88,7 @@ namespace Jeu
             }
         }
 
-        public ScreenMap(Game1 game, string nomMap, string nomCoucheObstacle, int widthFenetre, int heightFenetre, Cle cle) : base(game)
+        public ScreenMap(Game1 game, string nomMap, string nomCoucheObstacle, int widthFenetre, int heightFenetre, Cle cle, Journal journal) : base(game)
         {
             this._nomMap = nomMap;                             //récupère nom map
             this._nomCoucheObstacle = nomCoucheObstacle;       //récupère nom couche obstacle
@@ -97,6 +98,7 @@ namespace Jeu
             this.LesPersoADessiner = new List<Perso>();          //récup les persos
             this.LesBotsADessiner = new List<Bot>();
             this._cleADessiner = cle;
+            this._journalADessiner = journal;
         }
 
         public override void Initialize()
@@ -139,9 +141,13 @@ namespace Jeu
             {
                 this.game.SpriteBatch.Draw(this.LesPersoADessiner[i].SpritePerso, this.LesPersoADessiner[i].PositionPerso); //dessine les perso
             }
-            if (!_cleADessiner.IsPrise)
+            if (!this._cleADessiner.IsPrise && this._journalADessiner.IsPrise)
             {
                 this.game.SpriteBatch.Draw(this._cleADessiner.SpriteCle, this._cleADessiner.PositionCle) ; //dessine la clé
+            }
+            if (!this._journalADessiner.IsPrise)
+            {
+                this.game.SpriteBatch.Draw(this._journalADessiner.SpriteJournal, this._journalADessiner.PositionJournal); //dessine le journal
             }
         }
     }

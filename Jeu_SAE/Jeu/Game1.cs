@@ -76,6 +76,9 @@ namespace Jeu
         //clés
         List<Cle> _listeCles = new List<Cle>();
         private AnimatedSprite _spriteCles;
+        //jornal
+        List<Journal> _listeJournal = new List<Journal>();
+        private AnimatedSprite _spriteJournal;
 
         //dead  
         private List<bool> _listeStartCompteurDead = new List<bool>();    //mettre en liste pour tous persos
@@ -166,11 +169,13 @@ namespace Jeu
             SpriteSheet animation2 = Content.Load<SpriteSheet>("joueur.sf", new JsonContentLoader());  //importation animation1
             SpriteSheet monstre = Content.Load<SpriteSheet>("monstre.sf", new JsonContentLoader());  //importation monstre
             SpriteSheet spriteCle = Content.Load<SpriteSheet>("KeyIcons.sf", new JsonContentLoader());  //importation clés
+            SpriteSheet spriteJournal = Content.Load<SpriteSheet>("page.sf", new JsonContentLoader());  //importation clés
             _spritePerso1 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePerso2 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePersoBotTest = new AnimatedSprite(animation1);        //sprite anime2 pour perso bot test
             _spriteMonstre = new AnimatedSprite(monstre);        //sprite monstre
             _spriteCles = new AnimatedSprite(spriteCle);        //sprite clé
+            _spriteJournal = new AnimatedSprite(spriteJournal);        //sprite journal
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
             _police = Content.Load<SpriteFont>("timer");
@@ -186,6 +191,8 @@ namespace Jeu
             CreationBots();
             //creation clés
             CreationCles();
+            //creation journaux
+            CreationJournal();
             //creation maps
             CreationMaps();
 
@@ -223,9 +230,10 @@ namespace Jeu
             {
                 //gérer les entrées et sorties dans les placards
                 MethodePlacard(i);
-
                 //gérer les clés
-                MethodeCle(i);        
+                MethodeCle(i);
+                //gérer les journaux
+                MethodeJournal(i);
 
                 //récupérationdu type de colision
                 if (_listePerso[i].Collision != TypeCollisionMap.Rien)
@@ -343,10 +351,24 @@ namespace Jeu
                 _posPV_J2 = new Vector2(549, 600);
             }
         }
+        public void MethodeJournal(int i)
+        {
+            Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
+            if (rectPerso.Intersects(_listeJournal[(int)_ecranEnCours].RectangleJournal) && !_listeJournal[(int)_ecranEnCours].IsPrise )
+            {
+                KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
+                Console.WriteLine("ESPACE POUR: MESSAGE LAISSE PAR L'ANCIEN GARDE : " + _listeJournal[(int)_ecranEnCours].NomJournal);
+                if (keyboardState.IsKeyDown(Keys.Space))
+                {
+                    Console.WriteLine( _listeJournal[(int)_ecranEnCours].TexteJournal);
+                    _listeJournal[(int)_ecranEnCours].IsPrise = true;
+                }
+            }
+        }
         public void MethodeCle(int i )
         {
             Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
-            if (rectPerso.Intersects(_listeCles[(int)_ecranEnCours].RectangleCle) && !_listeCles[(int)_ecranEnCours].IsPrise)
+            if (rectPerso.Intersects(_listeCles[(int)_ecranEnCours].RectangleCle) && !_listeCles[(int)_ecranEnCours].IsPrise && _listeJournal[(int)_ecranEnCours].IsPrise)
             {
                 KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
                 Console.WriteLine("APPUYEZ SUR ESPACE POUR RECUPERER LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
@@ -401,7 +423,7 @@ namespace Jeu
             //placard
             Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
             KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
-            if (rectPerso.Intersects(_listePlacards[(int)_ecranEnCours]))
+            if (rectPerso.Intersects(_listePlacards[(int)_ecranEnCours]) && _listeJournal[2].IsPrise)
             {
                 if (!_listePerso[i].IsInPlacard && _timer <= temp - 5)
                 {
@@ -490,6 +512,12 @@ namespace Jeu
         }
 
         
+        public void CreationJournal()
+        {
+            _listeJournal.Add(new Journal(new Vector2(320, 300), "journal 1", _spriteJournal, 0, "Il faut que je trouve une clé pour rentrer dans le bâtiment!"));
+            _listeJournal.Add(new Journal(new Vector2(130, 255), "journal 2", _spriteJournal, 1, "Je crois que le musé est hanté, j'entends des bruits bizarre"));
+            _listeJournal.Add(new Journal(new Vector2(100, 150), "journal 3", _spriteJournal, 2, "Je me suis caché dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche..."));
+        }
         public void CreationCles()
         {
             _listeCles.Add(new Cle(new Vector2(100, 500), "Cle principale",_spriteCles,0));
@@ -531,9 +559,9 @@ namespace Jeu
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version5/Piece_0", "obstacles", 640, 640,_listeCles[0]);              //creation map0
-            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version5/Piece_1", "obstacles", 640, 640, _listeCles[1]);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version5/Piece_2", "obstacles", 640, 640, _listeCles[2]);              //creation map2
+            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version5/Piece_0", "obstacles", 640, 640,_listeCles[0],_listeJournal[0]);              //creation map0
+            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version5/Piece_1", "obstacles", 640, 640, _listeCles[1], _listeJournal[1]);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version5/Piece_2", "obstacles", 640, 640, _listeCles[2], _listeJournal[2]);              //creation map2
             //_screenMapPiece3 = new ScreenMap(this, "mansion_maps_version2/Piece_3", "obstacles", 640, 640);              //creation map3
             //ajout des maps à la liste
             _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
@@ -542,7 +570,7 @@ namespace Jeu
             //_listeScreenMap.Add(_screenMapPiece3);      //ajout map3
 
             //ajout des vecteurs par piece et par map (plusieurs spawns par map)
-            _listeVecteursSpawnParMap.Add(new Vector2(320, 450));   //ajout vecteur1 map0
+            _listeVecteursSpawnParMap.Add(new Vector2(320, 300));   //ajout vecteur1 map0
             _listeVecteursSpawnParMap.Add(new Vector2(320, 550));   //ajout vecteur1 map1 
             _listeVecteursSpawnParMap.Add(new Vector2(50, 425));    //ajout vecteur2 map1
             _listeVecteursSpawnParMap.Add(new Vector2(50, 90));     //ajout vecteur3 map1
