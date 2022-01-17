@@ -83,7 +83,14 @@ namespace Jeu
         
         //son, ambiance, musique
         private Song _ambiance;
-        private SoundEffect _sonporte;        
+        private SoundEffect _sonporte;
+
+        //Point de vie
+        private Texture2D _imgCoeur1, _imgCoeur2;
+        private Vector2 _posCoeur1, _posCoeur2;
+        private Vector2 _posPV_J1, _posPV_J2;
+        private double pvPerso1, pvPerso2;
+        private SpriteFont _policePV;
 
         public SpriteBatch SpriteBatch
         {
@@ -141,6 +148,13 @@ namespace Jeu
             _posTimer = new Vector2(1, 1);
             heure = "";
             _tempsParHeure = TEMPS_TOTAL / 6;
+
+            //Position de la vie des joueurs
+            _posPV_J1 = new Vector2(35, 600);
+            _posPV_J2 = new Vector2(-1000, -1000);
+            _posCoeur1 = new Vector2(0, 602);
+            _posCoeur2 = new Vector2(-1000, -1000);
+
             base.Initialize();
         }
 
@@ -160,6 +174,9 @@ namespace Jeu
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
             _police = Content.Load<SpriteFont>("timer");
+            _policePV = Content.Load<SpriteFont>("PV");
+            _imgCoeur1 = Content.Load<Texture2D>("coeur");
+            _imgCoeur2 = Content.Load<Texture2D>("coeur");
             MediaPlayer.Play(_ambiance);
 
 
@@ -181,6 +198,12 @@ namespace Jeu
         }
         protected override void Update(GameTime gameTime)
         {
+            pvPerso1 = Math.Round(_perso1.PtDeVie, 0);
+            pvPerso2 = Math.Round(_perso2.PtDeVie, 0);
+            if (_perso1.PtDeVie <= 0)
+                pvPerso1 = 0;
+            if (_perso2.PtDeVie <= 0)
+                pvPerso2 = 0;
 
             //quit game
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count == 0)
@@ -191,6 +214,8 @@ namespace Jeu
             Time();
             //collision perso avec bot
             IsCollisionBot(deltaSeconds);
+            //Affichage des points de vie
+            AffichagePV();
 
             //deplacement chaque perso
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
@@ -257,6 +282,10 @@ namespace Jeu
 
             SpriteBatch.Begin();
             _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
+            _spriteBatch.Draw(_imgCoeur1, _posCoeur1, Color.White);
+            _spriteBatch.Draw(_imgCoeur2, _posCoeur2, Color.White);
+            _spriteBatch.DrawString(_policePV, "" + pvPerso1, _posPV_J1, Color.White);
+            _spriteBatch.DrawString(_policePV, "" + pvPerso2, _posPV_J2, Color.White);
             base.Draw(gameTime);    //dessine objets
             SpriteBatch.End();
         }
@@ -305,6 +334,14 @@ namespace Jeu
 
             if (_timer <= 0)
                 Exit();
+        }
+        public void AffichagePV()
+        {
+            if(_listeScreenMap[(int)_ecranEnCours].LesPersoADessiner.Count==2)
+            {
+                _posCoeur2 = new Vector2(602, 602);
+                _posPV_J2 = new Vector2(549, 600);
+            }
         }
         public void MethodeCle(int i )
         {

@@ -66,6 +66,18 @@
 /processorParam:TextureFormat=Color
 /build:boutons/2joueur_press.png
 
+#begin coeur.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:coeur.png
+
 #begin joueur.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -189,6 +201,13 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:page.png
+
+#begin PV.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:PV.spritefont
 
 #begin sounds/horror-ambience-8-background-effect.mp3
 /importer:Mp3Importer
