@@ -95,6 +95,13 @@ namespace Jeu
         private double pvPerso1, pvPerso2;
         private SpriteFont _policePV;
 
+        //affichage
+        //LEO
+        private Vector2 _positionTexte;
+        private SpriteFont _policeTexte;
+        private string _leTexte;
+        private float _timerTexte;
+
         public SpriteBatch SpriteBatch
         {
             get
@@ -152,11 +159,19 @@ namespace Jeu
             heure = "";
             _tempsParHeure = TEMPS_TOTAL / 6;
 
+            //affichage textes en bas
+
             //Position de la vie des joueurs
             _posPV_J1 = new Vector2(35, 600);
             _posPV_J2 = new Vector2(-1000, -1000);
             _posCoeur1 = new Vector2(0, 602);
             _posCoeur2 = new Vector2(-1000, -1000);
+
+            //texte
+            //LEO
+            _positionTexte = new Vector2(100, 500);
+            _leTexte = "";
+            _timerTexte = 0;
 
             base.Initialize();
         }
@@ -182,6 +197,7 @@ namespace Jeu
             _policePV = Content.Load<SpriteFont>("PV");
             _imgCoeur1 = Content.Load<Texture2D>("coeur");
             _imgCoeur2 = Content.Load<Texture2D>("coeur");
+            _policeTexte = Content.Load<SpriteFont>("PV");
             MediaPlayer.Play(_ambiance);
 
 
@@ -205,6 +221,14 @@ namespace Jeu
         }
         protected override void Update(GameTime gameTime)
         {
+            //gérer le texte
+            //LEO
+            _timerTexte += deltaSeconds;
+            if (_timerTexte >= 2)   //reinitialisation du texte
+            {
+                _leTexte = "";
+            }
+
             pvPerso1 = Math.Round(_perso1.PtDeVie, 0);
             pvPerso2 = Math.Round(_perso2.PtDeVie, 0);
             if (_perso1.PtDeVie <= 0)
@@ -251,7 +275,8 @@ namespace Jeu
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)
                 {
                     if (!_listeCles[0].IsPrise) //clé dehors
-                        Console.WriteLine($"Il vous faut la clé {_listeCles[0].NomCle} pour continuer!");
+                        _leTexte = $"Il vous manque: {_listeCles[0].NomCle}";   //LEO
+                    //Console.WriteLine($"Il vous faut la clé {_listeCles[0].NomCle} pour continuer!");
                     else
                         ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[1]);
                 }
@@ -265,14 +290,16 @@ namespace Jeu
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_bas)
                 {
                     if (!_listeCles[1].IsPrise)
-                        Console.WriteLine($"Il vous faut la clé {_listeCles[1].NomCle} pour continuer!");
+                        _leTexte = $"Il vous manque: {_listeCles[1].NomCle}";   //LEO
+                    //Console.WriteLine($"Il vous faut la clé {_listeCles[1].NomCle} pour continuer!");
                     else
                         ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[5]);
                 }
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_haut)
                 {
                     if (!_listeCles[1].IsPrise)
-                        Console.WriteLine($"Il vous faut la clé {_listeCles[1].NomCle} pour continuer!");
+                        _leTexte = $"Il vous manque: {_listeCles[1].NomCle}";   //LEO
+                                                                                //Console.WriteLine($"Il vous faut la clé {_listeCles[1].NomCle} pour continuer!");
                     else
                         ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
                 }
@@ -294,6 +321,7 @@ namespace Jeu
             _spriteBatch.Draw(_imgCoeur2, _posCoeur2, Color.White);
             _spriteBatch.DrawString(_policePV, "" + pvPerso1, _posPV_J1, Color.White);
             _spriteBatch.DrawString(_policePV, "" + pvPerso2, _posPV_J2, Color.White);
+            _spriteBatch.DrawString(_policeTexte, "" + _leTexte, _positionTexte, Color.White);  //LEO
             base.Draw(gameTime);    //dessine objets
             SpriteBatch.End();
         }
@@ -351,16 +379,18 @@ namespace Jeu
                 _posPV_J2 = new Vector2(549, 600);
             }
         }
+
         public void MethodeJournal(int i)
         {
             Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
             if (rectPerso.Intersects(_listeJournal[(int)_ecranEnCours].RectangleJournal) && !_listeJournal[(int)_ecranEnCours].IsPrise )
             {
                 KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
-                Console.WriteLine("ESPACE POUR: MESSAGE LAISSE PAR L'ANCIEN GARDE : " + _listeJournal[(int)_ecranEnCours].NomJournal);
+                _leTexte = "ESPACE pour: " + _listeJournal[(int)_ecranEnCours].NomJournal;  //LEO
                 if (keyboardState.IsKeyDown(Keys.Space))
                 {
-                    Console.WriteLine( _listeJournal[(int)_ecranEnCours].TexteJournal);
+                    _leTexte =  _listeJournal[(int)_ecranEnCours].TexteJournal;
+                    _timerTexte = 0;
                     _listeJournal[(int)_ecranEnCours].IsPrise = true;
                 }
             }
@@ -371,10 +401,11 @@ namespace Jeu
             if (rectPerso.Intersects(_listeCles[(int)_ecranEnCours].RectangleCle) && !_listeCles[(int)_ecranEnCours].IsPrise && _listeJournal[(int)_ecranEnCours].IsPrise)
             {
                 KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
-                Console.WriteLine("APPUYEZ SUR ESPACE POUR RECUPERER LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
+                _leTexte = "ESPACE pour: " + _listeCles[(int)_ecranEnCours].NomCle; //LEO
                 if (keyboardState.IsKeyDown(Keys.Space))
                 {
-                    Console.WriteLine("VOUS AVEZ TROUVE LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
+                    _leTexte = "Vous avez trouve la cle: " + _listeCles[(int)_ecranEnCours].NomCle; //LEO
+                    _timerTexte = 0;
                     _listeCles[(int)_ecranEnCours].IsPrise = true;
                 }
 
@@ -393,7 +424,7 @@ namespace Jeu
                     if (Bot.IsColliBot_Play(botActuel, persoActuel))
                     {
                         persoActuel.PtDeVie -= deltaSecond*botActuel.DegatsBot;
-                        Console.WriteLine("Point de vie perso "+j+" : "+(int)persoActuel.PtDeVie);
+                        //Console.WriteLine("Point de vie perso "+j+" : "+(int)persoActuel.PtDeVie);
                     }
                     if (persoActuel.PtDeVie <= 0)
                         _listeStartCompteurDead[j] = true;
@@ -427,12 +458,13 @@ namespace Jeu
             {
                 if (!_listePerso[i].IsInPlacard && _timer <= temp - 5)
                 {
-                    Console.WriteLine("tu peux te cacher en appuyant sur C");
+                    _leTexte = "G pour: se cacher"; //LEO
+                    //Console.WriteLine("tu peux te cacher en appuyant sur C");
 
-                    if (keyboardState.IsKeyDown(Keys.C))
+                    if (keyboardState.IsKeyDown(Keys.G))
                     {
                         _compteurPlacard= _compteurPlacard+1;
-                        Console.WriteLine($"perso {i + 1} caché / "+_compteurPlacard);
+                        //Console.WriteLine($"perso {i + 1} caché / "+_compteurPlacard);
                         temp = _timer;
                         _oldPosition = _listePerso[i].PositionPerso;
                         _listePerso[i].IsInPlacard = true;
@@ -443,13 +475,16 @@ namespace Jeu
             }
             if (_listePerso[i].IsInPlacard)
             {
-                Console.WriteLine("tu peux te décacher en appuyant sur E");
+                _leTexte = "T pour: sortir";    //LEO
+                //Console.WriteLine("tu peux te décacher en appuyant sur E");
 
-                if (keyboardState.IsKeyDown(Keys.E) && _timer <= temp - 0.5 || _compteurPlacard == 2 || _timer <= temp - 10)
+                if (keyboardState.IsKeyDown(Keys.T) && _timer <= temp - 0.5 || _compteurPlacard == 2 || _timer <= temp - 10)
                 { 
                     //Console.WriteLine(_compteurPlacard);
                     _compteurPlacard--;
-                    Console.WriteLine($"perso {i + 1} decaché");
+                    _leTexte = $"perso {i + 1} sorti";  //LEO
+                    _timerTexte = 0;
+                    //Console.WriteLine($"perso {i + 1} decaché");
                     temp = _timer;
                     _listePerso[i].PositionPerso = _oldPosition;
                     _listePerso[i].IsInPlacard = false;
@@ -514,9 +549,17 @@ namespace Jeu
         
         public void CreationJournal()
         {
-            _listeJournal.Add(new Journal(new Vector2(320, 300), "journal 1", _spriteJournal, 0, "Il faut que je trouve une clé pour rentrer dans le bâtiment!"));
-            _listeJournal.Add(new Journal(new Vector2(130, 255), "journal 2", _spriteJournal, 1, "Je crois que le musé est hanté, j'entends des bruits bizarre"));
-            _listeJournal.Add(new Journal(new Vector2(100, 150), "journal 3", _spriteJournal, 2, "Je me suis caché dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche..."));
+            //LEO
+            //LEO
+            //LEO
+            //les autres textes (genre les interactions), style récupérer une clé, aller dans un placard, récupérer un journal, le msg comme quoi ile te manque la clé -> c'est à afficher en bas de l'écran
+            //en vrai je te conseille de changer le vecteur de position du texte à chaque fois que tu le modifies, psq le texte fait pas toujours la même taille don il sera pas toujours centré (et c pas bo)
+            //les textes de fin (les textes des journaux) sont les textes à faire en image et à afficher
+            //si tu veux les modifier pour les rendre mieux pour que le joueur se sente à fond dedans vas-y!!!
+
+            _listeJournal.Add(new Journal(new Vector2(320, 300), "journal 1", _spriteJournal, 0, "Il faut que je trouve une cle pour rentrer dans le batiment!"));
+            _listeJournal.Add(new Journal(new Vector2(130, 255), "journal 2", _spriteJournal, 1, "Je crois que le muse est hante, j'entends des bruits bizarres"));
+            _listeJournal.Add(new Journal(new Vector2(100, 150), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche..."));
         }
         public void CreationCles()
         {
