@@ -74,7 +74,7 @@ namespace Jeu
         private int _tempsParHeure;
 
         //clés
-        List<Cle> _listeCles = new List<Cle>();
+        List<journal> _listeCles = new List<journal>();
         private AnimatedSprite _spriteCles;
 
         //dead  
