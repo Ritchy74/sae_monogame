@@ -21,8 +21,9 @@ namespace Jeu
         private bool _isPrise;
         private int _numeroJournal;
         private AnimatedSprite _spriteJournal;
+        private string _texteJournal;
 
-        public Journal(Vector2 positionJournal, string nomJournal, AnimatedSprite spriteJournal, int numeroJournal)
+        public Journal(Vector2 positionJournal, string nomJournal, AnimatedSprite spriteJournal, int numeroJournal, string texte)
         {
             PositionJournal = positionJournal;
             int HITBOX = 25;
@@ -32,6 +33,7 @@ namespace Jeu
             IsPrise = false;
             NumeroJournal = numeroJournal;
             SpriteJournal = spriteJournal;
+            TexteJournal = texte;
         }
 
         public Rectangle RectangleJournal
@@ -112,6 +114,17 @@ namespace Jeu
             }
         }
 
-       
+        public string TexteJournal
+        {
+            get
+            {
+                return this._texteJournal;
+            }
+
+            set
+            {
+                this._texteJournal = value;
+            }
+        }
     }
 }
