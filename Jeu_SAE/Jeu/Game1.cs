@@ -21,19 +21,9 @@ namespace Jeu
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        //listes
-        private List<Perso> _listePerso = new List<Perso>();                            //perso
-        private List<Bot> _listeBots = new List<Bot>();                            //bots
-        private List<ScreenMap> _listeScreenMap = new List<ScreenMap>();                //screens
+
+        //perso
         private List<Vector2> _listeVecteursSpawnParMap = new List<Vector2>();          //point de respawn par map
-        private List<Vector2> _listeVecteursRondeBot = new List<Vector2>();             //les points de passages quand les bots font leur ronde
-        private int _indiceRonde;
-        //placards
-        private List<Rectangle> _listePlacards = new List<Rectangle>();                 //liste de placards
-        private List<Vector2> _listePositionPlacards = new List<Vector2>();             //liste origine des placards
-        private Vector2 _oldPosition;
-        private float temp;
-        private int _compteurPlacard = 0;
         //nbr perso
         private int _nbrPerso;
         //perso1
@@ -42,22 +32,38 @@ namespace Jeu
         //perso2
         private AnimatedSprite _spritePerso2;
         private Perso _perso2;
+        private List<Perso> _listePerso = new List<Perso>();                            //perso
+        private List<Bot> _listeBots = new List<Bot>();                            //bots
+
+        //placards
+        private List<Rectangle> _listePlacards = new List<Rectangle>();                 //liste de placards
+        private List<Vector2> _listePositionPlacards = new List<Vector2>();             //liste origine des placards
+        private Vector2 _oldPosition;
+        private float temp;
+        private int _compteurPlacard = 0;
+
+        //bots
+        private int _indiceRonde;
+        private List<Vector2> _listeVecteursRondeBot = new List<Vector2>();             //les points de passages quand les bots font leur ronde
         //perso bot test
         private AnimatedSprite _spritePersoBotTest;
         private Bot _persoBotTest;
         //monstre
         private AnimatedSprite _spriteMonstre;
         private Bot _monstre;
+        
         //collision
         TypeCollisionMap _isCollisionSpeciale;
         //screens
         private ScreenMap _screenMapPiece0; //screen principal
         private ScreenMap _screenMapPiece1; //screen pièce 1
         private ScreenMap _screenMapPiece2;   //screen pièce2
+        private List<ScreenMap> _listeScreenMap = new List<ScreenMap>();                //screens
         //private ScreenMap _screenMapPiece3;   //screen pièce2
         private Ecran _ecranEnCours;            //screen actuel (nom pour comparer)
         //manager
         private readonly ScreenManager _screenManager;
+        
         //timer
         private float deltaSeconds;
         private float _timer;
@@ -66,9 +72,15 @@ namespace Jeu
         private string heure;
         private const int TEMPS_TOTAL = 300;
         private int _tempsParHeure;
+
+        //clés
+        List<Cle> _listeCles = new List<Cle>();
+        private AnimatedSprite _spriteCles;
+
         //dead  
         private List<bool> _listeStartCompteurDead = new List<bool>();    //mettre en liste pour tous persos
         private List<float> _listeCompteurDead = new List<float>();
+        
         //son, ambiance, musique
         private Song _ambiance;
         private SoundEffect _sonporte;        
@@ -139,10 +151,12 @@ namespace Jeu
             SpriteSheet animation1 = Content.Load<SpriteSheet>("motw.sf", new JsonContentLoader());  //importation animation1
             SpriteSheet animation2 = Content.Load<SpriteSheet>("joueur.sf", new JsonContentLoader());  //importation animation1
             SpriteSheet monstre = Content.Load<SpriteSheet>("monstre.sf", new JsonContentLoader());  //importation monstre
+            SpriteSheet spriteCle = Content.Load<SpriteSheet>("KeyIcons.sf", new JsonContentLoader());  //importation clés
             _spritePerso1 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePerso2 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePersoBotTest = new AnimatedSprite(animation1);        //sprite anime2 pour perso bot test
             _spriteMonstre = new AnimatedSprite(monstre);        //sprite monstre
+            _spriteCles = new AnimatedSprite(spriteCle);        //sprite clé
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
             _police = Content.Load<SpriteFont>("timer");
@@ -153,6 +167,8 @@ namespace Jeu
             CreationPersos();
             //creation bots
             CreationBots();
+            //creation clés
+            CreationCles();
             //creation maps
             CreationMaps();
 
@@ -162,6 +178,73 @@ namespace Jeu
             //initialisation screen principal
             _listeScreenMap[(int)_ecranEnCours].Initialize();
             _listeScreenMap[(int)_ecranEnCours].LoadContent();
+        }
+        protected override void Update(GameTime gameTime)
+        {
+
+            //quit game
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count == 0)
+                Exit();
+            //deltatime
+            deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //faire écouler le timer dans le jeu 
+            Time();
+            //collision perso avec bot
+            IsCollisionBot(deltaSeconds);
+            //collision cle
+            Rectangle rectPerso = new Rectangle((int)_listePerso[0].PositionPerso.X, (int)_listePerso[0].PositionPerso.Y, 48 - 2, 64 - 2);
+            if (rectPerso.Intersects(_listeCles[0].RectangleCle))
+                Console.WriteLine("VOUS AVEZ TROUVE LA CLE " + _listeCles[(int)_ecranEnCours].NomCle);
+
+            //deplacement chaque perso
+            _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
+            for (int i = 0; i < _listePerso.Count; i++)
+            {
+                //gérer les entrées et sorties dans les placards
+                MethodePlacard(i);
+
+                //récupérationdu type de colision
+                if (_listePerso[i].Collision != TypeCollisionMap.Rien)
+                    _isCollisionSpeciale = _listePerso[i].Collision;
+
+                //update position des perso
+                if (!_listePerso[i].IsInPlacard)
+                    _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl);
+
+
+                //changement vers piece 0
+                if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece0)
+                    ChangementScreen(Ecran.Piece0, _listeVecteursSpawnParMap[0]);
+                //changement vers piece 1
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)
+                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[1]);
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_basGauche)
+                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[2]);
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautGauche)
+                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[3]);
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautDroite)
+                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[4]);
+                //changement vers piece 2
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_bas)
+                    ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[5]);
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_haut)
+                    ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
+            }
+
+            //deplacement chaque bot
+            DeplacementBot(gameTime);
+
+            //
+            base.Update(gameTime);
+        }
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            SpriteBatch.Begin();
+            _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
+            base.Draw(gameTime);    //dessine objets
+            SpriteBatch.End();
         }
 
         public void Time()
@@ -339,67 +422,13 @@ namespace Jeu
             }
         }
 
-        protected override void Update(GameTime gameTime)
+        
+        public void CreationCles()
         {
-            
-            //quit game
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count==0)
-                Exit();
-            //deltatime
-            deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;     
-            //faire écouler le timer dans le jeu 
-            Time();     
-            //collision perso avec bot
-            IsCollisionBot(deltaSeconds);
-            //deplacement chaque perso
-            _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
-            for (int i = 0; i < _listePerso.Count; i++)
-            {
-                //gérer les entrées et sorties dans les placards
-                MethodePlacard(i);
-
-                //récupérationdu type de colision
-                if (_listePerso[i].Collision != TypeCollisionMap.Rien)
-                    _isCollisionSpeciale = _listePerso[i].Collision;
-
-                //update position des perso
-                if (!_listePerso[i].IsInPlacard)
-                    _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl);
-
-
-                //changement vers piece 0
-                if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece0)
-                    ChangementScreen(Ecran.Piece0, _listeVecteursSpawnParMap[0]);
-                //changement vers piece 1
-                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)
-                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[1]);
-                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_basGauche)
-                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[2]);
-                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautGauche)
-                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[3]);
-                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautDroite)
-                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[4]);
-                //changement vers piece 2
-                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_bas)
-                    ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[5]);
-                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_haut)
-                    ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
-            }
-
-            //deplacement chaque bot
-            DeplacementBot(gameTime);
-
-            //
-            base.Update(gameTime);
-        }
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            SpriteBatch.Begin();
-            _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
-            base.Draw(gameTime);    //dessine objets
-            SpriteBatch.End();
+            _listeCles.Add(new Cle(new Vector2(300, 300), "Cle principale",_spriteCles,0));
+            _listeCles.Add(new Cle(new Vector2(300, 300), "Cle 1",_spriteCles,1));
+            _listeCles.Add(new Cle(new Vector2(300, 300), "Cle 2",_spriteCles,2));
+            _listeCles.Add(new Cle(new Vector2(300, 300), "Cle 3",_spriteCles,3));
         }
         public void CreationBots()
         {
@@ -435,9 +464,9 @@ namespace Jeu
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version5/Piece_0", "obstacles", 640, 640);              //creation map0
-            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version5/Piece_1", "obstacles", 640, 640);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version5/Piece_2", "obstacles", 640, 640);              //creation map2
+            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version5/Piece_0", "obstacles", 640, 640,_listeCles[0]);              //creation map0
+            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version5/Piece_1", "obstacles", 640, 640, _listeCles[1]);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version5/Piece_2", "obstacles", 640, 640, _listeCles[2]);              //creation map2
             //_screenMapPiece3 = new ScreenMap(this, "mansion_maps_version2/Piece_3", "obstacles", 640, 640);              //creation map3
             //ajout des maps à la liste
             _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
