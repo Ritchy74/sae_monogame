@@ -374,7 +374,7 @@ namespace Jeu
             deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //faire écouler le timer dans le jeu 
-            if (_ecranEnCours != Ecran.Piece0)
+            if (_listeJournal[4].IsPrise)
                 Time();
             //collision perso avec bot
             IsCollisionBot(deltaSeconds);
@@ -445,7 +445,10 @@ namespace Jeu
                     if (!_listeCles[0].IsPrise) //clé dehors
                         _leTexte = $"Il vous manque: {_listeCles[0].NomCle}"; 
                     else
+                    {
                         ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[1]);
+                        heure = "00:00";
+                    }
                 }
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_milieu)
                     ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[5]);
@@ -574,8 +577,6 @@ namespace Jeu
 
             }
 
-            if (_timer <= 0)
-                Exit();
         }
         public void AffichagePV()
         {

@@ -155,7 +155,7 @@ namespace Jeu
             {
                 DistanceAggro = 10;
                 DegatsBot = 0;
-                VitesseBot = 20;
+                VitesseBot = 5;
             }
             else if (difficulte == 1)
             {
@@ -177,7 +177,8 @@ namespace Jeu
             }
             else if (difficulte == 4)
             {
-                DegatsBot = 50;
+                DegatsBot = 30;
+                DistanceAggro = 30;
                 VitesseBot = 15;
             }
         }
