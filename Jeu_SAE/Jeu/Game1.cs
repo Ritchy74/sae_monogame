@@ -122,6 +122,9 @@ namespace Jeu
         private AnimatedSprite _spriteMotor;
         private Motor _moteur;
 
+        //cheats
+        private bool _charles;
+
         public SpriteBatch SpriteBatch
         {
             get
@@ -199,6 +202,8 @@ namespace Jeu
             _posTextePage = new Vector2(0, 0);
             _afficherMessageSortir = false;
 
+            //cheats
+            _charles = false;
 
 
             base.Initialize();
@@ -283,7 +288,7 @@ namespace Jeu
             _monstre1 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
             _monstre2 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
             _monstre3 = new Bot(new Vector2(224, 256), _spriteMonstre, new Node(new Vector2(14, 16)));
-            _monstre4 = new Bot(new Vector2(200, 200), _spriteMonstre, new Node(new Vector2(8, 10)));
+            _monstre4 = new Bot(new Vector2(200, 200), _spriteMonstre, new Node(new Vector2(12, 14)));
             //ajout des bots à la liste
             _listeBots.Add(_monstre1);
             _listeBots.Add(_monstre2);
@@ -292,10 +297,9 @@ namespace Jeu
             //ajout des vecteurs de ronde à la liste
             _listeVecteursRondeBot = new Vector2[4, 4] { { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) },
                 { new Vector2(5, 5), new Vector2(32, 5), new Vector2(25, 16), new Vector2(27, 32) } ,
-                    { new Vector2(3, 5), new Vector2(32, 5), new Vector2(35, 35), new Vector2(17, 32) } ,
-                    { new Vector2(6, 11), new Vector2(33, 27), new Vector2(33, 6), new Vector2(6, 27) } };
+                    { new Vector2(3, 5), new Vector2(32, 5), new Vector2(34, 34), new Vector2(17, 32) } ,
+                    { new Vector2(12, 41), new Vector2(30, 27), new Vector2(33, 6), new Vector2(6, 27) } };
             _indiceRonde = 0;
-
         }
         public void CreationPersos()    //génération de tout ce qui tourne autour des perso
         {
@@ -315,11 +319,11 @@ namespace Jeu
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece0 = new ScreenMap(this, "mansion_V2.2/Piece_0", "obstacles", 640, 640, _listeCles[0], _listeJournal[0]);              //creation map0
-            _screenMapPiece1 = new ScreenMap(this, "mansion_V2.2/Piece_1", "obstacles", 640, 640, _listeCles[1], _listeJournal[1]);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_V2.2/Piece_2", "obstacles", 640, 640, _listeCles[2], _listeJournal[2]);              //creation map2
-            _screenMapPiece3 = new ScreenMap(this, "mansion_V2.2/Piece_3", "obstacles", 640, 640, _listeCles[3], _listeJournal[3]);              //creation map3
-            _screenMapPiece4 = new ScreenMap(this, "mansion_V2.2/Piece_4", "obstacles", 640, 640, _listeCles[4], _listeJournal[4]);              //creation map4
+            _screenMapPiece0 = new ScreenMap(this, "mansion_V2.3/Piece_0", "obstacles", 640, 640, _listeCles[0], _listeJournal[0]);              //creation map0
+            _screenMapPiece1 = new ScreenMap(this, "mansion_V2.3/Piece_1", "obstacles", 640, 640, _listeCles[1], _listeJournal[1]);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_V2.3/Piece_2", "obstacles", 640, 640, _listeCles[2], _listeJournal[2]);              //creation map2
+            _screenMapPiece3 = new ScreenMap(this, "mansion_V2.3/Piece_3", "obstacles", 640, 640, _listeCles[3], _listeJournal[3]);              //creation map3
+            _screenMapPiece4 = new ScreenMap(this, "mansion_V2.3/Piece_4", "obstacles", 640, 640, _listeCles[4], _listeJournal[4]);              //creation map4
             //ajout des maps à la liste
             _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
             _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
@@ -376,6 +380,10 @@ namespace Jeu
                 //_sonMort.Play();
                 Exit();
             }
+            //cheats
+            Cheating();
+
+            Console.WriteLine(_indiceRonde);
             //deltatime
             deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -410,6 +418,7 @@ namespace Jeu
                 //generateur
                 MethodeGenerateur(i);
                 //fog
+                _moteur.IsPrise = true;
                 if (!_moteur.IsPrise)
                     _vecteurFog = new Vector2(_listePerso[0].PositionPerso.X - 1000,_listePerso[0].PositionPerso.Y - 1000);
                 //gérer les entrées et sorties dans les placards
@@ -544,6 +553,26 @@ namespace Jeu
             SpriteBatch.End();
         }
 
+        public void Cheating()
+        {
+            if (!_charles)
+            {
+                KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
+                if (keyboardState.IsKeyDown(Keys.O) && keyboardState.IsKeyDown(Keys.K))
+                    _charles = true;
+            }
+            else
+            {
+                for (int i = 0; i < _listeCles.Count; i++)
+                {
+                    _listeCles[i].IsPrise = true;
+                }
+                for (int i = 0; i < _listeJournal.Count; i++)
+                {
+                    _listeJournal[i].IsPrise = true;
+                }
+            }
+        }
         public void Time()
         {
 
