@@ -46,6 +46,7 @@ namespace Jeu
         private int _indiceRonde;
         //private List<Vector2> _listeVecteursRondeBot = new List<Vector2>();             //les points de passages quand les bots font leur ronde
         private Vector2[,] _listeVecteursRondeBot;
+        private List<Vector2> _listeVecteursRondeBot2 = new List<Vector2>();
         //perso bot test
         private AnimatedSprite _spritePersoBotTest;
         private Bot _persoBotTest;
@@ -288,6 +289,12 @@ namespace Jeu
                 //gérer les journaux
                 MethodeJournal(i);
 
+                if (_listeJournal[2].IsPrise)
+                {
+                    _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0] });
+                    _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
+                }
+
                 //récupérationdu type de colision
                 if (_listePerso[i].Collision != TypeCollisionMap.Rien)
                     _isCollisionSpeciale = _listePerso[i].Collision;
@@ -340,7 +347,7 @@ namespace Jeu
                 }
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece3_bas)
                 {
-                    if (!_listeCles[1].IsPrise)
+                    if (!_listeCles[0].IsPrise)
                         _leTexte = $"Il vous manque: {_listeCles[2].NomCle}";   //LEO
                     else
                         ChangementScreen(Ecran.Piece3, _listeVecteursSpawnParMap[8]);
@@ -605,14 +612,15 @@ namespace Jeu
                 }
                 if (!(botActuel.CheminAPrendre.Parent is null) && botActuel.CheminAPrendre.Parent.FCost < botActuel.DistanceAggro && _compteurPlacard<_listePerso.Count)
                 {
-                    //Console.WriteLine("il te suit"+_compteurPlacard);
+                    //Console.WriteLine("il te suit");
                     _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i].MoveAStar(_listeScreenMap[(int)_ecranEnCours], gameTime); //on fait bouger le bot vers le perso le plus proche
                     //Console.WriteLine("bot in : " + chemin.Position+ " / bouge vers : "+chemin.Parent.Position);
                 }
                 else
                 {
                     //Console.WriteLine("il rentre");
-                    Node newDirection = new Node(_listeVecteursRondeBot[i,_indiceRonde]);
+                    //Console.WriteLine(_indiceRonde);
+                    Node newDirection = new Node(_listeVecteursRondeBot[(int)_ecranEnCours-1, _indiceRonde]);
                     newDirection.Parent = newDirection;
 
                     if (newDirection.Position.X == botX && newDirection.Position.Y == botY) //si on est arrivé au lieu de passage
@@ -647,10 +655,10 @@ namespace Jeu
         public void CreationBots()
         {
             //creation bot
-            _persoBotTest = new Bot(new Vector2(320, 320), _spritePersoBotTest, new Node(new Vector2(20, 20)));
+            //_persoBotTest = new Bot(new Vector2(320, 320), _spritePersoBotTest, new Node(new Vector2(20, 20)));
             _monstre1 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
             _monstre2 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
-            _monstre3 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
+            _monstre3 = new Bot(new Vector2(224, 256), _spriteMonstre, new Node(new Vector2(14, 16)));
             _monstre4 = new Bot(new Vector2(200, 200), _spriteMonstre, new Node(new Vector2(8, 10)));
             //ajout des bots à la liste
             _listeBots.Add(_monstre1);
@@ -659,9 +667,9 @@ namespace Jeu
             _listeBots.Add(_monstre4);
             //ajout des vecteurs de ronde à la liste
             _listeVecteursRondeBot = new Vector2[4, 4] { { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) },
-                { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) } ,
-                    { new Vector2(5, 7), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) } ,
-                    { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) } };
+                { new Vector2(5, 5), new Vector2(32, 5), new Vector2(25, 16), new Vector2(27, 32) } ,
+                    { new Vector2(3, 5), new Vector2(32, 5), new Vector2(35, 35), new Vector2(17, 32) } ,
+                    { new Vector2(6, 11), new Vector2(33, 27), new Vector2(33, 6), new Vector2(6, 27) } };
             _indiceRonde = 0;
 
         }
@@ -727,8 +735,8 @@ namespace Jeu
             {
                 _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
             }
-            _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0] });
-            _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
+            _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() {});
+            _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() {});
             _listeScreenMap[3].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[2] });
             _listeScreenMap[4].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[3] });
         }
@@ -742,6 +750,7 @@ namespace Jeu
         }
         public void ChangementScreen(Ecran versCetEcran, Vector2 newPosPerso)
         {
+            _indiceRonde = 0;
             for (int i = 0; i < _listePerso.Count; i++)
             {
                 _listePerso[i].IsInPlacard = false;
