@@ -491,7 +491,7 @@ namespace Jeu
                     _listeJournal[(int)_ecranEnCours].IsPrise = true;
                     _afficherMessageSortir = false;
                     _textePage = "";
-                    _pageAff = Content.Load<Texture2D>("PAGES/paper-horiz-demi");
+                    _pageAff = Content.Load<Texture2D>("PAGES/paper-horiz");
                     _posPage = new Vector2(-1500, -1500);
                     _posTextePage = new Vector2(0, 0);
                     _leTexte = "";
