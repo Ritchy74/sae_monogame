@@ -233,7 +233,7 @@ namespace Jeu
             _fog2J = Content.Load<Texture2D>("fog_2J");
 
             _vecteurFog = new Vector2(0, 0);
-            _moteur = new Motor(new Vector2(200, 200), _spriteMotor);
+            _moteur = new Motor(new Vector2(450, 145), _spriteMotor);
 
             MediaPlayer.Play(_ambiance);
 
@@ -425,7 +425,7 @@ namespace Jeu
 
                 //update position des perso
                 if (!_listePerso[i].IsInPlacard && !_afficherMessageSortir)
-                    _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl);
+                    _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl, _moteur.RectangleMotor);
 
 
                 //changement vers piece 0   (dehors)

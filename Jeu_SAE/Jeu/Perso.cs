@@ -139,7 +139,7 @@ namespace Jeu
             int y = (int)(PositionPerso.Y / screen.Map.TileHeight);
             return new Vector2(x, y);
         }
-        public void Move(ScreenMap screen, GameTime gameTime, TypeControl typeDeControle)
+        public void Move(ScreenMap screen, GameTime gameTime, TypeControl typeDeControle, Rectangle collision)
         {
             if (Animation != TypeAnimation.dead && Animation != TypeAnimation.idleDead)
             { 
@@ -200,6 +200,10 @@ namespace Jeu
                 //si pas de collision alors on avance
                 if (Collision == TypeCollisionMap.Rien && !toucheBordFenetre )
                     PositionPerso += walkSpeed * deplacement;
+
+            Rectangle rectPerso = new Rectangle((int)PositionPerso.X, (int)PositionPerso.Y+15, 37, 50);
+                if (collision.Intersects(rectPerso))
+                    PositionPerso -= walkSpeed * deplacement;
             }
 
             //jouer animation perso
