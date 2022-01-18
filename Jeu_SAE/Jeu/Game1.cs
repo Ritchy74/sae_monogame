@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace Jeu
 {
-    public enum Ecran { Piece0, Piece1, Piece2, Piece3 };
+    public enum Ecran { Piece0, Piece1, Piece2, Piece3, Piece4 };
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -58,8 +58,9 @@ namespace Jeu
         private ScreenMap _screenMapPiece0; //screen principal
         private ScreenMap _screenMapPiece1; //screen pièce 1
         private ScreenMap _screenMapPiece2;   //screen pièce2
+        private ScreenMap _screenMapPiece3;   //screen pièce3
+        private ScreenMap _screenMapPiece4;   //screen pièce4
         private List<ScreenMap> _listeScreenMap = new List<ScreenMap>();                //screens
-        //private ScreenMap _screenMapPiece3;   //screen pièce2
         private Ecran _ecranEnCours;            //screen actuel (nom pour comparer)
         //manager
         private readonly ScreenManager _screenManager;
@@ -294,38 +295,69 @@ namespace Jeu
 
                 //changement vers piece 0
                 if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece0)
+                {
+
+                    if (!_listeCles[4].IsPrise)
+                        _leTexte = $"Il vous manque: {_listeCles[0].NomCle}";
+                    else 
                     ChangementScreen(Ecran.Piece0, _listeVecteursSpawnParMap[0]);
+                }
                 //changement vers piece 1
-                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)  //depuis dehors
                 {
                     if (!_listeCles[0].IsPrise) //clé dehors
-                        _leTexte = $"Il vous manque: {_listeCles[0].NomCle}";   //LEO
-                    //Console.WriteLine($"Il vous faut la clé {_listeCles[0].NomCle} pour continuer!");
+                        _leTexte = $"Il vous manque: {_listeCles[0].NomCle}"; 
                     else
                         ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[1]);
                 }
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_milieu)
+                    ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[5]);
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_basGauche )
                     ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[2]);
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautGauche )
                     ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[3]);
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_hautDroite)
                     ChangementScreen(Ecran.Piece1, _listeVecteursSpawnParMap[4]);
+
                 //changement vers piece 2
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_bas)
                 {
-                    if (!_listeCles[1].IsPrise)
-                        _leTexte = $"Il vous manque: {_listeCles[1].NomCle}";   //LEO
-                    //Console.WriteLine($"Il vous faut la clé {_listeCles[1].NomCle} pour continuer!");
+                    if (!_listeCles[0].IsPrise)
+                        _leTexte = $"Il vous manque: {_listeCles[0].NomCle}";   //LEO
                     else
-                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[5]);
+                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
                 }
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_haut)
                 {
                     if (!_listeCles[1].IsPrise)
                         _leTexte = $"Il vous manque: {_listeCles[1].NomCle}";   //LEO
-                                                                                //Console.WriteLine($"Il vous faut la clé {_listeCles[1].NomCle} pour continuer!");
                     else
-                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
+                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[7]);
+                }
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece3_bas)
+                {
+                    if (!_listeCles[1].IsPrise)
+                        _leTexte = $"Il vous manque: {_listeCles[2].NomCle}";   //LEO
+                    else
+                        ChangementScreen(Ecran.Piece3, _listeVecteursSpawnParMap[8]);
+                }
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece3_haut)
+                {
+                    ChangementScreen(Ecran.Piece3, _listeVecteursSpawnParMap[9]);
+                }
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece4_bas)
+                {
+                    if (!_listeCles[3].IsPrise)
+                        _leTexte = $"Il vous manque: {_listeCles[3].NomCle}";   //LEO
+                    else
+                        ChangementScreen(Ecran.Piece4, _listeVecteursSpawnParMap[10]);
+                }
+                else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece4_haut)
+                {
+                    if (!_listeCles[3].IsPrise)
+                        _leTexte = $"Il vous manque: {_listeCles[3].NomCle}";   //LEO
+                    else
+                        ChangementScreen(Ecran.Piece4, _listeVecteursSpawnParMap[11]);
                 }
             }
 
@@ -593,25 +625,20 @@ namespace Jeu
         
         public void CreationJournal()
         {
-            //LEO
-            //LEO
-            //LEO
-            //les autres textes (genre les interactions), style récupérer une clé, aller dans un placard, récupérer un journal, le msg comme quoi ile te manque la clé -> c'est à afficher en bas de l'écran
-            //en vrai je te conseille de changer le vecteur de position du texte à chaque fois que tu le modifies, psq le texte fait pas toujours la même taille don il sera pas toujours centré (et c pas bo)
-            //les textes de fin (les textes des journaux) sont les textes à faire en image et à afficher
-            //si tu veux les modifier pour les rendre mieux pour que le joueur se sente à fond dedans vas-y!!!
-
             _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "journal 1", _spriteJournal, 0, "Il faut que je trouve une \ncle pour rentrer dans\n le batiment !", Content.Load<Texture2D>("PAGES/paper-horiz-demi")));
             _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(280, 50), "journal 2", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/paper-decouverte")));
             //_listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(40, 50), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche...", Content.Load<Texture2D>("PAGES/paper-sidebar-demi")));
             _listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(280, 130), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/paper-placard")));
+            _listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(280, 130), "journal 4", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/paper-placard")));
+            _listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(280, 130), "journal 5", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/paper-placard")));
         }
         public void CreationCles()
         {
             _listeCles.Add(new Cle(new Vector2(100, 500), "Cle principale",_spriteCles,0));
-            _listeCles.Add(new Cle(new Vector2( 515, 528), "Cle 1",_spriteCles,1));
-            _listeCles.Add(new Cle(new Vector2(107, 543), "Cle 2",_spriteCles,2));
-            //_listeCles.Add(new Cle(new Vector2(300, 300), "Cle 3",_spriteCles,3));
+            _listeCles.Add(new Cle(new Vector2(515, 528), "Cle 2",_spriteCles,1));
+            _listeCles.Add(new Cle(new Vector2(107, 543), "Cle 3",_spriteCles,2));
+            _listeCles.Add(new Cle(new Vector2(107, 543), "Cle 4", _spriteCles, 3));
+            _listeCles.Add(new Cle(new Vector2(200, 200), "Cle 5", _spriteCles, 4));
         }
         public void CreationBots()
         {
@@ -647,14 +674,17 @@ namespace Jeu
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece0 = new ScreenMap(this, "mansion_maps_version5/Piece_0", "obstacles", 640, 640,_listeCles[0],_listeJournal[0]);              //creation map0
-            _screenMapPiece1 = new ScreenMap(this, "mansion_maps_version5/Piece_1", "obstacles", 640, 640, _listeCles[1], _listeJournal[1]);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_maps_version5/Piece_2", "obstacles", 640, 640, _listeCles[2], _listeJournal[2]);              //creation map2
-            //_screenMapPiece3 = new ScreenMap(this, "mansion_maps_version2/Piece_3", "obstacles", 640, 640);              //creation map3
+            _screenMapPiece0 = new ScreenMap(this, "mansion_V2.1/Piece_0", "obstacles", 640, 640,_listeCles[0],_listeJournal[0]);              //creation map0
+            _screenMapPiece1 = new ScreenMap(this, "mansion_V2.1/Piece_1", "obstacles", 640, 640, _listeCles[1], _listeJournal[1]);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_V2.1/Piece_2", "obstacles", 640, 640, _listeCles[2], _listeJournal[2]);              //creation map2
+            _screenMapPiece3 = new ScreenMap(this, "mansion_V2.1/Piece_3", "obstacles", 640, 640, _listeCles[3], _listeJournal[3]);              //creation map3
+            _screenMapPiece4 = new ScreenMap(this, "mansion_V2.1/Piece_4", "obstacles", 640, 640, _listeCles[4], _listeJournal[4]);              //creation map4
             //ajout des maps à la liste
             _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
             _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
             _listeScreenMap.Add(_screenMapPiece2);      //ajout map2
+            _listeScreenMap.Add(_screenMapPiece3);      //ajout map2
+            _listeScreenMap.Add(_screenMapPiece4);      //ajout map2
             //_listeScreenMap.Add(_screenMapPiece3);      //ajout map3
 
             //ajout des vecteurs par piece et par map (plusieurs spawns par map)
@@ -663,21 +693,30 @@ namespace Jeu
             _listeVecteursSpawnParMap.Add(new Vector2(50, 425));    //ajout vecteur2 map1
             _listeVecteursSpawnParMap.Add(new Vector2(50, 90));     //ajout vecteur3 map1
             _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur4 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(390, 300));     //ajout vecteur5 map1
             _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur1 map2
             _listeVecteursSpawnParMap.Add(new Vector2(600, 450));     //ajout vecteur2 map2
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 490));     //ajout vecteur1 map3
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 90));     //ajout vecteur2 map3
+            _listeVecteursSpawnParMap.Add(new Vector2(385, 530));     //ajout vecteur1 map4
+            _listeVecteursSpawnParMap.Add(new Vector2(600, 90));     //ajout vecteur2 map4
 
             //ajout rectangles placards à la liste (1 par map)
             _listePositionPlacards.Add(new Vector2(0, 0));
             _listePositionPlacards.Add(new Vector2(448, 192));
             _listePositionPlacards.Add(new Vector2(80, 0));
+            _listePositionPlacards.Add(new Vector2(0, 0));
+            _listePositionPlacards.Add(new Vector2(0, 0));
             _listePlacards.Add(new Rectangle(0, 0, 0, 0));  //map 0 (y'en a pas)
             _listePlacards.Add(new Rectangle(448, 192, 64, 96));  //map1
             _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map2
+            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map3
+            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map4
 
             //initialisation position perso et bot
             for (int i = 0; i < _listeScreenMap.Count; i++)
             {
-            _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
+                _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
             }
             _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0] });
             _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
