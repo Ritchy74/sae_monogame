@@ -19,6 +19,7 @@ namespace Jeu
         private bool _onePlayerBool;
         private bool _twoPlayersBool;
         private SpriteFont _police;
+        private Texture2D _backGroundDeadTexture;
 
         public bool OnePlayerBool
         {
@@ -73,6 +74,7 @@ namespace Jeu
             _bouton1 = new Bouton(Content.Load<Texture2D>("boutons/rejouer"), Content.Load<Texture2D>("boutons/rejouer"), new Point(200, 112), _bouton1Pos, "Bouton Jouer", 1, true, 1.0f);
             _bouton2 = new Bouton(Content.Load<Texture2D>("boutons/menu"), Content.Load<Texture2D>("boutons/menu"), new Point(270, 120), _bouton2Pos, "Bouton Jouer2", 2, true, 1.0f);
             _police = Content.Load<SpriteFont>("PV");
+            _backGroundDeadTexture = Content.Load<Texture2D>("backgrounddead");
             // TODO: use this.Content to load your game content here
         }
         public void HandleInput(GameTime gametime)
@@ -120,7 +122,7 @@ namespace Jeu
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.Black);
 
             Rectangle sourceRectangle = new Rectangle(0, 0, _bouton1.Width, _bouton1.Height);
             Rectangle destinationRect = new Rectangle((int)_bouton1.Postition.X, (int)_bouton1.Postition.Y, _bouton1.Width, _bouton1.Height);
@@ -129,10 +131,11 @@ namespace Jeu
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(SpriteSortMode.FrontToBack);
-            _spriteBatch.DrawString(_police, "GAME OVER", new Vector2(313, 0), Color.Black);
+            _spriteBatch.DrawString(_police, "GAME OVER", new Vector2(313, 0), Color.Red);
             _spriteBatch.Draw(_bouton1.Texture, destinationRect, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             _spriteBatch.Draw(_bouton2.Texture, destinationBT2, rectbouton1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
-            
+            _spriteBatch.Draw(_backGroundDeadTexture, new Vector2(-10, -200), Color.White);
+
             _spriteBatch.End();
             base.Draw(gameTime);
         }

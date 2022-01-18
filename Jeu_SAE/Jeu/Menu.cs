@@ -20,6 +20,7 @@ namespace Jeu
         private bool _mouseLeftPressed;
         private bool _onePlayerBool;
         private bool _twoPlayersBool;
+        private Texture2D _backGroundTexture;
 
         public bool OnePlayerBool
         {
@@ -57,8 +58,8 @@ namespace Jeu
         protected override void Initialize()
         {
             
-            _bouton1Pos = new Vector2(300, 100);
-            _bouton2Pos = new Vector2(300, 300);
+            _bouton1Pos = new Vector2(100, 300);
+            _bouton2Pos = new Vector2(500, 300);
             _oneShotMouseState = OneShotMouseButton.GetState();
             _mouseLeftPressed = false;
             // TODO: Add your initialization logic here
@@ -73,6 +74,7 @@ namespace Jeu
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _bouton1 = new Bouton(Content.Load<Texture2D>("boutons/1joueur"), Content.Load<Texture2D>("boutons/1joueur_press"), new Point(200, 112), _bouton1Pos, "Bouton Jouer", 1, true, 1.0f);
             _bouton2 = new Bouton(Content.Load<Texture2D>("boutons/2joueur"), Content.Load<Texture2D>("boutons/2joueur_press"), new Point(200, 112), _bouton2Pos, "Bouton Jouer2", 2, true, 1.0f);
+            _backGroundTexture = Content.Load<Texture2D>("background");
             // TODO: use this.Content to load your game content here
         }
         public void HandleInput(GameTime gametime)
@@ -120,7 +122,7 @@ namespace Jeu
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.Black);
 
             Rectangle sourceRectangle = new Rectangle(0, 0, _bouton1.Width, _bouton1.Height);
             Rectangle destinationRect = new Rectangle((int)_bouton1.Postition.X, (int)_bouton1.Postition.Y, _bouton1.Width, _bouton1.Height);
@@ -129,6 +131,7 @@ namespace Jeu
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin(SpriteSortMode.FrontToBack);
+            _spriteBatch.Draw(_backGroundTexture, new Vector2(50, 0), Color.White);
             _spriteBatch.Draw(_bouton1.Texture, destinationRect, sourceRectangle, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             _spriteBatch.Draw(_bouton2.Texture, destinationBT2, rectbouton1, Color.White, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
             _spriteBatch.End();
