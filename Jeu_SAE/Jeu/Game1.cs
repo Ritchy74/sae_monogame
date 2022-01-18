@@ -115,8 +115,11 @@ namespace Jeu
         private float _timerTexte;
 
         //fog
-        private Texture2D _fog;
+        private Texture2D _fog1J;
+        private Texture2D _fog2J;
         private Vector2 _vecteurFog;
+        private AnimatedSprite _spriteMotor;
+        private Motor _moteur;
 
         public SpriteBatch SpriteBatch
         {
@@ -208,13 +211,15 @@ namespace Jeu
             SpriteSheet animation2 = Content.Load<SpriteSheet>("joueur.sf", new JsonContentLoader());  //importation animation1
             SpriteSheet monstre = Content.Load<SpriteSheet>("monstre.sf", new JsonContentLoader());  //importation monstre
             SpriteSheet spriteCle = Content.Load<SpriteSheet>("KeyIcons.sf", new JsonContentLoader());  //importation clés
-            SpriteSheet spriteJournal = Content.Load<SpriteSheet>("page.sf", new JsonContentLoader());  //importation clés
+            SpriteSheet spriteJournal = Content.Load<SpriteSheet>("page.sf", new JsonContentLoader());  //importation journaux
+            SpriteSheet spriteMotor = Content.Load<SpriteSheet>("motor.sf", new JsonContentLoader());  //importation motor
             _spritePerso1 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePerso2 = new AnimatedSprite(animation2);        //sprite anime1 pour perso
             _spritePersoBotTest = new AnimatedSprite(animation1);        //sprite anime2 pour perso bot test
             _spriteMonstre = new AnimatedSprite(monstre);        //sprite monstre
             _spriteCles = new AnimatedSprite(spriteCle);        //sprite clé
             _spriteJournal = new AnimatedSprite(spriteJournal);        //sprite journal
+            _spriteMotor = new AnimatedSprite(spriteMotor);        //sprite motor
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
             _sonPage = Content.Load<SoundEffect>("sounds/FlippingPages");
@@ -224,8 +229,11 @@ namespace Jeu
             _imgCoeur2 = Content.Load<Texture2D>("coeur");
             _policeTexte = Content.Load<SpriteFont>("texte");
             //fog
-            _fog = Content.Load<Texture2D>("calque");
+            _fog1J = Content.Load<Texture2D>("fog_1J");
+            _fog2J = Content.Load<Texture2D>("fog_2J");
+
             _vecteurFog = new Vector2(0, 0);
+            _moteur = new Motor(new Vector2(200, 200), _spriteMotor);
 
             MediaPlayer.Play(_ambiance);
 
@@ -253,6 +261,115 @@ namespace Jeu
             //initialisation screen principal
             _listeScreenMap[(int)_ecranEnCours].Initialize();
             _listeScreenMap[(int)_ecranEnCours].LoadContent();
+        }
+
+        public void CreationJournal()
+        {
+            _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "journal 1", _spriteJournal, 0, "", Content.Load<Texture2D>("PAGES/papier0")));
+            _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(10, 50), "journal 2", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/papier1")));
+            //_listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(40, 50), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche...", Content.Load<Texture2D>("PAGES/paper-sidebar-demi")));
+            _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(60, 80), new Vector2(60, 70), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/papier2")));
+            _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(280, 130), "journal 4", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/papier3")));
+            _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(280, 130), "journal 5", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/papier4")));
+        }
+        public void CreationCles()
+        {
+            _listeCles.Add(new Cle(new Vector2(320, 300), "Cle principale", _spriteCles, 0));
+            _listeCles.Add(new Cle(new Vector2(515, 528), "Cle 2", _spriteCles, 1));
+            _listeCles.Add(new Cle(new Vector2(107, 543), "Cle 3", _spriteCles, 2));
+            _listeCles.Add(new Cle(new Vector2(400, 543), "Cle 4", _spriteCles, 3));
+            _listeCles.Add(new Cle(new Vector2(340, 305), "Cle 5", _spriteCles, 4));
+        }
+        public void CreationBots()
+        {
+            //creation bot
+            //_persoBotTest = new Bot(new Vector2(320, 320), _spritePersoBotTest, new Node(new Vector2(20, 20)));
+            _monstre1 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
+            _monstre2 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
+            _monstre3 = new Bot(new Vector2(224, 256), _spriteMonstre, new Node(new Vector2(14, 16)));
+            _monstre4 = new Bot(new Vector2(200, 200), _spriteMonstre, new Node(new Vector2(8, 10)));
+            //ajout des bots à la liste
+            _listeBots.Add(_monstre1);
+            _listeBots.Add(_monstre2);
+            _listeBots.Add(_monstre3);
+            _listeBots.Add(_monstre4);
+            //ajout des vecteurs de ronde à la liste
+            _listeVecteursRondeBot = new Vector2[4, 4] { { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) },
+                { new Vector2(5, 5), new Vector2(32, 5), new Vector2(25, 16), new Vector2(27, 32) } ,
+                    { new Vector2(3, 5), new Vector2(32, 5), new Vector2(35, 35), new Vector2(17, 32) } ,
+                    { new Vector2(6, 11), new Vector2(33, 27), new Vector2(33, 6), new Vector2(6, 27) } };
+            _indiceRonde = 0;
+
+        }
+        public void CreationPersos()    //génération de tout ce qui tourne autour des perso
+        {
+            //creation persos
+            _perso1 = new Perso(new Vector2(320, 450), _spritePerso1, TypeControl.Clavier_HBGD);   //creation perso1
+            _perso2 = new Perso(new Vector2(320, 450), _spritePerso2, TypeControl.Clavier_ZQSD);    //creation perso2
+            //ajout des perso à la liste
+            _listePerso.Add(_perso1);   //perso1
+            if (NbrPerso == 2)
+                _listePerso.Add(_perso2);   //perso2
+            //initialisation des compteurs de mort pour les persos
+            for (int i = 0; i < _listePerso.Count; i++)
+            {
+                _listeStartCompteurDead.Add(false);
+                _listeCompteurDead.Add(0);
+            }
+        }
+        public void CreationMaps()  //génération de tout ce qui tourne autour des maps
+        {
+            _screenMapPiece0 = new ScreenMap(this, "mansion_V2.2/Piece_0", "obstacles", 640, 640, _listeCles[0], _listeJournal[0]);              //creation map0
+            _screenMapPiece1 = new ScreenMap(this, "mansion_V2.2/Piece_1", "obstacles", 640, 640, _listeCles[1], _listeJournal[1]);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_V2.2/Piece_2", "obstacles", 640, 640, _listeCles[2], _listeJournal[2]);              //creation map2
+            _screenMapPiece3 = new ScreenMap(this, "mansion_V2.2/Piece_3", "obstacles", 640, 640, _listeCles[3], _listeJournal[3]);              //creation map3
+            _screenMapPiece4 = new ScreenMap(this, "mansion_V2.2/Piece_4", "obstacles", 640, 640, _listeCles[4], _listeJournal[4]);              //creation map4
+            //ajout des maps à la liste
+            _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
+            _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
+            _listeScreenMap.Add(_screenMapPiece2);      //ajout map2
+            _listeScreenMap.Add(_screenMapPiece3);      //ajout map2
+            _listeScreenMap.Add(_screenMapPiece4);      //ajout map2
+            //_listeScreenMap.Add(_screenMapPiece3);      //ajout map3
+
+            //ajout des vecteurs par piece et par map (plusieurs spawns par map)
+            _listeVecteursSpawnParMap.Add(new Vector2(320, 300));   //ajout vecteur1 map0
+            _listeVecteursSpawnParMap.Add(new Vector2(320, 550));   //ajout vecteur1 map1 
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 425));    //ajout vecteur2 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 90));     //ajout vecteur3 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur4 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(390, 300));     //ajout vecteur5 map1
+            _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur1 map2
+            _listeVecteursSpawnParMap.Add(new Vector2(600, 450));     //ajout vecteur2 map2
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 490));     //ajout vecteur1 map3
+            _listeVecteursSpawnParMap.Add(new Vector2(50, 90));     //ajout vecteur2 map3
+            _listeVecteursSpawnParMap.Add(new Vector2(385, 530));     //ajout vecteur1 map4
+            _listeVecteursSpawnParMap.Add(new Vector2(600, 90));     //ajout vecteur2 map4
+
+            //ajout rectangles placards à la liste (1 par map)
+            _listePositionPlacards.Add(new Vector2(0, 0));
+            _listePositionPlacards.Add(new Vector2(448, 192));
+            _listePositionPlacards.Add(new Vector2(80, 0));
+            _listePositionPlacards.Add(new Vector2(0, 0));
+            _listePositionPlacards.Add(new Vector2(0, 0));
+            _listePlacards.Add(new Rectangle(0, 0, 0, 0));  //map 0 (y'en a pas)
+            _listePlacards.Add(new Rectangle(448, 192, 64, 96));  //map1
+            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map2
+            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map3
+            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map4
+
+            //initialisation position perso et bot
+            for (int i = 0; i < _listeScreenMap.Count; i++)
+            {
+                _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
+            }
+            _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { });
+            _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { });
+            _listeScreenMap[3].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[2] });
+            _listeScreenMap[4].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[3] });
+
+            //motor
+            _listeScreenMap[4].LeMotor = _moteur;
         }
         protected override void Update(GameTime gameTime)
         {
@@ -316,7 +433,7 @@ namespace Jeu
                     _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl);
 
 
-                //changement vers piece 0
+                //changement vers piece 0   (dehors)
                 if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece0)
                 {
 
@@ -359,6 +476,8 @@ namespace Jeu
                     else
                         ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
                 }
+
+                //changement vers piece 3
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece3_bas)
                 {
                     if (!_listeCles[2].IsPrise)
@@ -370,9 +489,11 @@ namespace Jeu
                 {
                     ChangementScreen(Ecran.Piece3, _listeVecteursSpawnParMap[9]);
                 }
+
+                //changement vers piece 4
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece4_bas)
                 {
-                    if (!_listeCles[3].IsPrise)
+                    if (!_listeCles[0].IsPrise)
                         _leTexte = $"Il vous manque: {_listeCles[3].NomCle}";   //LEO
                     else
                         ChangementScreen(Ecran.Piece4, _listeVecteursSpawnParMap[10]);
@@ -399,7 +520,12 @@ namespace Jeu
             SpriteBatch.Begin();
             base.Draw(gameTime);    //dessine objets
             if (_ecranEnCours != Ecran.Piece0)
-                _spriteBatch.Draw(_fog, _vecteurFog, Color.White);
+            {
+                if (_listePerso.Count == 1)
+                    _spriteBatch.Draw(_fog1J, _vecteurFog, Color.White);
+                else
+                    _spriteBatch.Draw(_fog2J, _vecteurFog, Color.White);
+            }
             _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
             _spriteBatch.Draw(_imgCoeur1, _posCoeur1, Color.White);
             _spriteBatch.Draw(_imgCoeur2, _posCoeur2, Color.White);
@@ -663,111 +789,7 @@ namespace Jeu
         }
 
         
-        public void CreationJournal()
-        {
-            _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "journal 1", _spriteJournal, 0, "", Content.Load<Texture2D>("PAGES/papier0")));
-            _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(10, 50), "journal 2", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/papier1")));
-            //_listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(40, 50), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche...", Content.Load<Texture2D>("PAGES/paper-sidebar-demi")));
-            _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(60, 80), new Vector2(60, 70), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/papier2")));
-            _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(280, 130), "journal 4", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/papier3")));
-            _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(280, 130), "journal 5", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/papier4")));
-        }
-        public void CreationCles()
-        {
-            _listeCles.Add(new Cle(new Vector2(320, 300), "Cle principale",_spriteCles,0));
-            _listeCles.Add(new Cle(new Vector2(515, 528), "Cle 2",_spriteCles,1));
-            _listeCles.Add(new Cle(new Vector2(107, 543), "Cle 3",_spriteCles,2));
-            _listeCles.Add(new Cle(new Vector2(400, 543), "Cle 4", _spriteCles, 3));
-            _listeCles.Add(new Cle(new Vector2(340, 305), "Cle 5", _spriteCles, 4));
-        }
-        public void CreationBots()
-        {
-            //creation bot
-            //_persoBotTest = new Bot(new Vector2(320, 320), _spritePersoBotTest, new Node(new Vector2(20, 20)));
-            _monstre1 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
-            _monstre2 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
-            _monstre3 = new Bot(new Vector2(224, 256), _spriteMonstre, new Node(new Vector2(14, 16)));
-            _monstre4 = new Bot(new Vector2(200, 200), _spriteMonstre, new Node(new Vector2(8, 10)));
-            //ajout des bots à la liste
-            _listeBots.Add(_monstre1);
-            _listeBots.Add(_monstre2);
-            _listeBots.Add(_monstre3);
-            _listeBots.Add(_monstre4);
-            //ajout des vecteurs de ronde à la liste
-            _listeVecteursRondeBot = new Vector2[4, 4] { { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) },
-                { new Vector2(5, 5), new Vector2(32, 5), new Vector2(25, 16), new Vector2(27, 32) } ,
-                    { new Vector2(3, 5), new Vector2(32, 5), new Vector2(35, 35), new Vector2(17, 32) } ,
-                    { new Vector2(6, 11), new Vector2(33, 27), new Vector2(33, 6), new Vector2(6, 27) } };
-            _indiceRonde = 0;
-
-        }
-        public void CreationPersos()    //génération de tout ce qui tourne autour des perso
-        {
-            //creation persos
-            _perso1 = new Perso(new Vector2(320, 450), _spritePerso1, TypeControl.Clavier_HBGD);   //creation perso1
-            _perso2 = new Perso(new Vector2(320, 450), _spritePerso2, TypeControl.Clavier_ZQSD);    //creation perso2
-            //ajout des perso à la liste
-            _listePerso.Add(_perso1);   //perso1
-            if (NbrPerso==2)
-                _listePerso.Add(_perso2);   //perso2
-            //initialisation des compteurs de mort pour les persos
-            for (int i =0; i<_listePerso.Count;i++)
-            {
-                _listeStartCompteurDead.Add(false);
-                _listeCompteurDead.Add(0);
-            }
-        }
-        public void CreationMaps()  //génération de tout ce qui tourne autour des maps
-        {
-            _screenMapPiece0 = new ScreenMap(this, "mansion_V2.2/Piece_0", "obstacles", 640, 640,_listeCles[0],_listeJournal[0]);              //creation map0
-            _screenMapPiece1 = new ScreenMap(this, "mansion_V2.2/Piece_1", "obstacles", 640, 640, _listeCles[1], _listeJournal[1]);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_V2.2/Piece_2", "obstacles", 640, 640, _listeCles[2], _listeJournal[2]);              //creation map2
-            _screenMapPiece3 = new ScreenMap(this, "mansion_V2.2/Piece_3", "obstacles", 640, 640, _listeCles[3], _listeJournal[3]);              //creation map3
-            _screenMapPiece4 = new ScreenMap(this, "mansion_V2.2/Piece_4", "obstacles", 640, 640, _listeCles[4], _listeJournal[4]);              //creation map4
-            //ajout des maps à la liste
-            _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
-            _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
-            _listeScreenMap.Add(_screenMapPiece2);      //ajout map2
-            _listeScreenMap.Add(_screenMapPiece3);      //ajout map2
-            _listeScreenMap.Add(_screenMapPiece4);      //ajout map2
-            //_listeScreenMap.Add(_screenMapPiece3);      //ajout map3
-
-            //ajout des vecteurs par piece et par map (plusieurs spawns par map)
-            _listeVecteursSpawnParMap.Add(new Vector2(320, 300));   //ajout vecteur1 map0
-            _listeVecteursSpawnParMap.Add(new Vector2(320, 550));   //ajout vecteur1 map1 
-            _listeVecteursSpawnParMap.Add(new Vector2(50, 425));    //ajout vecteur2 map1
-            _listeVecteursSpawnParMap.Add(new Vector2(50, 90));     //ajout vecteur3 map1
-            _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur4 map1
-            _listeVecteursSpawnParMap.Add(new Vector2(390, 300));     //ajout vecteur5 map1
-            _listeVecteursSpawnParMap.Add(new Vector2(590, 90));     //ajout vecteur1 map2
-            _listeVecteursSpawnParMap.Add(new Vector2(600, 450));     //ajout vecteur2 map2
-            _listeVecteursSpawnParMap.Add(new Vector2(50, 490));     //ajout vecteur1 map3
-            _listeVecteursSpawnParMap.Add(new Vector2(50, 90));     //ajout vecteur2 map3
-            _listeVecteursSpawnParMap.Add(new Vector2(385, 530));     //ajout vecteur1 map4
-            _listeVecteursSpawnParMap.Add(new Vector2(600, 90));     //ajout vecteur2 map4
-
-            //ajout rectangles placards à la liste (1 par map)
-            _listePositionPlacards.Add(new Vector2(0, 0));
-            _listePositionPlacards.Add(new Vector2(448, 192));
-            _listePositionPlacards.Add(new Vector2(80, 0));
-            _listePositionPlacards.Add(new Vector2(0, 0));
-            _listePositionPlacards.Add(new Vector2(0, 0));
-            _listePlacards.Add(new Rectangle(0, 0, 0, 0));  //map 0 (y'en a pas)
-            _listePlacards.Add(new Rectangle(448, 192, 64, 96));  //map1
-            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map2
-            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map3
-            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map4
-
-            //initialisation position perso et bot
-            for (int i = 0; i < _listeScreenMap.Count; i++)
-            {
-                _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
-            }
-            _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() {});
-            _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() {});
-            _listeScreenMap[3].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[2] });
-            _listeScreenMap[4].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[3] });
-        }
+        
         public void ReinitialisationPosition(Vector2 position)
         {
             for (int i = 0; i < _listePerso.Count; i++)

@@ -37,6 +37,8 @@ namespace Jeu
         //taille fenêtre
         public static int WIDTH_FENETRE = 800;
         public static int HEIGHT_FENETRE = 640;
+        //motor
+        private Motor _motor;
 
         public TiledMap Map
         {
@@ -87,6 +89,19 @@ namespace Jeu
             set
             {
                 this._lesBotsADessiner = value;
+            }
+        }
+
+        internal Motor LeMotor
+        {
+            get
+            {
+                return this._motor;
+            }
+
+            set
+            {
+                this._motor = value;
             }
         }
 
@@ -150,6 +165,10 @@ namespace Jeu
             if (!this._journalADessiner.IsPrise)
             {
                 this.game.SpriteBatch.Draw(this._journalADessiner.SpriteJournal, this._journalADessiner.PositionJournal); //dessine le journal
+            }
+            if (!(LeMotor is null))
+            {
+                this.game.SpriteBatch.Draw(LeMotor.SpriteMotor, LeMotor.PositionMotor); //dessine motor
             }
         }
     }
