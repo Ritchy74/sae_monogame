@@ -385,7 +385,6 @@ namespace Jeu
             //cheats
             Cheating();
 
-            Console.WriteLine(_indiceRonde);
             //deltatime
             deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -867,7 +866,7 @@ namespace Jeu
                 if (_compteurPlacard>1)
                     _compteurPlacard--;
             }
-            Console.WriteLine($"CHARGEMENT  {versCetEcran.ToString()}");
+            //Console.WriteLine($"CHARGEMENT  {versCetEcran.ToString()}");
             ReinitialisationPosition(newPosPerso);
             //_listeScreenMap[(int)_ecranEnCours].UpdateListBotsAAfficher(new List<Bot>()); 
             _ecranEnCours = versCetEcran;                   //changement enum ecran

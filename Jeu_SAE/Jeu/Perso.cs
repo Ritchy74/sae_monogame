@@ -255,7 +255,7 @@ namespace Jeu
 
                 }
             }
-            Console.WriteLine("collision : " + collision);
+            //Console.WriteLine("collision : " + collision);
             return collision;
         }
         
