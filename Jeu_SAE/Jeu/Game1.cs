@@ -457,7 +457,10 @@ namespace Jeu
             if (rectPerso.Intersects(_listeJournal[(int)_ecranEnCours].RectangleJournal) && !_listeJournal[(int)_ecranEnCours].IsPrise )
             {
                 if (!_afficherMessageSortir)
-                    _leTexte = " ESPACE pour: " + _listeJournal[(int)_ecranEnCours].NomJournal;
+                {
+                    _leTexte = " ESPACE pour : " + _listeJournal[(int)_ecranEnCours].NomJournal;
+                    _positionTexte = new Vector2(170, 580);
+                }
                 else
                     _leTexte = " C pour fermer la page";
                 if (keyboardState.IsKeyDown(Keys.Space))
@@ -466,10 +469,11 @@ namespace Jeu
                     _pageAff = _listeJournal[(int)_ecranEnCours].Page;
                     _posPage = _listeJournal[(int)_ecranEnCours].PositionFeuille;
                     _posTextePage = _listeJournal[(int)_ecranEnCours].PositionTexte;
+                    _positionTexte = new Vector2(_posPage.X + 128, _posPage.Y + 502);
                     _afficherMessageSortir = true;
                     //_sonPage.Play();
                 }
-                else if (keyboardState.IsKeyDown(Keys.C))
+                else if (keyboardState.IsKeyDown(Keys.C) && _afficherMessageSortir)
                 {
                     _listeJournal[(int)_ecranEnCours].IsPrise = true;
                     _afficherMessageSortir = false;
@@ -478,6 +482,7 @@ namespace Jeu
                     _posPage = new Vector2(-1500, -1500);
                     _posTextePage = new Vector2(0, 0);
                     _leTexte = "";
+                    _positionTexte = new Vector2(150, 580);
                     //_sonPage.Play();
                 }
             }
@@ -489,11 +494,13 @@ namespace Jeu
             {
                 KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
                 _leTexte = "ESPACE pour: " + _listeCles[(int)_ecranEnCours].NomCle; //LEO
+                _positionTexte = new Vector2(200, 580);
                 if (keyboardState.IsKeyDown(Keys.Space))
                 {
                     _leTexte = "Vous avez trouve la cle: " + _listeCles[(int)_ecranEnCours].NomCle; //LEO
                     _timerTexte = 0;
                     _listeCles[(int)_ecranEnCours].IsPrise = true;
+                    _positionTexte = new Vector2(150, 580);
                 }
 
             }
@@ -546,6 +553,7 @@ namespace Jeu
                 if (!_listePerso[i].IsInPlacard && _timer <= temp - 5)
                 {
                     _leTexte = " G pour se cacher"; //LEO
+                    _positionTexte = new Vector2(180, 580);
                     //Console.WriteLine("tu peux te cacher en appuyant sur C");
 
                     if (keyboardState.IsKeyDown(Keys.G))
@@ -553,6 +561,7 @@ namespace Jeu
                         _compteurPlacard= _compteurPlacard+1;
                         //Console.WriteLine($"perso {i + 1} caché / "+_compteurPlacard);
                         temp = _timer;
+                        _positionTexte = new Vector2(150, 580);
                         _oldPosition = _listePerso[i].PositionPerso;
                         _listePerso[i].IsInPlacard = true;
                         //_listePerso[i].PositionPerso = _listePositionPlacards[(int)_ecranEnCours] ;
@@ -563,6 +572,7 @@ namespace Jeu
             if (_listePerso[i].IsInPlacard)
             {
                 _leTexte = " T pour sortir";    //LEO
+                _positionTexte = new Vector2(180, 580);
                 //Console.WriteLine("tu peux te décacher en appuyant sur E");
 
                 if (keyboardState.IsKeyDown(Keys.T) && _timer <= temp - 0.5 || _compteurPlacard == 2 || _timer <= temp - 10)
@@ -572,6 +582,7 @@ namespace Jeu
                     _leTexte = $"perso {i + 1} sorti";  //LEO
                     _timerTexte = 0;
                     //Console.WriteLine($"perso {i + 1} decaché");
+                    _positionTexte = new Vector2(150, 580);
                     temp = _timer;
                     _listePerso[i].PositionPerso = _oldPosition;
                     _listePerso[i].IsInPlacard = false;
@@ -640,7 +651,7 @@ namespace Jeu
             _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "journal 1", _spriteJournal, 0, "", Content.Load<Texture2D>("PAGES/papier-entree")));
             _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(10, 50), "journal 2", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/papier-muse")));
             //_listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(40, 50), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche...", Content.Load<Texture2D>("PAGES/paper-sidebar-demi")));
-            _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(60, 80), new Vector2(60, 70), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/papier-placard2")));
+            _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(60, 80), new Vector2(60, 70), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/papier-muse")));
             _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(280, 130), "journal 4", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/papier-placard2")));
             _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(280, 130), "journal 5", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/papier-placard2")));
         }
