@@ -286,13 +286,14 @@ namespace Jeu
             if (_perso2.PtDeVie <= 0)
                 pvPerso2 = 0;
 
-            //fog
-            _vecteurFog = new Vector2(_listePerso[0].PositionPerso.X - 1000,_listePerso[0].PositionPerso.Y - 1000);
 
             //deplacement chaque perso
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
             for (int i = 0; i < _listePerso.Count; i++)
             {
+
+                //fog
+            _vecteurFog = new Vector2(_listePerso[0].PositionPerso.X - 1000,_listePerso[0].PositionPerso.Y - 1000);
                 //gérer les entrées et sorties dans les placards
                 MethodePlacard(i);
                 //gérer les clés
@@ -320,9 +321,11 @@ namespace Jeu
                 {
 
                     if (!_listeCles[4].IsPrise)
-                        _leTexte = $"Il vous manque: {_listeCles[0].NomCle}";
+                        _leTexte = $"Il vous manque: {_listeCles[4].NomCle}";
+                    else if (_timer>=0)
+                        _leTexte = "Vous devez attendre 6H pour sortir";
                     else 
-                    ChangementScreen(Ecran.Piece0, _listeVecteursSpawnParMap[0]);
+                        ChangementScreen(Ecran.Piece0, _listeVecteursSpawnParMap[0]);
                 }
                 //changement vers piece 1
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)  //depuis dehors
@@ -586,6 +589,7 @@ namespace Jeu
             {
                 _leTexte = " T pour sortir";    //LEO
                 _positionTexte = new Vector2(180, 580);
+                _vecteurFog = new Vector2(_oldPosition.X - 1000, _oldPosition.Y - 1000);
                 //Console.WriteLine("tu peux te décacher en appuyant sur E");
 
                 if (keyboardState.IsKeyDown(Keys.T) && _timer <= temp - 0.5 || _compteurPlacard == 2 || _timer <= temp - 10)
