@@ -208,6 +208,48 @@
 /processor:TiledMapTilesetProcessor
 /build:mansion_V2.1/tiles_mansion.tsx
 
+#begin mansion_V2.2/nesx2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:mansion_V2.2/nesx2.png
+
+#begin mansion_V2.2/piece_0.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_V2.2/piece_0.tmx
+
+#begin mansion_V2.2/piece_1.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_V2.2/piece_1.tmx
+
+#begin mansion_V2.2/piece_2.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_V2.2/piece_2.tmx
+
+#begin mansion_V2.2/piece_3.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_V2.2/piece_3.tmx
+
+#begin mansion_V2.2/piece_4.tmx
+/importer:TiledMapImporter
+/processor:TiledMapProcessor
+/build:mansion_V2.2/piece_4.tmx
+
+#begin mansion_V2.2/tiles_mansion.tsx
+/importer:TiledMapTilesetImporter
+/processor:TiledMapTilesetProcessor
+/build:mansion_V2.2/tiles_mansion.tsx
+
 #begin monstre.png
 /importer:TextureImporter
 /processor:TextureProcessor

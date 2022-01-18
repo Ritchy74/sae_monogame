@@ -44,13 +44,17 @@ namespace Jeu
 
         //bots
         private int _indiceRonde;
-        private List<Vector2> _listeVecteursRondeBot = new List<Vector2>();             //les points de passages quand les bots font leur ronde
+        //private List<Vector2> _listeVecteursRondeBot = new List<Vector2>();             //les points de passages quand les bots font leur ronde
+        private Vector2[,] _listeVecteursRondeBot;
         //perso bot test
         private AnimatedSprite _spritePersoBotTest;
         private Bot _persoBotTest;
         //monstre
         private AnimatedSprite _spriteMonstre;
-        private Bot _monstre;
+        private Bot _monstre1;
+        private Bot _monstre2;
+        private Bot _monstre3;
+        private Bot _monstre4;
         
         //collision
         TypeCollisionMap _isCollisionSpeciale;
@@ -347,7 +351,7 @@ namespace Jeu
                 }
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece4_bas)
                 {
-                    if (!_listeCles[3].IsPrise)
+                    if (!_listeCles[0].IsPrise)
                         _leTexte = $"Il vous manque: {_listeCles[3].NomCle}";   //LEO
                     else
                         ChangementScreen(Ecran.Piece4, _listeVecteursSpawnParMap[10]);
@@ -372,6 +376,7 @@ namespace Jeu
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             SpriteBatch.Begin();
+            base.Draw(gameTime);    //dessine objets
             _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
             _spriteBatch.Draw(_imgCoeur1, _posCoeur1, Color.White);
             _spriteBatch.Draw(_imgCoeur2, _posCoeur2, Color.White);
@@ -380,7 +385,6 @@ namespace Jeu
             _spriteBatch.DrawString(_policePV, "" + pvPerso2, _posPV_J2, Color.White);
             _spriteBatch.DrawString(_policeTexte, "" + _leTexte, _positionTexte, Color.White);  //LEO
             _spriteBatch.DrawString(_policeTexte, "" + _textePage, _posTextePage, Color.Black);
-            base.Draw(gameTime);    //dessine objets
             SpriteBatch.End();
         }
 
@@ -608,7 +612,7 @@ namespace Jeu
                 else
                 {
                     //Console.WriteLine("il rentre");
-                    Node newDirection = new Node(_listeVecteursRondeBot[_indiceRonde]);
+                    Node newDirection = new Node(_listeVecteursRondeBot[i,_indiceRonde]);
                     newDirection.Parent = newDirection;
 
                     if (newDirection.Position.X == botX && newDirection.Position.Y == botY) //si on est arrivé au lieu de passage
@@ -628,31 +632,36 @@ namespace Jeu
             _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "journal 1", _spriteJournal, 0, "Il faut que je trouve une \ncle pour rentrer dans\n le batiment !", Content.Load<Texture2D>("PAGES/paper-horiz-demi")));
             _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(280, 50), "journal 2", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/paper-decouverte")));
             //_listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(40, 50), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche...", Content.Load<Texture2D>("PAGES/paper-sidebar-demi")));
-            _listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(280, 130), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/paper-placard")));
-            _listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(280, 130), "journal 4", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/paper-placard")));
-            _listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(280, 130), "journal 5", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/paper-placard")));
+            _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(100, 150), new Vector2(280, 130), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/paper-placard")));
+            _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(280, 130), "journal 4", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/paper-placard")));
+            _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(280, 130), "journal 5", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/paper-placard")));
         }
         public void CreationCles()
         {
-            _listeCles.Add(new Cle(new Vector2(100, 500), "Cle principale",_spriteCles,0));
+            _listeCles.Add(new Cle(new Vector2(320, 300), "Cle principale",_spriteCles,0));
             _listeCles.Add(new Cle(new Vector2(515, 528), "Cle 2",_spriteCles,1));
             _listeCles.Add(new Cle(new Vector2(107, 543), "Cle 3",_spriteCles,2));
-            _listeCles.Add(new Cle(new Vector2(107, 543), "Cle 4", _spriteCles, 3));
-            _listeCles.Add(new Cle(new Vector2(200, 200), "Cle 5", _spriteCles, 4));
+            _listeCles.Add(new Cle(new Vector2(400, 543), "Cle 4", _spriteCles, 3));
+            _listeCles.Add(new Cle(new Vector2(340, 305), "Cle 5", _spriteCles, 4));
         }
         public void CreationBots()
         {
             //creation bot
             _persoBotTest = new Bot(new Vector2(320, 320), _spritePersoBotTest, new Node(new Vector2(20, 20)));
-            _monstre = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
+            _monstre1 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
+            _monstre2 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
+            _monstre3 = new Bot(new Vector2(320, 320), _spriteMonstre, new Node(new Vector2(20, 20)));
+            _monstre4 = new Bot(new Vector2(200, 200), _spriteMonstre, new Node(new Vector2(8, 10)));
             //ajout des bots à la liste
-            _listeBots.Add(_persoBotTest);
-            _listeBots.Add(_monstre);
+            _listeBots.Add(_monstre1);
+            _listeBots.Add(_monstre2);
+            _listeBots.Add(_monstre3);
+            _listeBots.Add(_monstre4);
             //ajout des vecteurs de ronde à la liste
-            _listeVecteursRondeBot.Add(new Vector2(5,5));
-            _listeVecteursRondeBot.Add(new Vector2(35,5));
-            _listeVecteursRondeBot.Add(new Vector2(35,28));
-            _listeVecteursRondeBot.Add(new Vector2(10,32));
+            _listeVecteursRondeBot = new Vector2[4, 4] { { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) },
+                { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) } ,
+                    { new Vector2(5, 7), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) } ,
+                    { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) } };
             _indiceRonde = 0;
 
         }
@@ -674,11 +683,11 @@ namespace Jeu
         }
         public void CreationMaps()  //génération de tout ce qui tourne autour des maps
         {
-            _screenMapPiece0 = new ScreenMap(this, "mansion_V2.1/Piece_0", "obstacles", 640, 640,_listeCles[0],_listeJournal[0]);              //creation map0
-            _screenMapPiece1 = new ScreenMap(this, "mansion_V2.1/Piece_1", "obstacles", 640, 640, _listeCles[1], _listeJournal[1]);              //creation map1
-            _screenMapPiece2 = new ScreenMap(this, "mansion_V2.1/Piece_2", "obstacles", 640, 640, _listeCles[2], _listeJournal[2]);              //creation map2
-            _screenMapPiece3 = new ScreenMap(this, "mansion_V2.1/Piece_3", "obstacles", 640, 640, _listeCles[3], _listeJournal[3]);              //creation map3
-            _screenMapPiece4 = new ScreenMap(this, "mansion_V2.1/Piece_4", "obstacles", 640, 640, _listeCles[4], _listeJournal[4]);              //creation map4
+            _screenMapPiece0 = new ScreenMap(this, "mansion_V2.2/Piece_0", "obstacles", 640, 640,_listeCles[0],_listeJournal[0]);              //creation map0
+            _screenMapPiece1 = new ScreenMap(this, "mansion_V2.2/Piece_1", "obstacles", 640, 640, _listeCles[1], _listeJournal[1]);              //creation map1
+            _screenMapPiece2 = new ScreenMap(this, "mansion_V2.2/Piece_2", "obstacles", 640, 640, _listeCles[2], _listeJournal[2]);              //creation map2
+            _screenMapPiece3 = new ScreenMap(this, "mansion_V2.2/Piece_3", "obstacles", 640, 640, _listeCles[3], _listeJournal[3]);              //creation map3
+            _screenMapPiece4 = new ScreenMap(this, "mansion_V2.2/Piece_4", "obstacles", 640, 640, _listeCles[4], _listeJournal[4]);              //creation map4
             //ajout des maps à la liste
             _listeScreenMap.Add(_screenMapPiece0);      //ajout map0
             _listeScreenMap.Add(_screenMapPiece1);      //ajout map1
@@ -720,6 +729,8 @@ namespace Jeu
             }
             _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0] });
             _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
+            _listeScreenMap[3].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[2] });
+            _listeScreenMap[4].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[3] });
         }
         public void ReinitialisationPosition(Vector2 position)
         {
