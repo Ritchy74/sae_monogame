@@ -425,6 +425,12 @@
 /processorParam:Quality=Best
 /build:sounds/horror-ambience-8-background-effect.mp3
 
+#begin sounds/pas_parquet.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/pas_parquet.wav
+
 #begin sounds/portewav.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
