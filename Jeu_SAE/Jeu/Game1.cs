@@ -99,7 +99,7 @@ namespace Jeu
         //son, ambiance, musique
         private Song _ambiance;
         private SoundEffect _sonporte;
-        //private SoundEffect _sonPage;
+        private SoundEffect _sonPage;
 
         //Point de vie
         private Texture2D _imgCoeur1, _imgCoeur2;
@@ -217,7 +217,7 @@ namespace Jeu
             _spriteJournal = new AnimatedSprite(spriteJournal);        //sprite journal
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
-            //_sonPage = Content.Load<SoundEffect>("sounds/FlippingPages.ogg");
+            _sonPage = Content.Load<SoundEffect>("sounds/FlippingPages");
             _police = Content.Load<SpriteFont>("timer");
             _policePV = Content.Load<SpriteFont>("PV");
             _imgCoeur1 = Content.Load<Texture2D>("coeur");
@@ -484,7 +484,7 @@ namespace Jeu
                     _posTextePage = _listeJournal[(int)_ecranEnCours].PositionTexte;
                     _positionTexte = new Vector2(_posPage.X + 128, _posPage.Y + 502);
                     _afficherMessageSortir = true;
-                    //_sonPage.Play();
+                    _sonPage.Play();
                 }
                 else if (keyboardState.IsKeyDown(Keys.C) && _afficherMessageSortir)
                 {
@@ -496,7 +496,7 @@ namespace Jeu
                     _posTextePage = new Vector2(0, 0);
                     _leTexte = "";
                     _positionTexte = new Vector2(150, 580);
-                    //_sonPage.Play();
+                    _sonPage.Play();
                 }
             }
         }
