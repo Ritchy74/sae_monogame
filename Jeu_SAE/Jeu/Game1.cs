@@ -237,13 +237,6 @@ namespace Jeu
 
             MediaPlayer.Play(_ambiance);
 
-            //page
-            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-horiz"));
-            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-plain"));
-            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-square"));
-            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-with-sidebar-plain"));
-            //_listePage.Add(Content.Load<Texture2D>("PAGES/paper-with-sidebar-runes"));
-
             //creation perso
             CreationPersos();
             //creation bots
@@ -265,20 +258,20 @@ namespace Jeu
 
         public void CreationJournal()
         {
-            _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "journal 1", _spriteJournal, 0, "", Content.Load<Texture2D>("PAGES/papier0")));
-            _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(10, 50), "journal 2", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/papier1")));
+            _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "Je suis arrive", _spriteJournal, 0, "", Content.Load<Texture2D>("PAGES/papier0")));
+            _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(10, 50), "Je viens d'entrer", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/papier1")));
             //_listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(40, 50), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche...", Content.Load<Texture2D>("PAGES/paper-sidebar-demi")));
-            _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(60, 80), new Vector2(60, 70), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/papier2")));
-            _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(280, 130), "journal 4", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/papier3")));
-            _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(280, 130), "journal 5", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/papier4")));
+            _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(60, 80), new Vector2(60, 70), "Des bruits suspects", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/papier2")));
+            _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(280, 130), "A L'AIDE", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/papier3")));
+            _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(280, 130), "Je l'ai trouve", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/papier4")));
         }
         public void CreationCles()
         {
             _listeCles.Add(new Cle(new Vector2(320, 300), "Cle principale", _spriteCles, 0));
-            _listeCles.Add(new Cle(new Vector2(515, 528), "Cle 2", _spriteCles, 1));
-            _listeCles.Add(new Cle(new Vector2(107, 543), "Cle 3", _spriteCles, 2));
-            _listeCles.Add(new Cle(new Vector2(400, 543), "Cle 4", _spriteCles, 3));
-            _listeCles.Add(new Cle(new Vector2(340, 305), "Cle 5", _spriteCles, 4));
+            _listeCles.Add(new Cle(new Vector2(515, 528), "Cle du salon", _spriteCles, 1));
+            _listeCles.Add(new Cle(new Vector2(107, 543), "Cle chambres", _spriteCles, 2));
+            _listeCles.Add(new Cle(new Vector2(400, 543), "Cle cuisine", _spriteCles, 3));
+            _listeCles.Add(new Cle(new Vector2(340, 305), "Cle sortie", _spriteCles, 4));
         }
         public void CreationBots()
         {
@@ -411,7 +404,6 @@ namespace Jeu
                 //generateur
                 MethodeGenerateur(i);
                 //fog
-                Console.WriteLine(_moteur.IsPrise);
                 if (!_moteur.IsPrise)
                     _vecteurFog = new Vector2(_listePerso[0].PositionPerso.X - 1000,_listePerso[0].PositionPerso.Y - 1000);
                 //gérer les entrées et sorties dans les placards
@@ -496,7 +488,7 @@ namespace Jeu
                 //changement vers piece 4
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece4_bas)
                 {
-                    if (!_listeCles[0].IsPrise)
+                    if (!_listeCles[3].IsPrise)
                         _leTexte = $"Il vous manque: {_listeCles[3].NomCle}";   //LEO
                     else
                         ChangementScreen(Ecran.Piece4, _listeVecteursSpawnParMap[10]);
@@ -618,7 +610,7 @@ namespace Jeu
             {
                 if (!_afficherMessageSortir)
                 {
-                    _leTexte = " ESPACE pour : " + _listeJournal[(int)_ecranEnCours].NomJournal;
+                    _leTexte = " ESPACE pour: " + _listeJournal[(int)_ecranEnCours].NomJournal;
                     _positionTexte = new Vector2(170, 580);
                 }
                 else
@@ -657,7 +649,7 @@ namespace Jeu
                 _positionTexte = new Vector2(200, 580);
                 if (keyboardState.IsKeyDown(Keys.Space))
                 {
-                    _leTexte = "Vous avez trouve la cle: " + _listeCles[(int)_ecranEnCours].NomCle; //LEO
+                    _leTexte = "Vous avez trouve: " + _listeCles[(int)_ecranEnCours].NomCle; //LEO
                     _timerTexte = 0;
                     _listeCles[(int)_ecranEnCours].IsPrise = true;
                     _positionTexte = new Vector2(150, 580);
@@ -708,11 +700,11 @@ namespace Jeu
             //placard
             Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
             KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
-            if (rectPerso.Intersects(_listePlacards[(int)_ecranEnCours]) && _listeJournal[2].IsPrise)
+            if (rectPerso.Intersects(_listePlacards[(int)_ecranEnCours]) && _listeJournal[3].IsPrise)
             {
                 if (!_listePerso[i].IsInPlacard && _timer <= temp - 5)
                 {
-                    _leTexte = " G pour se cacher"; //LEO
+                    _leTexte = " G pour: se cacher"; //LEO
                     _positionTexte = new Vector2(180, 580);
                     //Console.WriteLine("tu peux te cacher en appuyant sur C");
 
@@ -731,7 +723,7 @@ namespace Jeu
             }
             if (_listePerso[i].IsInPlacard)
             {
-                _leTexte = " T pour sortir";    //LEO
+                _leTexte = " T pour: sortir";    //LEO
                 _positionTexte = new Vector2(180, 580);
                 _vecteurFog = new Vector2(_oldPosition.X - 1000, _oldPosition.Y - 1000);
                 //Console.WriteLine("tu peux te décacher en appuyant sur E");
