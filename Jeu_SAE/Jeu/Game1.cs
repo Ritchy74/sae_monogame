@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
-
+using System.Threading;
 
 namespace Jeu
 {
@@ -49,7 +49,6 @@ namespace Jeu
         private List<Vector2> _listeVecteursRondeBot2 = new List<Vector2>();
         //perso bot test
         private AnimatedSprite _spritePersoBotTest;
-        private Bot _persoBotTest;
         //monstre
         private AnimatedSprite _spriteMonstre;
         private Bot _monstre1;
@@ -100,6 +99,8 @@ namespace Jeu
         private Song _ambiance;
         private SoundEffect _sonporte;
         private SoundEffect _sonPage;
+        private SoundEffect _sonPas;
+        private SoundEffect _sonMort;
 
         //Point de vie
         private Texture2D _imgCoeur1, _imgCoeur2;
@@ -221,6 +222,8 @@ namespace Jeu
             _spriteJournal = new AnimatedSprite(spriteJournal);        //sprite journal
             _spriteMotor = new AnimatedSprite(spriteMotor);        //sprite motor
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
+            _sonPas = Content.Load<SoundEffect>("sounds/pas_parquet");
+            _sonMort = Content.Load<SoundEffect>("sounds/WTF_Homme etrangle 1 (ID 1639)_LS");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
             _sonPage = Content.Load<SoundEffect>("sounds/FlippingPages");
             _police = Content.Load<SpriteFont>("timer");
@@ -369,7 +372,10 @@ namespace Jeu
 
             //quit game
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count == 0)
+            {
+                //_sonMort.Play();
                 Exit();
+            }
             //deltatime
             deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -425,7 +431,10 @@ namespace Jeu
 
                 //update position des perso
                 if (!_listePerso[i].IsInPlacard && !_afficherMessageSortir)
+                {
                     _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl, _moteur.RectangleMotor, _ecranEnCours);
+                    //_sonPas.Play();
+                }
 
 
                 //changement vers piece 0   (dehors)
@@ -668,20 +677,25 @@ namespace Jeu
                     Perso persoActuel = _listeScreenMap[(int)_ecranEnCours].LesPersoADessiner[j];
                     Bot botActuel = _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner[i];
                     //Console.WriteLine(botActuel);
-                    if (Bot.IsColliBot_Play(botActuel, persoActuel))
+                    if (Bot.IsColliBot_Play(botActuel, persoActuel) && persoActuel.PtDeVie >0)
                     {
                         persoActuel.PtDeVie -= deltaSecond*botActuel.DegatsBot;
                         //Console.WriteLine("Point de vie perso "+j+" : "+(int)persoActuel.PtDeVie);
                     }
                     if (persoActuel.PtDeVie <= 0)
+                    {
+                        persoActuel.PtDeVie = 0;
                         _listeStartCompteurDead[j] = true;
+                    }
                     //compteur dead
                     if (_listeStartCompteurDead[j])
                     {
                         persoActuel.Animation = Perso.TypeAnimation.dead;    //passe en dead
                         _listeCompteurDead[j] += deltaSeconds;
+
                         if (_listeCompteurDead[j] >= 10)
                         {
+
                             _listePerso.Remove(persoActuel);
                             _listeStartCompteurDead.Remove(_listeStartCompteurDead[j]);
                             _listeCompteurDead.Remove(_listeCompteurDead[j]);

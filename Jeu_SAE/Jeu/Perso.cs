@@ -9,6 +9,7 @@ using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Jeu
 {
@@ -199,7 +200,9 @@ namespace Jeu
                 }
                 //si pas de collision alors on avance
                 if (Collision == TypeCollisionMap.Rien && !toucheBordFenetre )
+                {
                     PositionPerso += walkSpeed * deplacement;
+                }
 
             Rectangle rectPerso = new Rectangle((int)PositionPerso.X, (int)PositionPerso.Y+15, 37, 50);
                 if (collision.Intersects(rectPerso) && ecran == Ecran.Piece4)

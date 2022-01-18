@@ -461,6 +461,12 @@
 /processorParam:Quality=Best
 /build:sounds/portewav.wav
 
+#begin sounds/WTF_Homme etrangle 1 (ID 1639)_LS.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sounds/WTF_Homme etrangle 1 (ID 1639)_LS.wav
+
 #begin texte.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
