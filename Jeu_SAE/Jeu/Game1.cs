@@ -79,6 +79,7 @@ namespace Jeu
         //journal
         List<Journal> _listeJournal = new List<Journal>();
         //List<Texture2D> _listePage = new List<Texture2D>();
+        private bool _afficherMessageSortir;
         private Texture2D _pageAff;
         private Vector2 _posPage;
         private string _textePage;
@@ -183,6 +184,7 @@ namespace Jeu
             _pageAff = Content.Load<Texture2D>("PAGES/paper-horiz");
             _posPage = new Vector2(-1500, -1500);
             _posTextePage = new Vector2(0, 0);
+            _afficherMessageSortir = false;
 
 
 
@@ -411,23 +413,23 @@ namespace Jeu
             Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
             if (rectPerso.Intersects(_listeJournal[(int)_ecranEnCours].RectangleJournal) && !_listeJournal[(int)_ecranEnCours].IsPrise )
             {
-                
-                _leTexte = " ESPACE pour: " + _listeJournal[(int)_ecranEnCours].NomJournal;  //LEO
+                if (!_afficherMessageSortir)
+                    _leTexte = " ESPACE pour: " + _listeJournal[(int)_ecranEnCours].NomJournal;
+                else
+                    _leTexte = " C pour fermer la page";
                 if (keyboardState.IsKeyDown(Keys.Space))
                 {
                     _textePage =  _listeJournal[(int)_ecranEnCours].TexteJournal;
                     _pageAff = _listeJournal[(int)_ecranEnCours].Page;
                     _posPage = _listeJournal[(int)_ecranEnCours].PositionFeuille;
                     _posTextePage = _listeJournal[(int)_ecranEnCours].PositionTexte;
-                    _listeJournal[(int)_ecranEnCours].IsPrise = true;
+                    _afficherMessageSortir = true;
                     //_sonPage.Play();
                 }
-            }
-            if (_listeJournal[(int)_ecranEnCours].IsPrise)
-            {
-                _leTexte = " C pour fermer la page";
-                if (keyboardState.IsKeyDown(Keys.C))
+                else if (keyboardState.IsKeyDown(Keys.C))
                 {
+                    _listeJournal[(int)_ecranEnCours].IsPrise = true;
+                    _afficherMessageSortir = false;
                     _textePage = "";
                     _pageAff = Content.Load<Texture2D>("PAGES/paper-horiz-demi");
                     _posPage = new Vector2(-1500, -1500);
