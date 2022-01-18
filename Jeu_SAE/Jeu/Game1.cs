@@ -289,6 +289,12 @@ namespace Jeu
                 //gérer les journaux
                 MethodeJournal(i);
 
+                if (_listeJournal[2].IsPrise)
+                {
+                    _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0] });
+                    _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
+                }
+
                 //récupérationdu type de colision
                 if (_listePerso[i].Collision != TypeCollisionMap.Rien)
                     _isCollisionSpeciale = _listePerso[i].Collision;
@@ -613,7 +619,7 @@ namespace Jeu
                 else
                 {
                     //Console.WriteLine("il rentre");
-                    Console.WriteLine(_indiceRonde);
+                    //Console.WriteLine(_indiceRonde);
                     Node newDirection = new Node(_listeVecteursRondeBot[(int)_ecranEnCours-1, _indiceRonde]);
                     newDirection.Parent = newDirection;
 
@@ -662,12 +668,8 @@ namespace Jeu
             //ajout des vecteurs de ronde à la liste
             _listeVecteursRondeBot = new Vector2[4, 4] { { new Vector2(5, 5), new Vector2(35, 5), new Vector2(35, 28), new Vector2(10, 32) },
                 { new Vector2(5, 5), new Vector2(32, 5), new Vector2(25, 16), new Vector2(27, 32) } ,
-                    { new Vector2(3, 5), new Vector2(32, 5), new Vector2(35, 35), new Vector2(3, 32) } ,
+                    { new Vector2(3, 5), new Vector2(32, 5), new Vector2(35, 35), new Vector2(17, 32) } ,
                     { new Vector2(6, 11), new Vector2(33, 27), new Vector2(33, 6), new Vector2(6, 27) } };
-            //_listeVecteursRondeBot2.Add(new Vector2(5, 5));
-            //_listeVecteursRondeBot2.Add(new Vector2(35, 5));
-            //_listeVecteursRondeBot2.Add(new Vector2(35, 28));
-            //_listeVecteursRondeBot2.Add(new Vector2(10, 32)));
             _indiceRonde = 0;
 
         }
@@ -733,8 +735,8 @@ namespace Jeu
             {
                 _listeScreenMap[i].UpdateListJoueursAAfficher(_listePerso);
             }
-            _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[0] });
-            _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[1] });
+            _listeScreenMap[1].UpdateListBotsAAfficher(new List<Bot>() {});
+            _listeScreenMap[2].UpdateListBotsAAfficher(new List<Bot>() {});
             _listeScreenMap[3].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[2] });
             _listeScreenMap[4].UpdateListBotsAAfficher(new List<Bot>() { _listeBots[3] });
         }
