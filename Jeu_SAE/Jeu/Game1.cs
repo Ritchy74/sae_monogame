@@ -262,8 +262,8 @@ namespace Jeu
             _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(10, 50), "Je viens d'entrer", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/papier1")));
             //_listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(40, 50), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche...", Content.Load<Texture2D>("PAGES/paper-sidebar-demi")));
             _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(60, 80), new Vector2(60, 70), "Des bruits suspects", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/papier2")));
-            _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(280, 130), "A L'AIDE", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/papier3")));
-            _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(280, 130), "Je l'ai trouve", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/papier4")));
+            _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(70, 50), "A L'AIDE", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/papier3")));
+            _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(80, 60), "Je l'ai trouve", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/papier4")));
         }
         public void CreationCles()
         {
