@@ -344,21 +344,21 @@ namespace Jeu
                 //changement vers piece 2
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_bas)
                 {
-                    if (!_listeCles[0].IsPrise)
-                        _leTexte = $"Il vous manque: {_listeCles[0].NomCle}";   //LEO
+                    if (!_listeCles[1].IsPrise)
+                        _leTexte = $"Il vous manque: {_listeCles[1].NomCle}";   //LEO
                     else
-                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
+                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[7]);
                 }
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece2_haut)
                 {
                     if (!_listeCles[1].IsPrise)
                         _leTexte = $"Il vous manque: {_listeCles[1].NomCle}";   //LEO
                     else
-                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[7]);
+                        ChangementScreen(Ecran.Piece2, _listeVecteursSpawnParMap[6]);
                 }
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece3_bas)
                 {
-                    if (!_listeCles[0].IsPrise)
+                    if (!_listeCles[2].IsPrise)
                         _leTexte = $"Il vous manque: {_listeCles[2].NomCle}";   //LEO
                     else
                         ChangementScreen(Ecran.Piece3, _listeVecteursSpawnParMap[8]);
@@ -369,7 +369,7 @@ namespace Jeu
                 }
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece4_bas)
                 {
-                    if (!_listeCles[0].IsPrise)
+                    if (!_listeCles[3].IsPrise)
                         _leTexte = $"Il vous manque: {_listeCles[3].NomCle}";   //LEO
                     else
                         ChangementScreen(Ecran.Piece4, _listeVecteursSpawnParMap[10]);
@@ -395,7 +395,8 @@ namespace Jeu
 
             SpriteBatch.Begin();
             base.Draw(gameTime);    //dessine objets
-            _spriteBatch.Draw(_fog, _vecteurFog, Color.White);
+            if (_ecranEnCours != Ecran.Piece0)
+                _spriteBatch.Draw(_fog, _vecteurFog, Color.White);
             _spriteBatch.DrawString(_police, heure, _posTimer, Color.Red);
             _spriteBatch.Draw(_imgCoeur1, _posCoeur1, Color.White);
             _spriteBatch.Draw(_imgCoeur2, _posCoeur2, Color.White);

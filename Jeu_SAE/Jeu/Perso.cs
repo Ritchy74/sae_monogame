@@ -208,7 +208,7 @@ namespace Jeu
         }
         public static TypeCollisionMap IsCollision(float x, float y, ScreenMap map)
         {
-            List<int> Tiles_Speciales = new List<int> { 272, 312, 313, 314, 356, 358, 74, 72, 158, 359, 357};  //indice = numéro de pièce
+            List<int> Tiles_Speciales = new List<int> { 272, 312, 313, 314, 356, 358, 74, 73, 72, 158, 359, 357};  //indice = numéro de pièce
 
             TypeCollisionMap collision = TypeCollisionMap.Rien;
             TiledMapTile? tile;
@@ -231,17 +231,17 @@ namespace Jeu
                         collision = TypeCollisionMap.PorteVersPiece1_milieu;
                     else if (tile.Value.GlobalIdentifier == Tiles_Speciales[5])
                         collision = TypeCollisionMap.PorteVersPiece1_hautDroite;
-                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[5])
-                        collision = TypeCollisionMap.PorteVersPiece2_bas;
                     else if (tile.Value.GlobalIdentifier == Tiles_Speciales[6])
-                        collision = TypeCollisionMap.PorteVersPiece2_haut;
+                        collision = TypeCollisionMap.PorteVersPiece2_bas;
                     else if (tile.Value.GlobalIdentifier == Tiles_Speciales[7])
-                        collision = TypeCollisionMap.PorteVersPiece3_bas;
+                        collision = TypeCollisionMap.PorteVersPiece2_haut;
                     else if (tile.Value.GlobalIdentifier == Tiles_Speciales[8])
-                        collision = TypeCollisionMap.PorteVersPiece3_haut;
+                        collision = TypeCollisionMap.PorteVersPiece3_bas;
                     else if (tile.Value.GlobalIdentifier == Tiles_Speciales[9])
-                        collision = TypeCollisionMap.PorteVersPiece4_bas;
+                        collision = TypeCollisionMap.PorteVersPiece3_haut;
                     else if (tile.Value.GlobalIdentifier == Tiles_Speciales[10])
+                        collision = TypeCollisionMap.PorteVersPiece4_bas;
+                    else if (tile.Value.GlobalIdentifier == Tiles_Speciales[11])
                         collision = TypeCollisionMap.PorteVersPiece4_haut;
                     else
                         collision = TypeCollisionMap.Obstacle;
