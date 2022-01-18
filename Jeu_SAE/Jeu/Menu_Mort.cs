@@ -56,7 +56,7 @@ namespace Jeu
         {
 
             _bouton1Pos = new Vector2(300, 100);
-            _bouton2Pos = new Vector2(300, 300);
+            _bouton2Pos = new Vector2(270, 300);
             _oneShotMouseState = OneShotMouseButton.GetState();
             _mouseLeftPressed = false;
             // TODO: Add your initialization logic here
@@ -69,8 +69,8 @@ namespace Jeu
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _bouton1 = new Bouton(Content.Load<Texture2D>("boutons/1joueur"), Content.Load<Texture2D>("boutons/1joueur_press"), new Point(200, 112), _bouton1Pos, "Bouton Jouer", 1, true, 1.0f);
-            _bouton2 = new Bouton(Content.Load<Texture2D>("boutons/2joueur"), Content.Load<Texture2D>("boutons/2joueur_press"), new Point(200, 112), _bouton2Pos, "Bouton Jouer2", 2, true, 1.0f);
+            _bouton1 = new Bouton(Content.Load<Texture2D>("boutons/rejouer"), Content.Load<Texture2D>("boutons/rejouer"), new Point(200, 112), _bouton1Pos, "Bouton Jouer", 1, true, 1.0f);
+            _bouton2 = new Bouton(Content.Load<Texture2D>("boutons/menu"), Content.Load<Texture2D>("boutons/menu"), new Point(270, 120), _bouton2Pos, "Bouton Jouer2", 2, true, 1.0f);
             // TODO: use this.Content to load your game content here
         }
         public void HandleInput(GameTime gametime)
