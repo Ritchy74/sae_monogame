@@ -1,0 +1,12 @@
+{
+  "textureAtlas": {
+    "texture": "motor.png",
+    "regionWidth": 58,
+    "regionHeight": 34
+  },
+  "cycles": {
+    "motor": {
+      "frames": [0]
+    }
+  }
+}
