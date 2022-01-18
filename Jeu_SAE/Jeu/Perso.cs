@@ -36,7 +36,7 @@ namespace Jeu
             PositionPerso = _positionPerso;
             
             //inititalisations
-            this._vitessePerso = 200;
+            this._vitessePerso = 150;
             TypeDeControl = typeDeControle;
             IsInPlacard = false;
             PtDeVie = 100;
@@ -255,7 +255,7 @@ namespace Jeu
 
                 }
             }
-            Console.WriteLine("collision : " + collision);
+            //Console.WriteLine("collision : " + collision);
             return collision;
         }
         

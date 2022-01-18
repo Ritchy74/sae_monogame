@@ -160,7 +160,8 @@ namespace Jeu
             }
             if (!this._cleADessiner.IsPrise && this._journalADessiner.IsPrise)
             {
-                this.game.SpriteBatch.Draw(this._cleADessiner.SpriteCle, this._cleADessiner.PositionCle) ; //dessine la clé
+                if (this._cleADessiner.NumeroCLe != 0)
+                    this.game.SpriteBatch.Draw(this._cleADessiner.SpriteCle, this._cleADessiner.PositionCle) ; //dessine la clé
             }
             if (!this._journalADessiner.IsPrise)
             {
