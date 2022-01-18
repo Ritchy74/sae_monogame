@@ -288,7 +288,7 @@ namespace Jeu
                     _isCollisionSpeciale = _listePerso[i].Collision;
 
                 //update position des perso
-                if (!_listePerso[i].IsInPlacard)
+                if (!_listePerso[i].IsInPlacard && !_afficherMessageSortir)
                     _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl);
 
 
