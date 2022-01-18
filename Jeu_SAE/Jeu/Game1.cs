@@ -425,7 +425,7 @@ namespace Jeu
 
                 //update position des perso
                 if (!_listePerso[i].IsInPlacard && !_afficherMessageSortir)
-                    _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl, _moteur.RectangleMotor);
+                    _listePerso[i].Move(_listeScreenMap[(int)_ecranEnCours], gameTime, _listePerso[i].TypeDeControl, _moteur.RectangleMotor, _ecranEnCours);
 
 
                 //changement vers piece 0   (dehors)

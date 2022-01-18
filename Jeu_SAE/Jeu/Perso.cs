@@ -139,7 +139,7 @@ namespace Jeu
             int y = (int)(PositionPerso.Y / screen.Map.TileHeight);
             return new Vector2(x, y);
         }
-        public void Move(ScreenMap screen, GameTime gameTime, TypeControl typeDeControle, Rectangle collision)
+        public void Move(ScreenMap screen, GameTime gameTime, TypeControl typeDeControle, Rectangle collision, Ecran ecran)
         {
             if (Animation != TypeAnimation.dead && Animation != TypeAnimation.idleDead)
             { 
@@ -162,7 +162,7 @@ namespace Jeu
                     this.Animation = TypeAnimation.walkWest;   //animation
                     deplacement = new Vector2(-1, 0);           //vecteur deplacement
                     //collision
-                    toucheBordFenetre = PositionPerso.X  <= 0;    //gauche de fenetre 
+                    toucheBordFenetre = PositionPerso.X  <= this.SpritePerso.TextureRegion.Width/2;    //gauche de fenetre 
                     Collision = Perso.IsCollision(positionColonnePerso - 1, positionLignePerso, screen);     //batiment
                 }
                 //deplacement droite
@@ -172,7 +172,7 @@ namespace Jeu
                     deplacement = new Vector2(+1, 0);           //vecteur deplacement
 
                     //collision
-                    toucheBordFenetre = PositionPerso.X >= screen.GraphicsDevice.Viewport.Width;    //droite de fenetre 
+                    toucheBordFenetre = PositionPerso.X >= screen.GraphicsDevice.Viewport.Width - this.SpritePerso.TextureRegion.Width/2;    //droite de fenetre 
                     Collision = Perso.IsCollision(positionColonnePerso + 1, positionLignePerso, screen);     //batiment
 
                 }
@@ -202,7 +202,7 @@ namespace Jeu
                     PositionPerso += walkSpeed * deplacement;
 
             Rectangle rectPerso = new Rectangle((int)PositionPerso.X, (int)PositionPerso.Y+15, 37, 50);
-                if (collision.Intersects(rectPerso))
+                if (collision.Intersects(rectPerso) && ecran == Ecran.Piece4)
                     PositionPerso -= walkSpeed * deplacement;
             }
 
