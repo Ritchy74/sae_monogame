@@ -75,7 +75,7 @@ namespace Jeu
         private SpriteFont _police;
         private Vector2 _posTimer;
         private string heure;
-        private const int TEMPS_TOTAL = 300;
+        private const int TEMPS_TOTAL = 400;
         private int _tempsParHeure;
 
         //clés
@@ -101,6 +101,7 @@ namespace Jeu
         private SoundEffect _sonPage;
         private SoundEffect _sonPas;
         private SoundEffect _sonMort;
+        private int _tempsPage;
 
         //Point de vie
         private Texture2D _imgCoeur1, _imgCoeur2;
@@ -201,6 +202,7 @@ namespace Jeu
             _posPage = new Vector2(-1500, -1500);
             _posTextePage = new Vector2(0, 0);
             _afficherMessageSortir = false;
+            _tempsPage = 0;
 
             //cheats
             _charles = false;
@@ -355,8 +357,8 @@ namespace Jeu
             _listePlacards.Add(new Rectangle(0, 0, 0, 0));  //map 0 (y'en a pas)
             _listePlacards.Add(new Rectangle(448, 192, 64, 96));  //map1
             _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map2
-            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map3
-            _listePlacards.Add(new Rectangle(80, 0, 64, 128));  //map4
+            _listePlacards.Add(new Rectangle(240, 96, 64, 96));  //map3
+            _listePlacards.Add(new Rectangle(255, 352, 64, 96));  //map4
 
             //initialisation position perso et bot
             for (int i = 0; i < _listeScreenMap.Count; i++)
@@ -388,7 +390,7 @@ namespace Jeu
             deltaSeconds = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //faire écouler le timer dans le jeu 
-            if (_listeJournal[4].IsPrise)
+            if (_listeJournal[2].IsPrise)
                 Time();
             //collision perso avec bot
             IsCollisionBot(deltaSeconds);
@@ -418,7 +420,7 @@ namespace Jeu
                 //generateur
                 MethodeGenerateur(i);
                 //fog
-                _moteur.IsPrise = true;
+                //_moteur.IsPrise = true;       //desactiver fog enlever brouillard 
                 if (!_moteur.IsPrise)
                     _vecteurFog = new Vector2(_listePerso[0].PositionPerso.X - 1000,_listePerso[0].PositionPerso.Y - 1000);
                 //gérer les entrées et sorties dans les placards
@@ -607,6 +609,7 @@ namespace Jeu
             else
             {
                 heure = "00:00";
+                newDiff = 1;
             }
 
             for (int i = 0; i < _listeScreenMap[(int)_ecranEnCours].LesBotsADessiner.Count; i++)
@@ -656,15 +659,17 @@ namespace Jeu
                     _leTexte = " C pour fermer la page";
                 if (keyboardState.IsKeyDown(Keys.Space))
                 {
+                    _tempsPage++;
                     _textePage =  _listeJournal[(int)_ecranEnCours].TexteJournal;
                     _pageAff = _listeJournal[(int)_ecranEnCours].Page;
                     _posPage = _listeJournal[(int)_ecranEnCours].PositionFeuille;
                     _posTextePage = _listeJournal[(int)_ecranEnCours].PositionTexte;
                     _positionTexte = new Vector2(_posPage.X + 128, _posPage.Y + 502);
                     _afficherMessageSortir = true;
-                    _sonPage.Play();
                 }
-                else if (keyboardState.IsKeyDown(Keys.C) && _afficherMessageSortir)
+                if (_tempsPage == 1)
+                    _sonPage.Play();
+                if (keyboardState.IsKeyDown(Keys.C) && _afficherMessageSortir)
                 {
                     _listeJournal[(int)_ecranEnCours].IsPrise = true;
                     _afficherMessageSortir = false;
@@ -674,6 +679,7 @@ namespace Jeu
                     _posTextePage = new Vector2(0, 0);
                     _leTexte = "";
                     _positionTexte = new Vector2(150, 580);
+                    _tempsPage = 0;
                     _sonPage.Play();
                 }
             }
@@ -746,7 +752,7 @@ namespace Jeu
             KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
             if (rectPerso.Intersects(_listePlacards[(int)_ecranEnCours]) && _listeJournal[3].IsPrise)
             {
-                if (!_listePerso[i].IsInPlacard && _timer <= temp - 5)
+                if (!_listePerso[i].IsInPlacard && _timer <= temp - 20)
                 {
                     _leTexte = " G pour: se cacher"; //LEO
                     _positionTexte = new Vector2(180, 580);
