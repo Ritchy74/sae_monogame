@@ -408,9 +408,12 @@ namespace Jeu
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
             for (int i = 0; i < _listePerso.Count; i++)
             {
-
+                //generateur
+                MethodeGenerateur(i);
                 //fog
-            _vecteurFog = new Vector2(_listePerso[0].PositionPerso.X - 1000,_listePerso[0].PositionPerso.Y - 1000);
+                Console.WriteLine(_moteur.IsPrise);
+                if (!_moteur.IsPrise)
+                    _vecteurFog = new Vector2(_listePerso[0].PositionPerso.X - 1000,_listePerso[0].PositionPerso.Y - 1000);
                 //gérer les entrées et sorties dans les placards
                 MethodePlacard(i);
                 //gérer les clés
@@ -519,7 +522,7 @@ namespace Jeu
 
             SpriteBatch.Begin();
             base.Draw(gameTime);    //dessine objets
-            if (_ecranEnCours != Ecran.Piece0)
+            if (_ecranEnCours != Ecran.Piece0 && !_moteur.IsPrise)
             {
                 if (_listePerso.Count == 1)
                     _spriteBatch.Draw(_fog1J, _vecteurFog, Color.White);
@@ -591,6 +594,21 @@ namespace Jeu
             }
         }
 
+        public void MethodeGenerateur(int i)
+        {
+            KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
+            Rectangle rectPerso = new Rectangle((int)_listePerso[i].PositionPerso.X, (int)_listePerso[i].PositionPerso.Y, 48 - 2, 64 - 2);
+            if (rectPerso.Intersects(_moteur.RectangleMotor) && !_moteur.IsPrise && _ecranEnCours==Ecran.Piece4)
+            {
+                _leTexte = " ESPACE pour allumer le generateur";
+                if (keyboardState.IsKeyDown(Keys.Space))
+                {
+                    _moteur.IsPrise = true;
+                    _leTexte = "";
+                }
+            }
+
+        }
         public void MethodeJournal(int i)
         {
             
