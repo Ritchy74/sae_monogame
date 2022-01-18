@@ -629,12 +629,12 @@ namespace Jeu
         
         public void CreationJournal()
         {
-            _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "journal 1", _spriteJournal, 0, "Il faut que je trouve une \ncle pour rentrer dans\n le batiment !", Content.Load<Texture2D>("PAGES/paper-horiz-demi")));
-            _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(280, 50), "journal 2", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/paper-decouverte")));
+            _listeJournal.Add(new Journal(new Vector2(320, 300), new Vector2(50, 70), new Vector2(40, 50), "journal 1", _spriteJournal, 0, "", Content.Load<Texture2D>("PAGES/papier-entree")));
+            _listeJournal.Add(new Journal(new Vector2(130, 255), new Vector2(290, 150), new Vector2(10, 50), "journal 2", _spriteJournal, 1, "", Content.Load<Texture2D>("PAGES/papier-muse")));
             //_listeJournal.Add(new Journal(new Vector2(100, 150), new Vector2(100, 150), new Vector2(40, 50), "journal 3", _spriteJournal, 2, "Je me suis cache dans un placard, j'ai vu une ombre arriver vers moi. Il se passe vraiment quelque chose de louche...", Content.Load<Texture2D>("PAGES/paper-sidebar-demi")));
-            _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(100, 150), new Vector2(280, 130), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/paper-placard")));
-            _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(280, 130), "journal 4", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/paper-placard")));
-            _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(280, 130), "journal 5", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/paper-placard")));
+            _listeJournal.Add(new Journal(new Vector2(560, 240), new Vector2(60, 80), new Vector2(60, 70), "journal 3", _spriteJournal, 2, "", Content.Load<Texture2D>("PAGES/papier-placard2")));
+            _listeJournal.Add(new Journal(new Vector2(180, 160), new Vector2(100, 150), new Vector2(280, 130), "journal 4", _spriteJournal, 3, "", Content.Load<Texture2D>("PAGES/papier-placard2")));
+            _listeJournal.Add(new Journal(new Vector2(255, 545), new Vector2(100, 150), new Vector2(280, 130), "journal 5", _spriteJournal, 4, "", Content.Load<Texture2D>("PAGES/papier-placard2")));
         }
         public void CreationCles()
         {
