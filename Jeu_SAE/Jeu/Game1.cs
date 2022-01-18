@@ -230,7 +230,7 @@ namespace Jeu
             _spriteMotor = new AnimatedSprite(spriteMotor);        //sprite motor
             _ambiance = Content.Load<Song>("sounds/horror-ambience-8-background-effect");
             _sonPas = Content.Load<SoundEffect>("sounds/pas_parquet");
-            _sonMort = Content.Load<SoundEffect>("sounds/WTF_Homme etrangle 1 (ID 1639)_LS");
+            _sonMort = Content.Load<SoundEffect>("sounds/sonMort");
             _sonporte = Content.Load<SoundEffect>("sounds/portewav");
             _sonPage = Content.Load<SoundEffect>("sounds/FlippingPages");
             _police = Content.Load<SpriteFont>("timer");
@@ -379,7 +379,7 @@ namespace Jeu
             //quit game
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count == 0)
             {
-                //_sonMort.Play();
+                _sonMort.Play();
                 Exit();
             }
             //cheats
