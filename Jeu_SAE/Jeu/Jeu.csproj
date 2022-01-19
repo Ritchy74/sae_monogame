@@ -11,6 +11,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Content\sounds\WTF_Homme etrangle 1 %28ID 1639%29_LS.wav" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
   </ItemGroup>
