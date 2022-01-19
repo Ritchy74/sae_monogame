@@ -596,7 +596,7 @@ namespace Jeu
                 heure = "06:00";
                 newDiff = 4;
             }
-            if (_timer <= _tempsParHeure)
+            else if (_timer <= _tempsParHeure)
             {
                 heure = "05:00";
                 newDiff = 4;
