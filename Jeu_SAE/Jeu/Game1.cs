@@ -375,6 +375,12 @@ namespace Jeu
         }
         protected override void Update(GameTime gameTime)
         {
+            //Console.WriteLine(_timer);
+            if (_ecranEnCours == Ecran.Piece0 && _timer <= 1)
+            {
+                Thread.Sleep(4000);
+                Exit();
+            }
 
             //quit game
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape) || _listePerso.Count == 0)
@@ -416,6 +422,7 @@ namespace Jeu
             _isCollisionSpeciale = TypeCollisionMap.Rien;   //réinitialisation des colision
             for (int i = 0; i < _listePerso.Count; i++)
             {
+
                 //generateur
                 MethodeGenerateur(i);
                 //fog
@@ -455,8 +462,12 @@ namespace Jeu
                         _leTexte = $"Il vous manque: {_listeCles[4].NomCle}";
                     else if (_timer>=0)
                         _leTexte = "Vous devez attendre 6H pour sortir";
-                    else 
+                    else
+                    {
                         ChangementScreen(Ecran.Piece0, _listeVecteursSpawnParMap[0]);
+                        _leTexte = "Vous avez reussi a fuir !!!";
+                        _positionTexte = new Vector2(200, 550);
+                    }
                 }
                 //changement vers piece 1
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece1_bas)  //depuis dehors
@@ -580,6 +591,11 @@ namespace Jeu
             _timer -= deltaSeconds;
             //Console.WriteLine((int)_timer);
             int newDiff = 0;
+            if (_timer <= 0)
+            {
+                heure = "06:00";
+                newDiff = 4;
+            }
             if (_timer <= _tempsParHeure)
             {
                 heure = "05:00";
