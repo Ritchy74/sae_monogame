@@ -567,9 +567,11 @@ namespace Jeu
 
         public void Cheating()
         {
+            KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
+            if (keyboardState.IsKeyDown(Keys.P))
+                _timer -= _tempsParHeure/25;
             if (!_charles)
             {
-                KeyboardState keyboardState = Keyboard.GetState();          //recupere etat clavier
                 if (keyboardState.IsKeyDown(Keys.O) && keyboardState.IsKeyDown(Keys.K))
                     _charles = true;
             }
@@ -875,7 +877,6 @@ namespace Jeu
         }
         public void ChangementScreen(Ecran versCetEcran, Vector2 newPosPerso)
         {
-            _indiceRonde = 0;
             for (int i = 0; i < _listePerso.Count; i++)
             {
                 _listePerso[i].IsInPlacard = false;
