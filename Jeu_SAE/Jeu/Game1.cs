@@ -508,7 +508,7 @@ namespace Jeu
                 //changement vers piece 3
                 else if (_isCollisionSpeciale == TypeCollisionMap.PorteVersPiece3_bas)
                 {
-                    if (!_listeCles[0].IsPrise)
+                    if (!_listeCles[2].IsPrise)
                         _leTexte = $"Il vous manque: {_listeCles[2].NomCle}";   //LEO
                     else
                         ChangementScreen(Ecran.Piece3, _listeVecteursSpawnParMap[8]);
